@@ -12,7 +12,7 @@ import AgentPortal from './pages/AgentPortal';
 import Affiliate from './pages/Affiliate';
 import BecomeAgent from './pages/BecomeAgent';
 import AffiliateLinks from './pages/AffiliateLinks';
-import Layout from './Layout.jsx';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -35,5 +35,5 @@ export const PAGES = {
 export const pagesConfig = {
     mainPage: "Home",
     Pages: PAGES,
-    Layout: Layout,
+    Layout: __Layout,
 };
