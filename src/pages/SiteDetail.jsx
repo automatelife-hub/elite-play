@@ -1,13 +1,13 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, X, ExternalLink, CreditCard, Smartphone, Monitor } from "lucide-react";
+import { Star, Check, X, ExternalLink, CreditCard, Smartphone, Monitor, FileText } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createPageUrl } from "@/utils";
+import ImageGallery from "../components/sites/ImageGallery";
 
 // Add flag emoji helper at the top
 const getFlagEmoji = (countryCode) => {
@@ -396,6 +396,53 @@ export default function SiteDetail() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Review Section with Table of Contents */}
+        <Card className="bg-gray-900 border-gray-800 mb-12">
+          <CardContent className="p-6">
+            <h2 className="text-3xl font-bold mb-6 text-white flex items-center">
+              <FileText className="w-8 h-8 text-yellow-400 mr-3" />
+              {site.name} Review
+            </h2>
+            <div className="bg-gray-800/50 rounded-lg p-6 mb-8">
+              <h3 className="text-xl font-bold mb-4 text-yellow-400">Table of Contents</h3>
+              <ul className="grid md:grid-cols-2 gap-3 text-gray-300">
+                {site.bonus_offer && <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Welcome Bonus</li>}
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Rakeback</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> VIP Rewards</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Jackpots</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Rake Structure</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Games and Traffic</li>
+                {site.type === 'poker_casino' || site.type === 'all' ? <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Bookmaker and Casino</li> : null}
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Game Softness</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Attitude Toward Pros</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Software Quality</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Reliability</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Customer Support</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Deposits & Withdrawals</li>
+                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Pros and Cons</li>
+              </ul>
+            </div>
+            
+            {site.bonus_offer && (
+              <div className="mb-8 p-6 bg-green-500/10 border border-green-500/30 rounded-lg">
+                <h3 className="text-2xl font-bold mb-3 text-green-400">💰 Welcome Bonus</h3>
+                <p className="text-xl text-white font-semibold">{site.bonus_offer}</p>
+              </div>
+            )}
+
+            <p className="text-gray-400 text-lg leading-relaxed">
+              Detailed review content will be displayed here. Each section from the table of contents above will be expanded with comprehensive information about {site.name}.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Image Gallery */}
+        {site.gallery_images && site.gallery_images.length > 0 && (
+          <div className="mb-12">
+            <ImageGallery images={site.gallery_images} siteName={site.name} />
+          </div>
+        )}
+
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <Card className="bg-gray-900 border-gray-800">
             <CardContent className="p-6">
