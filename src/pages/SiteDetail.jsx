@@ -397,94 +397,107 @@ export default function SiteDetail() {
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Review Section with Table of Contents */}
-        <Card className="bg-gray-900 border-gray-800 mb-12">
-          <CardContent className="p-6">
-            <h2 className="text-3xl font-bold mb-6 text-white flex items-center">
-              <FileText className="w-8 h-8 text-yellow-400 mr-3" />
-              {site.name} Review
-            </h2>
-            <div className="bg-gray-800/50 rounded-lg p-6 mb-8 sticky top-20 z-10">
-              <h3 className="text-xl font-bold mb-4 text-yellow-400">Table of Contents</h3>
-              <ul className="grid md:grid-cols-2 gap-3 text-gray-300">
-                {site.bonus_offer && (
-                  <li>
-                    <a href="#welcome-bonus" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                      <span className="text-yellow-400 mr-2">•</span> Welcome Bonus
-                    </a>
-                  </li>
-                )}
-                <li>
-                  <a href="#rakeback" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Rakeback
-                  </a>
-                </li>
-                <li>
-                  <a href="#vip-rewards" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> VIP Rewards
-                  </a>
-                </li>
-                <li>
-                  <a href="#jackpots" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Jackpots
-                  </a>
-                </li>
-                <li>
-                  <a href="#rake-structure" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Rake Structure
-                  </a>
-                </li>
-                <li>
-                  <a href="#games-traffic" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Games and Traffic
-                  </a>
-                </li>
-                {(site.type === 'poker_casino' || site.type === 'all') && (
-                  <li>
-                    <a href="#bookmaker-casino" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                      <span className="text-yellow-400 mr-2">•</span> Bookmaker and Casino
-                    </a>
-                  </li>
-                )}
-                <li>
-                  <a href="#game-softness" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Game Softness
-                  </a>
-                </li>
-                <li>
-                  <a href="#attitude-pros" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Attitude Toward Pros
-                  </a>
-                </li>
-                <li>
-                  <a href="#software" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Software Quality
-                  </a>
-                </li>
-                <li>
-                  <a href="#reliability" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Reliability
-                  </a>
-                </li>
-                <li>
-                  <a href="#customer-support" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Customer Support
-                  </a>
-                </li>
-                <li>
-                  <a href="#deposits-withdrawals" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Deposits & Withdrawals
-                  </a>
-                </li>
-                <li>
-                  <a href="#pros-cons" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
-                    <span className="text-yellow-400 mr-2">•</span> Pros and Cons
-                  </a>
-                </li>
-              </ul>
+        <div className="grid lg:grid-cols-4 gap-8 mb-12">
+          {/* Left Sidebar - Table of Contents */}
+          <div className="lg:col-span-1">
+            <div className="lg:sticky lg:top-24">
+              <Card className="bg-gray-900 border-gray-800">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-4 text-yellow-400 flex items-center">
+                    <FileText className="w-5 h-5 mr-2" />
+                    Contents
+                  </h3>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    {site.bonus_offer && (
+                      <li>
+                        <a href="#welcome-bonus" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                          Welcome Bonus
+                        </a>
+                      </li>
+                    )}
+                    <li>
+                      <a href="#rakeback" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Rakeback
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#vip-rewards" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        VIP Rewards
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#jackpots" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Jackpots
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#rake-structure" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Rake Structure
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#games-traffic" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Games & Traffic
+                      </a>
+                    </li>
+                    {(site.type === 'poker_casino' || site.type === 'all') && (
+                      <li>
+                        <a href="#bookmaker-casino" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                          Bookmaker & Casino
+                        </a>
+                      </li>
+                    )}
+                    <li>
+                      <a href="#game-softness" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Game Softness
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#attitude-pros" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Attitude to Pros
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#software" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Software
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#reliability" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Reliability
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#customer-support" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Support
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#deposits-withdrawals" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Deposits
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#pros-cons" className="block py-2 px-3 rounded hover:bg-gray-800 hover:text-yellow-400 transition-colors cursor-pointer">
+                        Pros & Cons
+                      </a>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
-            
-            {/* Review Sections */}
-            {site.bonus_offer && (
+          </div>
+
+          {/* Right Content - Review Sections */}
+          <div className="lg:col-span-3">
+            <Card className="bg-gray-900 border-gray-800">
+              <CardContent className="p-6">
+                <h2 className="text-3xl font-bold mb-8 text-white flex items-center">
+                  <FileText className="w-8 h-8 text-yellow-400 mr-3" />
+                  {site.name} Review
+                </h2>
+                {/* Review Sections */}
+                {site.bonus_offer && (
               <div id="welcome-bonus" className="mb-12 scroll-mt-32">
                 <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
                   💰 100% Welcome Bonus up to $1,000
@@ -495,10 +508,10 @@ export default function SiteDetail() {
                     Detailed information about the welcome bonus, terms and conditions, wagering requirements, and how to claim it will be displayed here.
                   </p>
                 </div>
-              </div>
-            )}
+                  </div>
+                )}
 
-            <div id="rakeback" className="mb-12 scroll-mt-32">
+                <div id="rakeback" className="mb-12 scroll-mt-32">
               <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
                 {site.name} Rakeback
               </h3>
@@ -608,13 +621,15 @@ export default function SiteDetail() {
               </p>
             </div>
 
-            <div id="pros-cons" className="scroll-mt-32">
-              <h3 className="text-2xl font-bold mb-6 text-yellow-400 border-b border-gray-700 pb-2">
-                Pros and Cons of Playing at {site.name}
-              </h3>
-            </div>
-          </CardContent>
-        </Card>
+                <div id="pros-cons" className="scroll-mt-32">
+                  <h3 className="text-2xl font-bold mb-6 text-yellow-400 border-b border-gray-700 pb-2">
+                    Pros and Cons of Playing at {site.name}
+                  </h3>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Image Gallery */}
         {site.gallery_images && site.gallery_images.length > 0 && (
