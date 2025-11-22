@@ -403,36 +403,216 @@ export default function SiteDetail() {
               <FileText className="w-8 h-8 text-yellow-400 mr-3" />
               {site.name} Review
             </h2>
-            <div className="bg-gray-800/50 rounded-lg p-6 mb-8">
+            <div className="bg-gray-800/50 rounded-lg p-6 mb-8 sticky top-20 z-10">
               <h3 className="text-xl font-bold mb-4 text-yellow-400">Table of Contents</h3>
               <ul className="grid md:grid-cols-2 gap-3 text-gray-300">
-                {site.bonus_offer && <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Welcome Bonus</li>}
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Rakeback</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> VIP Rewards</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Jackpots</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Rake Structure</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Games and Traffic</li>
-                {site.type === 'poker_casino' || site.type === 'all' ? <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Bookmaker and Casino</li> : null}
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Game Softness</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Attitude Toward Pros</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Software Quality</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Reliability</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Customer Support</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Deposits & Withdrawals</li>
-                <li className="flex items-center"><span className="text-yellow-400 mr-2">•</span> Pros and Cons</li>
+                {site.bonus_offer && (
+                  <li>
+                    <a href="#welcome-bonus" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                      <span className="text-yellow-400 mr-2">•</span> Welcome Bonus
+                    </a>
+                  </li>
+                )}
+                <li>
+                  <a href="#rakeback" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Rakeback
+                  </a>
+                </li>
+                <li>
+                  <a href="#vip-rewards" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> VIP Rewards
+                  </a>
+                </li>
+                <li>
+                  <a href="#jackpots" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Jackpots
+                  </a>
+                </li>
+                <li>
+                  <a href="#rake-structure" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Rake Structure
+                  </a>
+                </li>
+                <li>
+                  <a href="#games-traffic" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Games and Traffic
+                  </a>
+                </li>
+                {(site.type === 'poker_casino' || site.type === 'all') && (
+                  <li>
+                    <a href="#bookmaker-casino" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                      <span className="text-yellow-400 mr-2">•</span> Bookmaker and Casino
+                    </a>
+                  </li>
+                )}
+                <li>
+                  <a href="#game-softness" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Game Softness
+                  </a>
+                </li>
+                <li>
+                  <a href="#attitude-pros" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Attitude Toward Pros
+                  </a>
+                </li>
+                <li>
+                  <a href="#software" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Software Quality
+                  </a>
+                </li>
+                <li>
+                  <a href="#reliability" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Reliability
+                  </a>
+                </li>
+                <li>
+                  <a href="#customer-support" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Customer Support
+                  </a>
+                </li>
+                <li>
+                  <a href="#deposits-withdrawals" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Deposits & Withdrawals
+                  </a>
+                </li>
+                <li>
+                  <a href="#pros-cons" className="flex items-center hover:text-yellow-400 transition-colors cursor-pointer">
+                    <span className="text-yellow-400 mr-2">•</span> Pros and Cons
+                  </a>
+                </li>
               </ul>
             </div>
             
+            {/* Review Sections */}
             {site.bonus_offer && (
-              <div className="mb-8 p-6 bg-green-500/10 border border-green-500/30 rounded-lg">
-                <h3 className="text-2xl font-bold mb-3 text-green-400">💰 Welcome Bonus</h3>
-                <p className="text-xl text-white font-semibold">{site.bonus_offer}</p>
+              <div id="welcome-bonus" className="mb-12 scroll-mt-32">
+                <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                  💰 100% Welcome Bonus up to $1,000
+                </h3>
+                <div className="p-6 bg-green-500/10 border border-green-500/30 rounded-lg">
+                  <p className="text-xl text-white font-semibold mb-4">{site.bonus_offer}</p>
+                  <p className="text-gray-400 leading-relaxed">
+                    Detailed information about the welcome bonus, terms and conditions, wagering requirements, and how to claim it will be displayed here.
+                  </p>
+                </div>
               </div>
             )}
 
-            <p className="text-gray-400 text-lg leading-relaxed">
-              Detailed review content will be displayed here. Each section from the table of contents above will be expanded with comprehensive information about {site.name}.
-            </p>
+            <div id="rakeback" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                {site.name} Rakeback
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Information about rakeback percentages, how it's calculated, payment frequency, and special rakeback deals available through our affiliate.
+              </p>
+            </div>
+
+            <div id="vip-rewards" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                VIP Rewards Program
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Details about the VIP loyalty program, tier levels, benefits at each level, and how to maximize your rewards.
+              </p>
+            </div>
+
+            <div id="jackpots" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                {site.name} Poker Jackpots
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Information about available jackpots, bad beat jackpots, progressive jackpots, and how to qualify.
+              </p>
+            </div>
+
+            <div id="rake-structure" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                Rake Structure
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Detailed breakdown of rake percentages for cash games and tournaments, rake caps, and comparison with industry standards.
+              </p>
+            </div>
+
+            <div id="games-traffic" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                Games and Traffic
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Analysis of available game types, stake levels, peak traffic times, and average number of concurrent players.
+              </p>
+            </div>
+
+            {(site.type === 'poker_casino' || site.type === 'all') && (
+              <div id="bookmaker-casino" className="mb-12 scroll-mt-32">
+                <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                  Bookmaker and Casino
+                </h3>
+                <p className="text-gray-400 leading-relaxed">
+                  Overview of the integrated sportsbook and casino offerings, game selection, and cross-platform promotions.
+                </p>
+              </div>
+            )}
+
+            <div id="game-softness" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                Game Softness
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Assessment of player skill levels, recreational vs. professional player ratio, and overall game difficulty.
+              </p>
+            </div>
+
+            <div id="attitude-pros" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                Attitude Toward Professional Players
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Information about the site's policies regarding professional players, multi-tabling, HUDs, and account restrictions.
+              </p>
+            </div>
+
+            <div id="software" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                {site.name} Software
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Review of the poker client software, mobile app quality, user interface, features, and overall user experience.
+              </p>
+            </div>
+
+            <div id="reliability" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                Reliability and Trustworthiness
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Analysis of the site's reputation, licensing, security measures, and history of fair play and timely payments.
+              </p>
+            </div>
+
+            <div id="customer-support" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                Customer Support
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Details about support channels (live chat, email, phone), response times, and quality of customer service.
+              </p>
+            </div>
+
+            <div id="deposits-withdrawals" className="mb-12 scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
+                Deposits and Withdrawals
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Comprehensive overview of payment methods, processing times, fees, limits, and withdrawal policies.
+              </p>
+            </div>
+
+            <div id="pros-cons" className="scroll-mt-32">
+              <h3 className="text-2xl font-bold mb-6 text-yellow-400 border-b border-gray-700 pb-2">
+                Pros and Cons of Playing at {site.name}
+              </h3>
+            </div>
           </CardContent>
         </Card>
 
