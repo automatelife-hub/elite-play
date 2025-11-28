@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -238,13 +237,24 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center space-x-6">
                 <Link to={createPageUrl("Home")} className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex items-center justify-center">
-                    <span className="text-gray-900 font-bold text-xl">♠</span>
-                  </div>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent">
-                    PokerPro Elite
-                  </span>
-                </Link>
+                                        <div className="relative w-11 h-11">
+                                          {/* Logo background with glow */}
+                                          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-xl shadow-lg shadow-emerald-500/30" />
+                                          {/* Inner card design */}
+                                          <div className="absolute inset-0.5 bg-gradient-to-br from-gray-900 to-gray-800 rounded-[10px] flex items-center justify-center">
+                                            <div className="relative">
+                                              <span className="text-emerald-400 font-bold text-xl">♠</span>
+                                              <span className="absolute -top-1 -right-2 text-xs text-cyan-400 font-bold">A</span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="flex flex-col">
+                                          <span className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent leading-tight">
+                                            AceRakeback
+                                          </span>
+                                          <span className="text-[10px] text-gray-500 tracking-widest uppercase">Pro Affiliate</span>
+                                        </div>
+                                      </Link>
 
                 {/* Category Buttons */}
                 <div className="hidden md:flex items-center space-x-2">
@@ -528,11 +538,17 @@ export default function Layout({ children, currentPageName }) {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-900 font-bold">♠</span>
-                </div>
-                <span className="text-xl font-bold text-cyan-400">PokerPro Elite</span>
-              </div>
+                                    <div className="relative w-9 h-9">
+                                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-lg" />
+                                      <div className="absolute inset-0.5 bg-gray-900 rounded-md flex items-center justify-center">
+                                        <div className="relative">
+                                          <span className="text-emerald-400 font-bold">♠</span>
+                                          <span className="absolute -top-0.5 -right-1.5 text-[8px] text-cyan-400 font-bold">A</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <span className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">AceRakeback</span>
+                                  </div>
               <p className="text-gray-400 max-w-md">
                 Your trusted guide to the world's best poker sites and online casinos. 
                 We provide honest reviews and expert recommendations to help you play smarter.
@@ -580,7 +596,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="border-t border-slate-700 pt-8 mt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-400 text-sm">
-                © 2024 PokerPro Elite. All rights reserved.
+                © 2024 AceRakeback. All rights reserved.
               </p>
               <p className="text-gray-500 text-xs mt-2 md:mt-0">
                 18+ Only. Gambling can be addictive. Please play responsibly.

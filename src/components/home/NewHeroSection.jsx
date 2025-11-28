@@ -9,20 +9,31 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
 
   return (
     <div className="relative min-h-[600px] bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-hidden">
-      {/* Background Image - Suited Figure */}
+      {/* Poker/Casino Background */}
       <div 
-        className="absolute inset-0 opacity-40"
+        className="absolute inset-0 opacity-30"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80')`,
+          backgroundImage: `url('https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=1600&q=80')`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center left',
-          maskImage: 'linear-gradient(to right, black 40%, transparent 70%)',
-          WebkitMaskImage: 'linear-gradient(to right, black 40%, transparent 70%)'
+          backgroundPosition: 'center',
         }}
       />
       
+      {/* Floating Card Symbols */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 text-6xl text-red-500/20 animate-pulse">♥</div>
+        <div className="absolute top-40 left-1/4 text-5xl text-white/10 animate-pulse" style={{animationDelay: '0.5s'}}>♠</div>
+        <div className="absolute bottom-32 left-16 text-7xl text-red-500/15 animate-pulse" style={{animationDelay: '1s'}}>♦</div>
+        <div className="absolute top-28 right-1/3 text-4xl text-white/10 animate-pulse" style={{animationDelay: '0.3s'}}>♣</div>
+        <div className="absolute bottom-20 left-1/3 text-5xl text-emerald-500/15 animate-pulse" style={{animationDelay: '0.7s'}}>♠</div>
+      </div>
+      
+      {/* Glowing orbs for ambiance */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl" />
+      
       {/* Dark overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-gray-950/60 via-gray-950/80 to-gray-950" />
+      <div className="absolute inset-0 bg-gradient-to-r from-gray-950/80 via-gray-950/70 to-gray-950/90" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
@@ -30,7 +41,7 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
           <div className="pt-8">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
               Professional<br />
-              <span className="text-cyan-400">Poker Affiliate</span>
+              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">Poker Affiliate</span>
             </h1>
 
             <ul className="space-y-4 mb-10">
