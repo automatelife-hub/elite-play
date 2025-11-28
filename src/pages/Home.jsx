@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Site, Article } from "@/entities/all";
 
-import HeroSection from "../components/home/HeroSection";
+import NewHeroSection from "../components/home/NewHeroSection";
 import FeaturedSites from "../components/home/FeaturedSites";
 import TopRatedSection from "../components/home/TopRatedSection";
 import AIAdvisorCTA from "../components/home/AIAdvisorCTA";
@@ -80,7 +79,7 @@ export default function Home() {
 
   return (
     <div className="bg-gray-950 text-white">
-      <HeroSection />
+      <NewHeroSection sites={topRated} loading={loading} userCountry={userCountry} />
       <TrustIndicators />
       <FeaturedSites sites={featuredSites} loading={loading} userCountry={userCountry} />
       <AIAdvisorCTA />
