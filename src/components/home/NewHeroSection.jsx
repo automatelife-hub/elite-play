@@ -40,38 +40,45 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
           {/* Left Content */}
           <div className="pt-8">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
-              Professional<br />
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">Poker Affiliate</span>
+              Your Premium<br />
+              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">iGaming Partner</span>
             </h1>
+
+            {/* Vertical badges */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              <span className="px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-emerald-400 text-sm font-medium">♠ Poker</span>
+              <span className="px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-400 text-sm font-medium">🎰 Casino</span>
+              <span className="px-3 py-1 bg-orange-500/20 border border-orange-500/30 rounded-full text-orange-400 text-sm font-medium">⚽ Sportsbetting</span>
+            </div>
 
             <ul className="space-y-4 mb-10">
               <li className="flex items-center text-gray-300">
                 <span className="text-cyan-400 mr-3">✦</span>
-                7 days a week players support
+                24/7 player & agent support
               </li>
               <li className="flex items-center text-gray-300">
                 <span className="text-cyan-400 mr-3">✦</span>
-                Up to $800 in free software
+                Top rakeback & VIP deals across all platforms
               </li>
               <li className="flex items-center text-gray-300">
                 <span className="text-cyan-400 mr-3">✦</span>
-                30+ poker sites and 60+ private clubs
+                50+ sites: poker rooms, casinos & sportsbooks
               </li>
               <li className="flex items-center text-gray-300">
                 <span className="text-cyan-400 mr-3">✦</span>
-                Helping players win more since 2013
+                Affiliate & Agency programs available
               </li>
             </ul>
 
             <div className="flex flex-wrap gap-4">
-              <Link to={createPageUrl("BestPokerSites")}>
-                <Button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-6 text-lg">
-                  Choose poker room
+              <Link to={createPageUrl("Reviews")}>
+                <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold px-8 py-6 text-lg">
+                  Explore Sites
                 </Button>
               </Link>
               <Link to={createPageUrl("BecomeAgent")}>
-                <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-800 px-8 py-6 text-lg">
-                  Contact us
+                <Button variant="outline" className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 px-8 py-6 text-lg">
+                  Start an Agency
                 </Button>
               </Link>
             </div>
@@ -172,10 +179,10 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
             {/* View All Link */}
             <div className="px-6 py-4 border-t border-gray-800 text-center">
               <Link 
-                to={createPageUrl("BestPokerSites")}
+                to={createPageUrl("Reviews")}
                 className="text-cyan-400 hover:text-cyan-300 text-sm font-medium"
               >
-                View all poker rooms →
+                View all sites →
               </Link>
             </div>
           </div>
