@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User } from "@/entities/all";
 import WhatsAppFloatingButton from "./components/WhatsAppFloatingButton";
+import ThemeToggle from "./components/ui/ThemeToggle";
+import OnboardingTooltip from "./components/onboarding/OnboardingTooltip";
 
 // Helper component for selecting user location
 const LocationSelector = ({ currentCountry, onLocationChanged }) => {
@@ -194,17 +196,37 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = React.useState(null);
   const [activeCategory, setActiveCategory] = React.useState("Poker");
   const [userCountry, setUserCountry] = React.useState(null);
+  const [isDarkMode, setIsDarkMode] = React.useState(true);
+  const [showOnboarding, setShowOnboarding] = React.useState(false);
 
   React.useEffect(() => {
+    // Check saved theme preference
+    const savedTheme = localStorage.getItem("acerakeback_theme");
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === "dark");
+    }
+    
+    // Check if onboarding should be shown
+    const onboardingComplete = localStorage.getItem("acerakeback_onboarding_complete");
+    if (!onboardingComplete) {
+      // Delay showing onboarding for better UX
+      setTimeout(() => setShowOnboarding(true), 1000);
+    }
+
     User.me().then(currentUser => {
       setUser(currentUser);
-      // Set userCountry from the fetched user's country_code, or default to "US"
       setUserCountry(currentUser?.country_code || "US");
     }).catch(() => {
       setUser(null);
-      setUserCountry("US"); // Default even if user fetch fails
+      setUserCountry("US");
     });
   }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem("acerakeback_theme", newTheme ? "dark" : "light");
+  };
 
   const handleLocationChanged = (country) => {
     setUserCountry(country);
@@ -215,7 +237,11 @@ export default function Layout({ children, currentPageName }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'bg-gray-950' : 'bg-gray-100'}`}>
+      {/* Onboarding for new users */}
+      {showOnboarding && (
+        <OnboardingTooltip onComplete={() => setShowOnboarding(false)} />
+      )}
       <style>
         {`
           :root {
@@ -292,11 +318,12 @@ export default function Layout({ children, currentPageName }) {
               </div>
 
               {/* User Profile Links (Desktop) */}
-              <div className="hidden md:flex items-center space-x-4">
-                {userCountry && (
-                  <LocationSelector currentCountry={userCountry} onLocationChanged={handleLocationChanged} />
-                )}
-                <Link
+                                  <div className="hidden md:flex items-center space-x-4">
+                                    <ThemeToggle isDark={isDarkMode} onToggle={toggleTheme} />
+                                    {userCountry && (
+                                      <LocationSelector currentCountry={userCountry} onLocationChanged={handleLocationChanged} />
+                                    )}
+                                    <Link
                   to={createPageUrl("BecomeAgent")}
                   className="text-gray-300 hover:text-cyan-400 transition-colors font-semibold flex items-center space-x-1"
                 >
