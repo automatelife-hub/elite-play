@@ -284,36 +284,39 @@ export default function Layout({ children, currentPageName }) {
 
                 {/* Category Buttons */}
                 <div className="hidden md:flex items-center space-x-2">
-                  <Button
-                    onClick={() => setActiveCategory("Poker")}
-                    className={`font-semibold transition-all ${
-                      activeCategory === "Poker"
-                        ? "bg-cyan-500 hover:bg-cyan-600 text-white"
-                        : "bg-slate-800 hover:bg-slate-700 text-gray-300"
-                    }`}
-                  >
-                    Poker
-                  </Button>
-                  <Button
-                    onClick={() => setActiveCategory("Casino")}
-                    className={`font-semibold transition-all ${
-                      activeCategory === "Casino"
-                        ? "bg-cyan-500 hover:bg-cyan-600 text-white"
-                        : "bg-slate-800 hover:bg-slate-700 text-gray-300"
-                    }`}
-                  >
-                    Casino
-                  </Button>
-                  <Button
-                    onClick={() => setActiveCategory("Sportsbetting")}
-                    className={`font-semibold transition-all ${
-                      activeCategory === "Sportsbetting"
-                        ? "bg-cyan-500 hover:bg-cyan-600 text-white"
-                        : "bg-slate-800 hover:bg-slate-700 text-gray-300"
-                    }`}
-                  >
-                    Sportsbetting
-                  </Button>
+                  <Link to={createPageUrl("PokerHome")}>
+                    <Button
+                      className={`font-semibold transition-all ${
+                        location.pathname === createPageUrl("PokerHome")
+                          ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                          : "bg-slate-800 hover:bg-slate-700 text-gray-300"
+                      }`}
+                    >
+                      Poker
+                    </Button>
+                  </Link>
+                  <Link to={createPageUrl("CasinoHome")}>
+                    <Button
+                      className={`font-semibold transition-all ${
+                        location.pathname === createPageUrl("CasinoHome")
+                          ? "bg-purple-500 hover:bg-purple-600 text-white"
+                          : "bg-slate-800 hover:bg-slate-700 text-gray-300"
+                      }`}
+                    >
+                      Casino
+                    </Button>
+                  </Link>
+                  <Link to={createPageUrl("SportsbettingHome")}>
+                    <Button
+                      className={`font-semibold transition-all ${
+                        location.pathname === createPageUrl("SportsbettingHome")
+                          ? "bg-orange-500 hover:bg-orange-600 text-white"
+                          : "bg-slate-800 hover:bg-slate-700 text-gray-300"
+                      }`}
+                    >
+                      Sportsbetting
+                    </Button>
+                  </Link>
                 </div>
               </div>
 
@@ -425,39 +428,45 @@ export default function Layout({ children, currentPageName }) {
             <div className="px-4 pt-4 space-y-2">
               {/* Mobile Category Buttons */}
               <div className="flex gap-2 mb-4">
-                <Button
-                  onClick={() => setActiveCategory("Poker")}
-                  size="sm"
-                  className={`flex-1 ${
-                    activeCategory === "Poker"
-                      ? "bg-cyan-500 hover:bg-cyan-600 text-white"
-                      : "bg-slate-800 hover:bg-slate-700 text-gray-300"
-                  }`}
-                >
-                  Poker
-                </Button>
-                <Button
-                  onClick={() => setActiveCategory("Casino")}
-                  size="sm"
-                  className={`flex-1 ${
-                    activeCategory === "Casino"
-                      ? "bg-cyan-500 hover:bg-cyan-600 text-white"
-                      : "bg-slate-800 hover:bg-slate-700 text-gray-300"
-                  }`}
-                >
-                  Casino
-                </Button>
-                <Button
-                  onClick={() => setActiveCategory("Sportsbetting")}
-                  size="sm"
-                  className={`flex-1 ${
-                    activeCategory === "Sportsbetting"
-                      ? "bg-cyan-500 hover:bg-cyan-600 text-white"
-                      : "bg-slate-800 hover:bg-slate-700 text-gray-300"
-                  }`}
-                >
-                  Sports
-                </Button>
+                <Link to={createPageUrl("PokerHome")} className="flex-1">
+                  <Button
+                    onClick={() => setMobileMenuOpen(false)}
+                    size="sm"
+                    className={`w-full ${
+                      location.pathname === createPageUrl("PokerHome")
+                        ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                        : "bg-slate-800 hover:bg-slate-700 text-gray-300"
+                    }`}
+                  >
+                    Poker
+                  </Button>
+                </Link>
+                <Link to={createPageUrl("CasinoHome")} className="flex-1">
+                  <Button
+                    onClick={() => setMobileMenuOpen(false)}
+                    size="sm"
+                    className={`w-full ${
+                      location.pathname === createPageUrl("CasinoHome")
+                        ? "bg-purple-500 hover:bg-purple-600 text-white"
+                        : "bg-slate-800 hover:bg-slate-700 text-gray-300"
+                    }`}
+                  >
+                    Casino
+                  </Button>
+                </Link>
+                <Link to={createPageUrl("SportsbettingHome")} className="flex-1">
+                  <Button
+                    onClick={() => setMobileMenuOpen(false)}
+                    size="sm"
+                    className={`w-full ${
+                      location.pathname === createPageUrl("SportsbettingHome")
+                        ? "bg-orange-500 hover:bg-orange-600 text-white"
+                        : "bg-slate-800 hover:bg-slate-700 text-gray-300"
+                    }`}
+                  >
+                    Sports
+                  </Button>
+                </Link>
               </div>
 
               {/* Mobile Menu Items */}

@@ -12,6 +12,9 @@ import AgentPortal from './pages/AgentPortal';
 import Affiliate from './pages/Affiliate';
 import BecomeAgent from './pages/BecomeAgent';
 import AffiliateLinks from './pages/AffiliateLinks';
+import PokerHome from './pages/PokerHome';
+import CasinoHome from './pages/CasinoHome';
+import SportsbettingHome from './pages/SportsbettingHome';
 import __Layout from './Layout.jsx';
 
 
@@ -30,6 +33,9 @@ export const PAGES = {
     "Affiliate": Affiliate,
     "BecomeAgent": BecomeAgent,
     "AffiliateLinks": AffiliateLinks,
+    "PokerHome": PokerHome,
+    "CasinoHome": CasinoHome,
+    "SportsbettingHome": SportsbettingHome,
 }
 
 export const pagesConfig = {
