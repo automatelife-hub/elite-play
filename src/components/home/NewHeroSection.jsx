@@ -127,7 +127,7 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         {site.logo_url ? (
-                          <div className="w-10 h-10 bg-white rounded-lg p-1 flex items-center justify-center">
+                          <div className="w-16 h-16 bg-white rounded-lg p-2 flex items-center justify-center shadow-md">
                             <img
                               src={site.logo_url}
                               alt={site.name}
