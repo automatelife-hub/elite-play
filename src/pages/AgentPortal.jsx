@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue } from
 "@/components/ui/select";
-import { Users, TrendingUp, DollarSign, Link as LinkIcon, Plus, Search, Copy } from "lucide-react";
+import { Users, TrendingUp, DollarSign, Link as LinkIcon, Plus, Search, Copy, Wallet, Calendar, CheckCircle, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -30,6 +29,8 @@ export default function AgentPortal() {
   const [agent, setAgent] = useState(null);
   const [players, setPlayers] = useState([]);
   const [sites, setSites] = useState([]);
+  const [commissions, setCommissions] = useState([]);
+  const [referralLinks, setReferralLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -58,19 +59,32 @@ export default function AgentPortal() {
         return;
       }
 
-      const [agentData, agentPlayers, allSites] = await Promise.all([
-      base44.entities.Agent.filter({ agent_email: currentUser.email }),
-      currentUser.agent_id ?
-      base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) :
-      [], // If admin doesn't have an agent_id, show no players initially
-      base44.entities.Site.list()]
-      );
+      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks] = await Promise.all([
+        base44.entities.Agent.filter({ agent_email: currentUser.email }),
+        currentUser.agent_id ?
+          base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) :
+          [],
+        base44.entities.Site.list(),
+        currentUser.agent_id ?
+          base44.entities.AgentCommission.filter({ agent_id: currentUser.agent_id }) :
+          [],
+        currentUser.agent_id ?
+          base44.entities.AgentReferralLink.filter({ agent_id: currentUser.agent_id }) :
+          []
+      ]);
 
       if (agentData.length > 0) {
         setAgent(agentData[0]);
+        
+        // Auto-generate referral links if they don't exist
+        if (agentReferralLinks.length === 0 && agentData[0].tracking_code) {
+          await generateReferralLinks(agentData[0].id, agentData[0].tracking_code, allSites);
+        }
       }
       setPlayers(agentPlayers);
       setSites(allSites);
+      setCommissions(agentCommissions);
+      setReferralLinks(agentReferralLinks);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load agent data");
@@ -109,20 +123,47 @@ export default function AgentPortal() {
     }
   };
 
+  const generateReferralLinks = async (agentId, trackingCode, sitesArray) => {
+    try {
+      const linksToCreate = sitesArray.map(site => ({
+        agent_id: agentId,
+        site_id: site.id,
+        referral_code: trackingCode,
+        custom_url: `${site.affiliate_url}?ref=${trackingCode}`,
+        created_date: new Date().toISOString().split('T')[0]
+      }));
+      
+      await Promise.all(linksToCreate.map(link => 
+        base44.entities.AgentReferralLink.create(link)
+      ));
+      
+      await loadData();
+    } catch (error) {
+      console.error("Error generating referral links:", error);
+    }
+  };
+
   const copyTrackingLink = (siteId) => {
-    const site = sites.find((s) => s.id === siteId);
-    if (site && agent) {
-      const trackingLink = `${site.affiliate_url}?ref=${agent.tracking_code}`;
-      navigator.clipboard.writeText(trackingLink);
+    const referralLink = referralLinks.find(link => link.site_id === siteId);
+    
+    if (referralLink) {
+      navigator.clipboard.writeText(referralLink.custom_url);
+      
+      // Track click
+      base44.entities.AgentReferralLink.update(referralLink.id, {
+        clicks: (referralLink.clicks || 0) + 1
+      });
+      
       toast.success("Tracking link copied!");
-    } else if (site && user?.role === 'admin') {
-      // Admins might want to copy a generic link if they don't have an agent tracking code
-      const trackingLink = `${site.affiliate_url}`; // No ref code for generic admin link
-      navigator.clipboard.writeText(trackingLink);
-      toast.success("Generic tracking link copied! (Admin View)");
-    } else
-    {
-      toast.error("Could not generate tracking link.");
+    } else {
+      const site = sites.find((s) => s.id === siteId);
+      if (site && agent) {
+        const trackingLink = `${site.affiliate_url}?ref=${agent.tracking_code}`;
+        navigator.clipboard.writeText(trackingLink);
+        toast.success("Tracking link copied!");
+      } else {
+        toast.error("Could not generate tracking link.");
+      }
     }
   };
 
@@ -143,6 +184,11 @@ export default function AgentPortal() {
 
   const totalRevenue = players.reduce((sum, p) => sum + (p.total_revenue || 0), 0);
   const activePlayers = players.filter((p) => p.status === "active" || p.status === "approved").length;
+  const monthlyRevenue = players.reduce((sum, p) => sum + (p.monthly_revenue || 0), 0);
+  const totalCommission = commissions.reduce((sum, c) => sum + (c.commission_amount || 0), 0);
+  const pendingCommission = commissions.filter(c => c.payout_status === "pending").reduce((sum, c) => sum + (c.commission_amount || 0), 0);
+  const totalClicks = referralLinks.reduce((sum, l) => sum + (l.clicks || 0), 0);
+  const totalConversions = referralLinks.reduce((sum, l) => sum + (l.conversions || 0), 0);
 
   if (loading) {
     return (
@@ -189,7 +235,7 @@ export default function AgentPortal() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-400 flex items-center">
@@ -212,7 +258,20 @@ export default function AgentPortal() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-white">${totalRevenue.toFixed(2)}</div>
-              <p className="text-xs text-gray-500 mt-1">All time</p>
+              <p className="text-xs text-gray-500 mt-1">${monthlyRevenue.toFixed(2)} this month</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gray-900 border-gray-800">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-400 flex items-center">
+                <Wallet className="w-4 h-4 mr-2 text-yellow-400" />
+                Commission Earned
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-white">${totalCommission.toFixed(2)}</div>
+              <p className="text-xs text-yellow-400 mt-1">${pendingCommission.toFixed(2)} pending</p>
             </CardContent>
           </Card>
 
@@ -220,28 +279,160 @@ export default function AgentPortal() {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-400 flex items-center">
                 <TrendingUp className="w-4 h-4 mr-2 text-purple-400" />
-                Commission Rate
+                Conversion Rate
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-white">
-                {agent?.commission_rate || 0}%
+                {totalClicks > 0 ? ((totalConversions / totalClicks) * 100).toFixed(1) : 0}%
               </div>
-              <p className="text-xs text-gray-500 mt-1">Your rate</p>
+              <p className="text-xs text-gray-500 mt-1">{totalConversions} of {totalClicks} clicks</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="players" className="space-y-6">
+        <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="bg-gray-900 border-gray-800">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-yellow-500/20">
+              Overview
+            </TabsTrigger>
             <TabsTrigger value="players" className="data-[state=active]:bg-yellow-500/20">
-              Tracking Links
+              Players
+            </TabsTrigger>
+            <TabsTrigger value="commissions" className="data-[state=active]:bg-yellow-500/20">
+              Commissions
             </TabsTrigger>
             <TabsTrigger value="offerings" className="data-[state=active]:bg-yellow-500/20">
-              Our Offerings
+              Tracking Links
             </TabsTrigger>
           </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Performance Chart */}
+              <Card className="bg-gray-900 border-gray-800">
+                <CardHeader>
+                  <CardTitle className="text-white">Recent Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-gray-400">Monthly Revenue</span>
+                        <span className="text-white font-semibold">${monthlyRevenue.toFixed(2)}</span>
+                      </div>
+                      <div className="w-full bg-gray-800 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full"
+                          style={{ width: `${Math.min((monthlyRevenue / (totalRevenue || 1)) * 100, 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-gray-400">Active Players</span>
+                        <span className="text-white font-semibold">{activePlayers} / {players.length}</span>
+                      </div>
+                      <div className="w-full bg-gray-800 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full"
+                          style={{ width: `${players.length > 0 ? (activePlayers / players.length) * 100 : 0}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-gray-400">Link Conversions</span>
+                        <span className="text-white font-semibold">{totalConversions} / {totalClicks}</span>
+                      </div>
+                      <div className="w-full bg-gray-800 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
+                          style={{ width: `${totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions */}
+              <Card className="bg-gray-900 border-gray-800">
+                <CardHeader>
+                  <CardTitle className="text-white">Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button
+                    onClick={() => setShowAddPlayer(true)}
+                    className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-gray-900 font-semibold justify-start"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add New Player
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      const link = referralLinks[0];
+                      if (link) copyTrackingLink(link.site_id);
+                    }}
+                    variant="outline"
+                    className="w-full border-gray-700 text-gray-300 hover:bg-gray-800 justify-start"
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy Primary Link
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full border-gray-700 text-gray-300 hover:bg-gray-800 justify-start"
+                    onClick={() => toast.info("Marketing materials coming soon!")}
+                  >
+                    <LinkIcon className="w-4 h-4 mr-2" />
+                    Download Marketing Kit
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Top Performers */}
+              <Card className="bg-gray-900 border-gray-800 md:col-span-2">
+                <CardHeader>
+                  <CardTitle className="text-white">Top Performing Players</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {players
+                      .sort((a, b) => (b.total_revenue || 0) - (a.total_revenue || 0))
+                      .slice(0, 5)
+                      .map((player) => {
+                        const site = sites.find(s => s.id === player.site_id);
+                        return (
+                          <div key={player.id} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                                {player.player_username.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <div className="text-white font-medium">{player.player_username}</div>
+                                <div className="text-xs text-gray-400">{site?.name}</div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-green-400 font-semibold">${(player.total_revenue || 0).toFixed(2)}</div>
+                              <div className="text-xs text-gray-400">total revenue</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    {players.length === 0 && (
+                      <div className="text-center py-8 text-gray-500">
+                        No players yet. Start by submitting your first player!
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
           {/* Players Tab */}
           <TabsContent value="players">
@@ -298,43 +489,47 @@ export default function AgentPortal() {
 
                 {/* Players Table */}
                 <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-800">
-                        <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Site</th>
-                        <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Username</th>
-                        <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Platform</th>
-                        <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Rev Share</th>
-                        <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Date Created</th>
-                        <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredPlayers.map((player) => {
-                        const site = sites.find((s) => s.id === player.site_id);
-                        return (
-                          <tr key={player.id} className="border-b border-gray-800 hover:bg-gray-800/50">
-                            <td className="py-3 px-4 text-white">{site?.name || 'Unknown'}</td>
-                            <td className="py-3 px-4 text-white">{player.player_username}</td>
-                            <td className="py-3 px-4">
-                              <Badge variant="outline" className="text-gray-300 border-gray-600 capitalize">
-                                {player.platform}
-                              </Badge>
-                            </td>
-                            <td className="py-3 px-4 text-white">{player.rev_share || 'TBD'}</td>
-                            <td className="py-3 px-4 text-gray-400 text-sm">
-                              {player.signup_date ? format(new Date(player.signup_date), 'MMM dd, yyyy') : '-'}
-                            </td>
-                            <td className="py-3 px-4">
-                              <Badge className={statusColors[player.status]} variant="outline">
-                                {player.status}
-                              </Badge>
-                            </td>
-                          </tr>);
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-800">
+                      <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Site</th>
+                      <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Username</th>
+                      <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Platform</th>
+                      <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Revenue</th>
+                      <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Rev Share</th>
+                      <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Joined</th>
+                      <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPlayers.map((player) => {
+                      const site = sites.find((s) => s.id === player.site_id);
+                      return (
+                        <tr key={player.id} className="border-b border-gray-800 hover:bg-gray-800/50">
+                          <td className="py-3 px-4 text-white">{site?.name || 'Unknown'}</td>
+                          <td className="py-3 px-4 text-white">{player.player_username}</td>
+                          <td className="py-3 px-4">
+                            <Badge variant="outline" className="text-gray-300 border-gray-600 capitalize">
+                              {player.platform}
+                            </Badge>
+                          </td>
+                          <td className="py-3 px-4 text-green-400 font-semibold">
+                            ${(player.total_revenue || 0).toFixed(2)}
+                          </td>
+                          <td className="py-3 px-4 text-white">{player.rev_share || 'TBD'}</td>
+                          <td className="py-3 px-4 text-gray-400 text-sm">
+                            {player.signup_date ? format(new Date(player.signup_date), 'MMM dd, yyyy') : '-'}
+                          </td>
+                          <td className="py-3 px-4">
+                            <Badge className={statusColors[player.status]} variant="outline">
+                              {player.status}
+                            </Badge>
+                          </td>
+                        </tr>);
 
-                      })}
-                    </tbody>
-                  </table>
+                    })}
+                  </tbody>
+                </table>
 
                   {filteredPlayers.length === 0 &&
                   <div className="text-center py-12 text-gray-500">
@@ -344,6 +539,142 @@ export default function AgentPortal() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Commissions Tab */}
+          <TabsContent value="commissions">
+            <div className="space-y-6">
+              {/* Commission Summary */}
+              <div className="grid md:grid-cols-3 gap-6">
+                <Card className="bg-gray-900 border-gray-800">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-400 flex items-center">
+                      <Wallet className="w-4 h-4 mr-2 text-green-400" />
+                      Total Earned
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-white">${totalCommission.toFixed(2)}</div>
+                    <p className="text-xs text-gray-500 mt-1">All time</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gray-900 border-gray-800">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-400 flex items-center">
+                      <Clock className="w-4 h-4 mr-2 text-yellow-400" />
+                      Pending Payout
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-yellow-400">${pendingCommission.toFixed(2)}</div>
+                    <p className="text-xs text-gray-500 mt-1">Awaiting payment</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gray-900 border-gray-800">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-400 flex items-center">
+                      <CheckCircle className="w-4 h-4 mr-2 text-blue-400" />
+                      This Month
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-white">
+                      ${(monthlyRevenue * (agent?.commission_rate || 0) / 100).toFixed(2)}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Current period</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Commission History */}
+              <Card className="bg-gray-900 border-gray-800">
+                <CardHeader>
+                  <CardTitle className="text-white">Commission History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-800">
+                          <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Period</th>
+                          <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Player</th>
+                          <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Revenue</th>
+                          <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Rate</th>
+                          <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Commission</th>
+                          <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Status</th>
+                          <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">Paid Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {commissions.length > 0 ? (
+                          commissions
+                            .sort((a, b) => new Date(b.period_end) - new Date(a.period_end))
+                            .map((commission) => {
+                              const player = players.find(p => p.id === commission.player_id);
+                              const site = sites.find(s => s.id === commission.site_id);
+                              return (
+                                <tr key={commission.id} className="border-b border-gray-800 hover:bg-gray-800/50">
+                                  <td className="py-3 px-4 text-white text-sm">
+                                    {format(new Date(commission.period_start), 'MMM dd')} - {format(new Date(commission.period_end), 'MMM dd, yyyy')}
+                                  </td>
+                                  <td className="py-3 px-4 text-white">
+                                    <div>{player?.player_username || 'Unknown'}</div>
+                                    <div className="text-xs text-gray-400">{site?.name}</div>
+                                  </td>
+                                  <td className="py-3 px-4 text-gray-300">${commission.revenue_generated.toFixed(2)}</td>
+                                  <td className="py-3 px-4 text-gray-300">{commission.commission_rate}%</td>
+                                  <td className="py-3 px-4 text-green-400 font-semibold">${commission.commission_amount.toFixed(2)}</td>
+                                  <td className="py-3 px-4">
+                                    <Badge className={
+                                      commission.payout_status === 'completed' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                                      commission.payout_status === 'processing' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                                      commission.payout_status === 'failed' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                                      'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+                                    } variant="outline">
+                                      {commission.payout_status}
+                                    </Badge>
+                                  </td>
+                                  <td className="py-3 px-4 text-gray-400 text-sm">
+                                    {commission.payout_date ? format(new Date(commission.payout_date), 'MMM dd, yyyy') : '-'}
+                                  </td>
+                                </tr>
+                              );
+                            })
+                        ) : (
+                          <tr>
+                            <td colSpan="7" className="text-center py-12 text-gray-500">
+                              No commission history yet
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Payout Info */}
+              <Card className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border-yellow-500/30">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-6 h-6 text-yellow-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-white font-semibold mb-2">Automated Payout Schedule</h3>
+                      <p className="text-gray-300 text-sm mb-2">
+                        Commissions are automatically processed on the 1st of each month for the previous month's earnings.
+                      </p>
+                      <p className="text-gray-400 text-xs">
+                        Payment method: {agent?.payment_method || 'Not set'} • Minimum payout: $50
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Offerings Tab */}
@@ -358,27 +689,37 @@ export default function AgentPortal() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-4">
-                    {sites.filter((s) => s.type === 'poker' || s.type.includes('poker')).map((site) =>
-                    <div key={site.id} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
-                        <div className="flex items-center gap-4">
-                          {site.logo_url &&
-                        <img src={site.logo_url} alt={site.name} className="w-16 h-16 object-contain bg-white rounded p-1" />
-                        }
-                          <div>
-                            <h3 className="font-semibold text-white">{site.name}</h3>
-                            <p className="text-sm text-gray-400">{site.bonus_offer || 'No bonus available'}</p>
+                    {sites.filter((s) => s.type === 'poker' || s.type.includes('poker')).map((site) => {
+                      const linkData = referralLinks.find(l => l.site_id === site.id);
+                      return (
+                        <div key={site.id} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                          <div className="flex items-center gap-4">
+                            {site.logo_url &&
+                              <img src={site.logo_url} alt={site.name} className="w-16 h-16 object-contain bg-white rounded p-1" />
+                            }
+                            <div>
+                              <h3 className="font-semibold text-white">{site.name}</h3>
+                              <p className="text-sm text-gray-400">{site.bonus_offer || 'No bonus available'}</p>
+                              {linkData && (
+                                <div className="flex gap-3 mt-1 text-xs text-gray-500">
+                                  <span>{linkData.clicks || 0} clicks</span>
+                                  <span>•</span>
+                                  <span>{linkData.conversions || 0} conversions</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
+                          <Button
+                            onClick={() => copyTrackingLink(site.id)}
+                            variant="outline"
+                            className="border-gray-700 text-gray-300 hover:bg-gray-700"
+                          >
+                            <Copy className="w-4 h-4 mr-2" />
+                            Copy Link
+                          </Button>
                         </div>
-                        <Button
-                        onClick={() => copyTrackingLink(site.id)}
-                        variant="outline" className="bg-sky-600 text-slate-50 px-4 py-2 text-sm font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border hover:text-accent-foreground h-10 border-gray-700 hover:bg-gray-700">
-
-
-                          <Copy className="w-4 h-4 mr-2" />
-                          Copy Link
-                        </Button>
-                      </div>
-                    )}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -392,27 +733,37 @@ export default function AgentPortal() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-4">
-                    {sites.filter((s) => s.type === 'casino' || s.type.includes('casino')).map((site) =>
-                    <div key={site.id} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
-                        <div className="flex items-center gap-4">
-                          {site.logo_url &&
-                        <img src={site.logo_url} alt={site.name} className="w-16 h-16 object-contain bg-white rounded p-1" />
-                        }
-                          <div>
-                            <h3 className="font-semibold text-white">{site.name}</h3>
-                            <p className="text-sm text-gray-400">{site.bonus_offer || 'No bonus available'}</p>
+                    {sites.filter((s) => s.type === 'casino' || s.type.includes('casino')).map((site) => {
+                      const linkData = referralLinks.find(l => l.site_id === site.id);
+                      return (
+                        <div key={site.id} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                          <div className="flex items-center gap-4">
+                            {site.logo_url &&
+                              <img src={site.logo_url} alt={site.name} className="w-16 h-16 object-contain bg-white rounded p-1" />
+                            }
+                            <div>
+                              <h3 className="font-semibold text-white">{site.name}</h3>
+                              <p className="text-sm text-gray-400">{site.bonus_offer || 'No bonus available'}</p>
+                              {linkData && (
+                                <div className="flex gap-3 mt-1 text-xs text-gray-500">
+                                  <span>{linkData.clicks || 0} clicks</span>
+                                  <span>•</span>
+                                  <span>{linkData.conversions || 0} conversions</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
+                          <Button
+                            onClick={() => copyTrackingLink(site.id)}
+                            variant="outline"
+                            className="border-gray-700 text-gray-300 hover:bg-gray-700"
+                          >
+                            <Copy className="w-4 h-4 mr-2" />
+                            Copy Link
+                          </Button>
                         </div>
-                        <Button
-                        onClick={() => copyTrackingLink(site.id)}
-                        variant="outline"
-                        className="border-gray-700 text-gray-300 hover:bg-gray-700">
-
-                          <Copy className="w-4 h-4 mr-2" />
-                          Copy Link
-                        </Button>
-                      </div>
-                    )}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -426,27 +777,37 @@ export default function AgentPortal() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-4">
-                    {sites.filter((s) => s.type === 'sportsbetting' || s.type.includes('sportsbetting')).map((site) =>
-                    <div key={site.id} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
-                        <div className="flex items-center gap-4">
-                          {site.logo_url &&
-                        <img src={site.logo_url} alt={site.name} className="w-16 h-16 object-contain bg-white rounded p-1" />
-                        }
-                          <div>
-                            <h3 className="font-semibold text-white">{site.name}</h3>
-                            <p className="text-sm text-gray-400">{site.bonus_offer || 'No bonus available'}</p>
+                    {sites.filter((s) => s.type === 'sportsbetting' || s.type.includes('sportsbetting')).map((site) => {
+                      const linkData = referralLinks.find(l => l.site_id === site.id);
+                      return (
+                        <div key={site.id} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                          <div className="flex items-center gap-4">
+                            {site.logo_url &&
+                              <img src={site.logo_url} alt={site.name} className="w-16 h-16 object-contain bg-white rounded p-1" />
+                            }
+                            <div>
+                              <h3 className="font-semibold text-white">{site.name}</h3>
+                              <p className="text-sm text-gray-400">{site.bonus_offer || 'No bonus available'}</p>
+                              {linkData && (
+                                <div className="flex gap-3 mt-1 text-xs text-gray-500">
+                                  <span>{linkData.clicks || 0} clicks</span>
+                                  <span>•</span>
+                                  <span>{linkData.conversions || 0} conversions</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
+                          <Button
+                            onClick={() => copyTrackingLink(site.id)}
+                            variant="outline"
+                            className="border-gray-700 text-gray-300 hover:bg-gray-700"
+                          >
+                            <Copy className="w-4 h-4 mr-2" />
+                            Copy Link
+                          </Button>
                         </div>
-                        <Button
-                        onClick={() => copyTrackingLink(site.id)}
-                        variant="outline"
-                        className="border-gray-700 text-gray-300 hover:bg-gray-700">
-
-                          <Copy className="w-4 h-4 mr-2" />
-                          Copy Link
-                        </Button>
-                      </div>
-                    )}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
