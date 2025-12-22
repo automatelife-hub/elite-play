@@ -201,6 +201,7 @@ export default function RotatingSitesShowcase({ sites, loading }) {
             ))}
           </div>
         </div>
+        </div>
       </div>
     </div>
   );
