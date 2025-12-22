@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Gift } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Star, Gift, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function RotatingSitesShowcase({ sites, loading }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const displaySites = sites?.slice(0, 12) || [];
+  const displaySites = sites || [];
   const itemsPerSlide = 4;
   const totalSlides = Math.ceil(displaySites.length / itemsPerSlide);
 
@@ -62,6 +63,14 @@ export default function RotatingSitesShowcase({ sites, loading }) {
     );
   }
 
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % totalSlides);
+  };
+
   if (displaySites.length === 0) return null;
 
   return (
@@ -75,6 +84,23 @@ export default function RotatingSitesShowcase({ sites, loading }) {
         </div>
 
         <div className="relative">
+          {/* Navigation Arrows */}
+          <Button
+            onClick={handlePrev}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-30 bg-slate-800/90 hover:bg-slate-700 text-white rounded-full w-12 h-12 p-0 shadow-xl"
+            disabled={displaySites.length <= itemsPerSlide}
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </Button>
+          <Button
+            onClick={handleNext}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-slate-800/90 hover:bg-slate-700 text-white rounded-full w-12 h-12 p-0 shadow-xl"
+            disabled={displaySites.length <= itemsPerSlide}
+          >
+            <ChevronRight className="w-6 h-6" />
+          </Button>
+
+        <div className="relative px-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}

@@ -33,20 +33,7 @@ export default function Home() {
         Article.filter({ published: true }, '-created_date', 4)
       ]);
 
-      // Get top 3 sites for each category
-      const pokerSites = allSites.filter(site => 
-        site.type === 'poker' || site.type === 'poker_casino' || site.type === 'poker_sportsbetting' || site.type === 'all'
-      ).slice(0, 3);
-
-      const casinoSites = allSites.filter(site => 
-        site.type === 'casino' || site.type === 'poker_casino' || site.type === 'casino_sportsbetting' || site.type === 'all'
-      ).slice(0, 3);
-
-      const sportsbettingSites = allSites.filter(site => 
-        site.type === 'sportsbetting' || site.type === 'poker_sportsbetting' || site.type === 'casino_sportsbetting' || site.type === 'all'
-      ).slice(0, 3);
-
-      setTopSites({ poker: pokerSites, casino: casinoSites, sportsbetting: sportsbettingSites });
+      setTopSites({ poker: allSites, casino: allSites, sportsbetting: allSites });
       setLatestArticles(articles);
     } catch (error) {
       console.error("Error loading data:", error);
@@ -97,7 +84,7 @@ export default function Home() {
         </div>
       </div>
 
-      <RotatingSitesShowcase sites={[...topSites.poker, ...topSites.casino, ...topSites.sportsbetting]} loading={loading} />
+      <RotatingSitesShowcase sites={topSites.poker} loading={loading} />
       <TrustIndicators />
 
       {/* Gaming Categories */}
