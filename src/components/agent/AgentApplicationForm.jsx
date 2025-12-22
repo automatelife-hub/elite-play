@@ -7,10 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, CheckCircle, Mail, Clock } from "lucide-react";
 
 export default function AgentApplicationForm({ onSuccess }) {
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [applicantEmail, setApplicantEmail] = useState("");
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -148,32 +150,9 @@ Applied: ${new Date().toLocaleString()}
       });
 
       console.log("Application submitted successfully!");
-      toast.success("Application submitted successfully! Check your email for confirmation.");
-      
-      // Reset form
-      setFormData({
-        full_name: "",
-        email: "",
-        phone: "",
-        company_name: "",
-        whatsapp: "",
-        telegram: "",
-        traffic_sources: {
-          social_media: false,
-          seo_organic: false,
-          paid_ads: false,
-          email_marketing: false,
-          influencer_marketing: false,
-          content_marketing: false,
-          affiliate_network: false,
-          other: false
-        },
-        traffic_sources_other: "",
-        monthly_volume: "",
-        experience: "",
-        why_join: "",
-        preferred_plan: "performance"
-      });
+      setApplicantEmail(formData.email);
+      setSubmitted(true);
+      toast.success("Application submitted successfully!");
       
       if (onSuccess) onSuccess();
     } catch (error) {
@@ -183,6 +162,60 @@ Applied: ${new Date().toLocaleString()}
       setSubmitting(false);
     }
   };
+
+  // Show success message if submitted
+  if (submitted) {
+    return (
+      <Card className="bg-slate-900 border-slate-700 max-w-3xl mx-auto">
+        <CardContent className="p-12 text-center">
+          <div className="mb-6">
+            <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-12 h-12 text-green-500" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-4">Application Submitted Successfully!</h2>
+            <p className="text-slate-300 text-lg mb-6">
+              Thank you for applying to become an AceRakeback agent. We've received your application and our team is reviewing it.
+            </p>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-lg p-6 mb-6 space-y-4">
+            <div className="flex items-center justify-center gap-3 text-cyan-400">
+              <Mail className="w-5 h-5" />
+              <span className="font-semibold">Confirmation Email Sent</span>
+            </div>
+            <p className="text-slate-400 text-sm">
+              We've sent a confirmation email to <span className="text-white font-medium">{applicantEmail}</span>
+            </p>
+
+            <div className="border-t border-slate-700 my-4 pt-4">
+              <div className="flex items-center justify-center gap-3 text-orange-400 mb-2">
+                <Clock className="w-5 h-5" />
+                <span className="font-semibold">Review Timeline</span>
+              </div>
+              <p className="text-slate-300">
+                Please allow <span className="text-cyan-400 font-semibold">48-72 hours</span> for our team to review your application.
+              </p>
+              <p className="text-slate-400 text-sm mt-2">
+                You'll receive an email from us with the next steps once your application has been reviewed.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-slate-400 text-sm">
+              In the meantime, feel free to explore our platform and learn more about our agency program.
+            </p>
+            <Button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold px-8"
+            >
+              Back to Top
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="bg-slate-900 border-slate-700 max-w-3xl mx-auto">
