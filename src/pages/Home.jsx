@@ -97,8 +97,8 @@ export default function Home() {
         </div>
       </div>
 
-      <TrustIndicators />
       <RotatingSitesShowcase sites={[...topSites.poker, ...topSites.casino, ...topSites.sportsbetting]} loading={loading} />
+      <TrustIndicators />
 
       {/* Gaming Categories */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
