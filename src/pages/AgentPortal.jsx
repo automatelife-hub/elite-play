@@ -96,8 +96,8 @@ export default function AgentPortal() {
   const handleAddPlayer = async (e) => {
     e.preventDefault();
     try {
-      // Require agent_id for submitting players
-      if (!user.agent_id || !user.is_agent) {
+      // Allow admins OR approved agents with agent_id
+      if (!user.agent_id && user.role !== 'admin') {
         toast.error("You must be an approved agent to submit players.");
         return;
       }
@@ -369,7 +369,7 @@ export default function AgentPortal() {
                   <Button
                     onClick={() => setShowAddPlayer(true)}
                     className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-gray-900 font-semibold justify-start"
-                    disabled={!user.is_agent || !user.agent_id}
+                    disabled={!user.agent_id && user.role !== 'admin'}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add New Player
@@ -446,7 +446,7 @@ export default function AgentPortal() {
                   <Button
                     onClick={() => setShowAddPlayer(true)}
                     className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-gray-900 font-semibold"
-                    disabled={!user.is_agent || !user.agent_id}
+                    disabled={!user.agent_id && user.role !== 'admin'}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Submit Player
