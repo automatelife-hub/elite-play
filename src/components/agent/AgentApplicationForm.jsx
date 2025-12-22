@@ -157,7 +157,19 @@ Applied: ${new Date().toLocaleString()}
       if (onSuccess) onSuccess();
     } catch (error) {
       console.error("Error submitting application:", error);
-      toast.error(`Failed to submit application: ${error.message || 'Please try again'}`);
+      console.error("Error details:", JSON.stringify(error, null, 2));
+      
+      let errorMessage = 'Please try again';
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.error) {
+        errorMessage = error.error;
+      } else if (error.details) {
+        errorMessage = error.details;
+      }
+      
+      toast.error(`Failed to submit application: ${errorMessage}`);
+      alert(`Error details:\n${JSON.stringify(error, null, 2)}`);
     } finally {
       setSubmitting(false);
     }
