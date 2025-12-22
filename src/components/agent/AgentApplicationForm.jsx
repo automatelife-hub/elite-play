@@ -70,33 +70,71 @@ export default function AgentApplicationForm({ onSuccess }) {
         })
       });
 
-      // Send notification email to admin
+      // Send confirmation email to applicant
       await base44.integrations.Core.SendEmail({
-        to: "admin@pokerpro-elite.com",
-        subject: `New Agent Application: ${formData.full_name}`,
+        from_name: "AceRakeback Team",
+        to: formData.email,
+        subject: "Your Agent Application Has Been Received",
         body: `
-          New agent application received:
-          
-          Name: ${formData.full_name}
-          Email: ${formData.email}
-          Phone: ${formData.phone}
-          Company: ${formData.company_name}
-          WhatsApp: ${formData.whatsapp}
-          Telegram: ${formData.telegram}
-          
-          Traffic Sources: ${Object.keys(formData.traffic_sources).filter(k => formData.traffic_sources[k]).join(', ')}
-          Other Sources: ${formData.traffic_sources_other}
-          
-          Monthly Volume: ${formData.monthly_volume}
-          Experience: ${formData.experience}
-          
-          Why Join: ${formData.why_join}
-          
-          Preferred Plan: ${formData.preferred_plan}
+Hi ${formData.full_name},
+
+Thank you for applying to become an AceRakeback agent!
+
+We've successfully received your application and our team is reviewing it. You can expect to hear back from us within 24-48 hours.
+
+In the meantime, feel free to explore our platform and reach out if you have any questions.
+
+Application Details:
+- Name: ${formData.full_name}
+- Email: ${formData.email}
+- Company: ${formData.company_name || 'N/A'}
+- Preferred Plan: ${formData.preferred_plan === 'performance' ? 'Performance Plan (Free at $1,500+)' : 'Standard Plan ($399/mo)'}
+
+Best regards,
+The AceRakeback Team
+
+---
+This is an automated confirmation email. Please do not reply directly to this message.
         `
       });
 
-      toast.success("Application submitted successfully! We'll review and get back to you within 24-48 hours.");
+      // Send notification email to admin
+      await base44.integrations.Core.SendEmail({
+        from_name: "Agent Application System",
+        to: "admin@acerakeback.com",
+        subject: `🚨 New Agent Application: ${formData.full_name}`,
+        body: `
+New agent application received!
+
+CONTACT INFORMATION:
+━━━━━━━━━━━━━━━━━━━━━━━━
+Name: ${formData.full_name}
+Email: ${formData.email}
+Phone: ${formData.phone}
+Company: ${formData.company_name || 'N/A'}
+WhatsApp: ${formData.whatsapp || 'N/A'}
+Telegram: ${formData.telegram || 'N/A'}
+
+TRAFFIC & BUSINESS:
+━━━━━━━━━━━━━━━━━━━━━━━━
+Traffic Sources: ${Object.keys(formData.traffic_sources).filter(k => formData.traffic_sources[k]).map(s => s.replace('_', ' ')).join(', ')}
+${formData.traffic_sources_other ? `Other Sources: ${formData.traffic_sources_other}` : ''}
+Expected Monthly Volume: ${formData.monthly_volume || 'Not specified'}
+
+EXPERIENCE:
+${formData.experience}
+
+WHY JOIN:
+${formData.why_join}
+
+PREFERRED PLAN: ${formData.preferred_plan === 'performance' ? 'Performance Plan (Free at $1,500+)' : 'Standard Plan ($399/mo)'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+Applied: ${new Date().toLocaleString()}
+        `
+      });
+
+      toast.success("Application submitted successfully! Check your email for confirmation.");
       if (onSuccess) onSuccess();
     } catch (error) {
       console.error("Error submitting application:", error);
