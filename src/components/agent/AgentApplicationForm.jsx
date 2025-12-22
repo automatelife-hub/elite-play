@@ -47,9 +47,19 @@ export default function AgentApplicationForm({ onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate at least one traffic source is selected
+    const hasTrafficSource = Object.values(formData.traffic_sources).some(v => v === true);
+    if (!hasTrafficSource) {
+      toast.error("Please select at least one traffic source");
+      return;
+    }
+    
     setSubmitting(true);
+    toast.info("Submitting your application...");
 
     try {
+      console.log("Creating agent record...");
       // Create agent record
       await base44.entities.Agent.create({
         agent_email: formData.email,
@@ -69,7 +79,9 @@ export default function AgentApplicationForm({ onSuccess }) {
           applied_date: new Date().toISOString()
         })
       });
+      console.log("Agent record created successfully");
 
+      console.log("Sending confirmation email to applicant...");
       // Send confirmation email to applicant
       await base44.integrations.Core.SendEmail({
         from_name: "AceRakeback Team",
@@ -98,6 +110,7 @@ This is an automated confirmation email. Please do not reply directly to this me
         `
       });
 
+      console.log("Sending notification email to admin...");
       // Send notification email to admin
       await base44.integrations.Core.SendEmail({
         from_name: "Agent Application System",
@@ -134,11 +147,38 @@ Applied: ${new Date().toLocaleString()}
         `
       });
 
+      console.log("Application submitted successfully!");
       toast.success("Application submitted successfully! Check your email for confirmation.");
+      
+      // Reset form
+      setFormData({
+        full_name: "",
+        email: "",
+        phone: "",
+        company_name: "",
+        whatsapp: "",
+        telegram: "",
+        traffic_sources: {
+          social_media: false,
+          seo_organic: false,
+          paid_ads: false,
+          email_marketing: false,
+          influencer_marketing: false,
+          content_marketing: false,
+          affiliate_network: false,
+          other: false
+        },
+        traffic_sources_other: "",
+        monthly_volume: "",
+        experience: "",
+        why_join: "",
+        preferred_plan: "performance"
+      });
+      
       if (onSuccess) onSuccess();
     } catch (error) {
       console.error("Error submitting application:", error);
-      toast.error("Failed to submit application. Please try again.");
+      toast.error(`Failed to submit application: ${error.message || 'Please try again'}`);
     } finally {
       setSubmitting(false);
     }
