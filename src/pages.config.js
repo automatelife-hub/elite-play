@@ -1,41 +1,41 @@
-import Home from './pages/Home';
-import Reviews from './pages/Reviews';
-import Profile from './pages/Profile';
-import Stats from './pages/Stats';
 import AdminStats from './pages/AdminStats';
+import Affiliate from './pages/Affiliate';
+import AffiliateLinks from './pages/AffiliateLinks';
+import AgentPortal from './pages/AgentPortal';
+import BecomeAgent from './pages/BecomeAgent';
+import CasinoHome from './pages/CasinoHome';
 import Compare from './pages/Compare';
 import Guides from './pages/Guides';
-import PokerAdvisor from './pages/PokerAdvisor';
-import SiteDetail from './pages/SiteDetail';
+import Home from './pages/Home';
 import NewsMonitor from './pages/NewsMonitor';
-import AgentPortal from './pages/AgentPortal';
-import Affiliate from './pages/Affiliate';
-import BecomeAgent from './pages/BecomeAgent';
-import AffiliateLinks from './pages/AffiliateLinks';
+import PokerAdvisor from './pages/PokerAdvisor';
 import PokerHome from './pages/PokerHome';
-import CasinoHome from './pages/CasinoHome';
+import Profile from './pages/Profile';
+import Reviews from './pages/Reviews';
+import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
+import Stats from './pages/Stats';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Home": Home,
-    "Reviews": Reviews,
-    "Profile": Profile,
-    "Stats": Stats,
     "AdminStats": AdminStats,
+    "Affiliate": Affiliate,
+    "AffiliateLinks": AffiliateLinks,
+    "AgentPortal": AgentPortal,
+    "BecomeAgent": BecomeAgent,
+    "CasinoHome": CasinoHome,
     "Compare": Compare,
     "Guides": Guides,
-    "PokerAdvisor": PokerAdvisor,
-    "SiteDetail": SiteDetail,
+    "Home": Home,
     "NewsMonitor": NewsMonitor,
-    "AgentPortal": AgentPortal,
-    "Affiliate": Affiliate,
-    "BecomeAgent": BecomeAgent,
-    "AffiliateLinks": AffiliateLinks,
+    "PokerAdvisor": PokerAdvisor,
     "PokerHome": PokerHome,
-    "CasinoHome": CasinoHome,
+    "Profile": Profile,
+    "Reviews": Reviews,
+    "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
+    "Stats": Stats,
 }
 
 export const pagesConfig = {

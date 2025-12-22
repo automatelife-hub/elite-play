@@ -11,6 +11,7 @@ import AIAdvisorCTA from "../components/home/AIAdvisorCTA";
 import LatestArticles from "../components/home/LatestArticles";
 import TrustIndicators from "../components/home/TrustIndicators";
 import LocationBanner from "../components/geo/LocationBanner";
+import RotatingSitesShowcase from "../components/home/RotatingSitesShowcase";
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -97,6 +98,7 @@ export default function Home() {
       </div>
 
       <TrustIndicators />
+      <RotatingSitesShowcase sites={[...topSites.poker, ...topSites.casino, ...topSites.sportsbetting]} loading={loading} />
 
       {/* Gaming Categories */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
