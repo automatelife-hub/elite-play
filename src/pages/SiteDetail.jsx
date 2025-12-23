@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, X, ExternalLink, CreditCard, Smartphone, Monitor, FileText } from "lucide-react";
+import { Star, Check, X, ExternalLink, CreditCard, Smartphone, Monitor, FileText, Network } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createPageUrl } from "@/utils";
 import ImageGallery from "../components/sites/ImageGallery";
@@ -68,6 +68,8 @@ export default function SiteDetail() {
   const [site, setSite] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userCountry, setUserCountry] = useState(null);
+  const [networkInfo, setNetworkInfo] = useState(null);
+  const [loadingNetwork, setLoadingNetwork] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -99,11 +101,66 @@ export default function SiteDetail() {
       }
       
       setSite(foundSite);
+      
+      // Load network info if site has a poker network
+      if (foundSite && foundSite.poker_network && foundSite.poker_network !== 'no_deal_available') {
+        loadNetworkInfo(foundSite.poker_network);
+      }
     } catch (error) {
       console.error("Error loading site:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadNetworkInfo = async (networkId) => {
+    setLoadingNetwork(true);
+    try {
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `Generate a brief 2-3 sentence description about the ${getNetworkName(networkId)} poker network. Include when it was established (if known) and what makes it notable. Keep it concise and informative.`,
+        add_context_from_internet: false
+      });
+      
+      setNetworkInfo({
+        id: networkId,
+        name: getNetworkName(networkId),
+        description: response
+      });
+    } catch (error) {
+      console.error("Error loading network info:", error);
+    } finally {
+      setLoadingNetwork(false);
+    }
+  };
+
+  const getNetworkName = (networkId) => {
+    const networkNames = {
+      'gg_network': 'GG Network',
+      'chico_poker_network': 'Chico Poker Network',
+      'ipoker_network': 'iPoker Network',
+      'winning_poker_network': 'Winning Poker Network',
+      'horizon_poker_network': 'Horizon Poker Network',
+      'betconstruct_network': 'BetConstruct Network',
+      'idnpoker_network': 'IDNPoker Network',
+      'paiwangluo_poker_network': 'Paiwangluo Poker Network',
+      'gvc_network': 'GVC Network',
+      'peoples_network': 'Peoples Network',
+      'dollaro': 'Dollaro',
+      'microgaming_poker_network': 'Microgaming Poker Network',
+      'grand': 'Grand',
+      'hive': 'Hive',
+      'klas_poker_network': 'Klas Poker Network',
+      'rap': 'RAP',
+      'ipoker_es_network': 'iPoker.es Network',
+      'hive_italy': 'Hive Italy',
+      'tonybet_network': 'Tonybet Network',
+      'ongame_poker': 'Ongame Poker',
+      'revolution_cake': 'Revolution (Cake)',
+      'aconcagua_poker_network': 'Aconcagua Poker Network',
+      'merge_gaming_network': 'Merge Gaming Network',
+      'independent': 'Independent'
+    };
+    return networkNames[networkId] || networkId;
   };
 
   if (loading) {
@@ -681,6 +738,50 @@ export default function SiteDetail() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Poker Network Section */}
+        {site.poker_network && site.poker_network !== 'no_deal_available' && (
+          <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-cyan-500/30 mb-12">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <Network className="w-6 h-6 text-cyan-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">Poker Network</h2>
+                    <p className="text-cyan-400 font-semibold">{networkInfo?.name || getNetworkName(site.poker_network)}</p>
+                  </div>
+                </div>
+                <Link to={`${createPageUrl('PokerNetworkDetail')}?network=${site.poker_network}`}>
+                  <Button variant="outline" className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10">
+                    View Network Details
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+              
+              {loadingNetwork ? (
+                <div className="flex items-center gap-2 text-slate-400">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-400"></div>
+                  <span className="text-sm">Loading network information...</span>
+                </div>
+              ) : networkInfo?.description ? (
+                <p className="text-slate-300 leading-relaxed">
+                  {networkInfo.description}
+                </p>
+              ) : null}
+              
+              <div className="mt-4 pt-4 border-t border-slate-700">
+                <p className="text-slate-400 text-sm">
+                  {site.name} is part of the {networkInfo?.name || getNetworkName(site.poker_network)}, which means 
+                  you'll be playing in a shared player pool with other sites on the network, ensuring better traffic 
+                  and game variety at all stakes.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {site.description && (
           <Card className="bg-gray-900 border-gray-800 mb-12">
