@@ -29,7 +29,8 @@ export default function SiteManagement({ user }) {
     commission_rate: 0,
     highlights: ["", "", ""],
     featured: false,
-    featured_for_agents: false
+    featured_for_agents: false,
+    poker_network: ""
   });
 
   useEffect(() => {
@@ -91,7 +92,8 @@ export default function SiteManagement({ user }) {
       commission_rate: site.commission_rate || 0,
       highlights: site.highlights?.length > 0 ? [...site.highlights, "", "", ""].slice(0, 3) : ["", "", ""],
       featured: site.featured || false,
-      featured_for_agents: site.featured_for_agents || false
+      featured_for_agents: site.featured_for_agents || false,
+      poker_network: site.poker_network || ""
     });
     setShowDialog(true);
   };
@@ -126,7 +128,8 @@ export default function SiteManagement({ user }) {
       commission_rate: 0,
       highlights: ["", "", ""],
       featured: false,
-      featured_for_agents: false
+      featured_for_agents: false,
+      poker_network: ""
     });
   };
 
@@ -382,6 +385,46 @@ export default function SiteManagement({ user }) {
                   className="bg-gray-800 border-gray-700 text-white mt-1"
                   placeholder="e.g., 30"
                 />
+              </div>
+
+              <div className="md:col-span-2">
+                <Label className="text-gray-300">Poker Network</Label>
+                <Select
+                  value={formData.poker_network}
+                  onValueChange={(value) => setFormData({ ...formData, poker_network: value })}
+                >
+                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white mt-1">
+                    <SelectValue placeholder="Select poker network (optional)" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value={null}>None</SelectItem>
+                    <SelectItem value="gg_network">GG Network</SelectItem>
+                    <SelectItem value="chico_poker_network">Chico Poker Network</SelectItem>
+                    <SelectItem value="ipoker_network">iPoker Network</SelectItem>
+                    <SelectItem value="winning_poker_network">Winning Poker Network</SelectItem>
+                    <SelectItem value="horizon_poker_network">Horizon Poker Network</SelectItem>
+                    <SelectItem value="betconstruct_network">BetConstruct Network</SelectItem>
+                    <SelectItem value="idnpoker_network">IDNPoker Network</SelectItem>
+                    <SelectItem value="paiwangluo_poker_network">Paiwangluo Poker Network</SelectItem>
+                    <SelectItem value="gvc_network">GVC Network</SelectItem>
+                    <SelectItem value="peoples_network">Peoples Network</SelectItem>
+                    <SelectItem value="dollaro">Dollaro</SelectItem>
+                    <SelectItem value="microgaming_poker_network">Microgaming Poker Network</SelectItem>
+                    <SelectItem value="grand">Grand</SelectItem>
+                    <SelectItem value="hive">Hive</SelectItem>
+                    <SelectItem value="klas_poker_network">Klas Poker Network</SelectItem>
+                    <SelectItem value="rap">RAP</SelectItem>
+                    <SelectItem value="ipoker_es_network">iPoker.es Network</SelectItem>
+                    <SelectItem value="hive_italy">Hive Italy</SelectItem>
+                    <SelectItem value="tonybet_network">Tonybet Network</SelectItem>
+                    <SelectItem value="ongame_poker">Ongame Poker</SelectItem>
+                    <SelectItem value="revolution_cake">Revolution (Cake)</SelectItem>
+                    <SelectItem value="aconcagua_poker_network">Aconcagua Poker Network</SelectItem>
+                    <SelectItem value="merge_gaming_network">Merge Gaming Network</SelectItem>
+                    <SelectItem value="independent">Independent</SelectItem>
+                    <SelectItem value="no_deal_available">No Deal Available</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="md:col-span-2">

@@ -10,12 +10,13 @@ import Home from './pages/Home';
 import NewsMonitor from './pages/NewsMonitor';
 import PokerAdvisor from './pages/PokerAdvisor';
 import PokerHome from './pages/PokerHome';
+import PokerNetworks from './pages/PokerNetworks';
 import Profile from './pages/Profile';
 import Reviews from './pages/Reviews';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
-import PokerNetworks from './pages/PokerNetworks';
+import PokerNetworkDetail from './pages/PokerNetworkDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -32,12 +33,13 @@ export const PAGES = {
     "NewsMonitor": NewsMonitor,
     "PokerAdvisor": PokerAdvisor,
     "PokerHome": PokerHome,
+    "PokerNetworks": PokerNetworks,
     "Profile": Profile,
     "Reviews": Reviews,
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
-    "PokerNetworks": PokerNetworks,
+    "PokerNetworkDetail": PokerNetworkDetail,
 }
 
 export const pagesConfig = {
