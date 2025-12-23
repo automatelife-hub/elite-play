@@ -9,8 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Edit, Trash2, Search } from "lucide-react";
 import { toast } from "sonner";
+import { hasPermission } from "./PermissionsGuard";
 
-export default function SiteManagement() {
+export default function SiteManagement({ user }) {
+  const canManage = hasPermission(user, 'manage_sites');
   const [sites, setSites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,6 +48,11 @@ export default function SiteManagement() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!canManage) {
+      toast.error("You don't have permission to manage sites");
+      return;
+    }
     
     try {
       const siteData = {
@@ -86,6 +93,11 @@ export default function SiteManagement() {
   };
 
   const handleDelete = async (siteId) => {
+    if (!canManage) {
+      toast.error("You don't have permission to delete sites");
+      return;
+    }
+    
     if (!confirm("Are you sure you want to delete this site?")) return;
 
     try {
@@ -125,16 +137,18 @@ export default function SiteManagement() {
           <h2 className="text-2xl font-bold text-white">Site Management</h2>
           <p className="text-gray-400">Manage poker sites, casinos, and sportsbooks</p>
         </div>
-        <Button
-          onClick={() => {
-            resetForm();
-            setShowDialog(true);
-          }}
-          className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-gray-900 font-semibold"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Site
-        </Button>
+        {canManage && (
+          <Button
+            onClick={() => {
+              resetForm();
+              setShowDialog(true);
+            }}
+            className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-gray-900 font-semibold"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Site
+          </Button>
+        )}
       </div>
 
       {/* Filters */}
@@ -211,25 +225,27 @@ export default function SiteManagement() {
                   </ul>
                 )}
 
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => handleEdit(site)}
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 border-gray-700 text-gray-300 hover:bg-gray-800"
-                  >
-                    <Edit className="w-3 h-3 mr-1" />
-                    Edit
-                  </Button>
-                  <Button
-                    onClick={() => handleDelete(site.id)}
-                    variant="outline"
-                    size="sm"
-                    className="border-red-500/30 text-red-400 hover:bg-red-500/10"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </Button>
-                </div>
+                {canManage && (
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleEdit(site)}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 border-gray-700 text-gray-300 hover:bg-gray-800"
+                    >
+                      <Edit className="w-3 h-3 mr-1" />
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={() => handleDelete(site.id)}
+                      variant="outline"
+                      size="sm"
+                      className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))
