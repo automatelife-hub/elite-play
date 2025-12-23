@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Download, Plus, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { ExtractDataFromUploadedFile, UploadFile } from "@/integrations/Core";
+import SiteManagement from "../components/admin/SiteManagement";
 
 export default function AdminStats() {
   const [user, setUser] = useState(null);
@@ -152,11 +154,28 @@ export default function AdminStats() {
 
   return (
     <div className="bg-gray-950 text-white min-h-screen py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Upload User Statistics</h1>
-          <p className="text-gray-400">Upload stats via CSV/Excel or enter manually</p>
+          <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
+          <p className="text-gray-400">Manage sites and upload user statistics</p>
         </div>
+
+        <Tabs defaultValue="sites" className="space-y-6">
+          <TabsList className="bg-gray-900 border-gray-800">
+            <TabsTrigger value="sites" className="data-[state=active]:bg-yellow-500/20">
+              Site Management
+            </TabsTrigger>
+            <TabsTrigger value="stats" className="data-[state=active]:bg-yellow-500/20">
+              Upload Statistics
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="sites">
+            <SiteManagement />
+          </TabsContent>
+
+          <TabsContent value="stats">
+            <div className="space-y-6">
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card className="bg-gray-900 border-gray-800">
@@ -362,6 +381,9 @@ export default function AdminStats() {
             </CardContent>
           </Card>
         )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
