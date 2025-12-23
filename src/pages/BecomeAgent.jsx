@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -22,6 +21,7 @@ import {
 "lucide-react";
 import { createPageUrl } from "@/utils";
 import AgentApplicationForm from "../components/agent/AgentApplicationForm";
+import FeaturedOffersSection from "../components/agent/FeaturedOffersSection";
 
 export default function BecomeAgent() {
   const navigate = useNavigate();
@@ -310,6 +310,9 @@ export default function BecomeAgent() {
           </div>
         </div>
       </section>
+
+      {/* Featured Offers Section */}
+      <FeaturedOffersSection isApprovedAgent={false} />
 
       {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-slate-900/50">

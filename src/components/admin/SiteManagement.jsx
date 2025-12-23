@@ -26,8 +26,10 @@ export default function SiteManagement({ user }) {
     affiliate_url: "",
     rating: 4,
     bonus_offer: "",
+    commission_rate: 0,
     highlights: ["", "", ""],
-    featured: false
+    featured: false,
+    featured_for_agents: false
   });
 
   useEffect(() => {
@@ -86,8 +88,10 @@ export default function SiteManagement({ user }) {
       affiliate_url: site.affiliate_url,
       rating: site.rating,
       bonus_offer: site.bonus_offer || "",
+      commission_rate: site.commission_rate || 0,
       highlights: site.highlights?.length > 0 ? [...site.highlights, "", "", ""].slice(0, 3) : ["", "", ""],
-      featured: site.featured || false
+      featured: site.featured || false,
+      featured_for_agents: site.featured_for_agents || false
     });
     setShowDialog(true);
   };
@@ -119,8 +123,10 @@ export default function SiteManagement({ user }) {
       affiliate_url: "",
       rating: 4,
       bonus_offer: "",
+      commission_rate: 0,
       highlights: ["", "", ""],
-      featured: false
+      featured: false,
+      featured_for_agents: false
     });
   };
 
@@ -333,15 +339,24 @@ export default function SiteManagement({ user }) {
                 />
               </div>
 
-              <div>
-                <Label className="text-gray-300">
+              <div className="space-y-2">
+                <Label className="text-gray-300 flex items-center">
                   <input
                     type="checkbox"
                     checked={formData.featured}
                     onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
                     className="mr-2"
                   />
-                  Featured Site
+                  Featured on Homepage
+                </Label>
+                <Label className="text-gray-300 flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.featured_for_agents}
+                    onChange={(e) => setFormData({ ...formData, featured_for_agents: e.target.checked })}
+                    className="mr-2"
+                  />
+                  Featured for Agents
                 </Label>
               </div>
 
