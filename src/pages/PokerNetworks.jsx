@@ -235,6 +235,7 @@ export default function PokerNetworks() {
                 </p>
               </CardContent>
             </Card>
+          </Link>
           ))}
         </div>
       </div>
