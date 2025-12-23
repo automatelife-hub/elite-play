@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { ExtractDataFromUploadedFile, UploadFile } from "@/integrations/Core";
 import SiteManagement from "../components/admin/SiteManagement";
 import StatsManagement from "../components/admin/StatsManagement";
+import EarningsManagement from "../components/admin/EarningsManagement";
 import { hasPermission } from "../components/admin/PermissionsGuard";
 
 export default function AdminStats() {
@@ -97,6 +98,11 @@ export default function AdminStats() {
                 Statistics Management
               </TabsTrigger>
             )}
+            {hasPermission(user, 'manage_stats') && (
+              <TabsTrigger value="earnings" className="data-[state=active]:bg-yellow-500/20">
+                Earnings Management
+              </TabsTrigger>
+            )}
           </TabsList>
 
           {hasPermission(user, 'manage_sites') && (
@@ -111,6 +117,11 @@ export default function AdminStats() {
             </TabsContent>
           )}
 
+          {hasPermission(user, 'manage_stats') && (
+            <TabsContent value="earnings">
+              <EarningsManagement user={user} sites={sites} />
+            </TabsContent>
+          )}
 
         </Tabs>
       </div>
