@@ -360,13 +360,27 @@ export default function SiteManagement({ user }) {
                 </Label>
               </div>
 
-              <div className="md:col-span-2">
+              <div>
                 <Label className="text-gray-300">Bonus Offer</Label>
                 <Input
                   value={formData.bonus_offer}
                   onChange={(e) => setFormData({ ...formData, bonus_offer: e.target.value })}
                   className="bg-gray-800 border-gray-700 text-white mt-1"
                   placeholder="e.g., 100% up to $1000"
+                />
+              </div>
+
+              <div>
+                <Label className="text-gray-300">Commission Rate (%)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.5"
+                  value={formData.commission_rate}
+                  onChange={(e) => setFormData({ ...formData, commission_rate: Number(e.target.value) })}
+                  className="bg-gray-800 border-gray-700 text-white mt-1"
+                  placeholder="e.g., 30"
                 />
               </div>
 
