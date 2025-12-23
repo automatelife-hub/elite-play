@@ -118,13 +118,18 @@ export default function RotatingSitesShowcase({ sites, loading }) {
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 hover:border-cyan-500/50 transition-all cursor-pointer h-full group relative overflow-hidden">
+                  <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 hover:border-cyan-500/50 transition-all h-full group relative overflow-hidden">
                     {/* Background glow effect on hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-purple-500/0 group-hover:from-cyan-500/10 group-hover:to-purple-500/10 transition-all duration-300" />
                     
                     <CardContent className="p-6 relative z-10">
-                      {/* Logo Container */}
-                      <div className="w-full h-32 bg-white rounded-lg p-4 flex items-center justify-center mb-4 shadow-lg">
+                      {/* Logo Container - clickable */}
+                      <a 
+                        href={site.affiliate_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block w-full h-32 bg-white rounded-lg p-4 flex items-center justify-center mb-4 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                      >
                         {site.logo_url ? (
                           <img
                             src={site.logo_url}
@@ -136,7 +141,7 @@ export default function RotatingSitesShowcase({ sites, loading }) {
                             {site.name.charAt(0)}
                           </div>
                         )}
-                      </div>
+                      </a>
 
                       {/* Site Name */}
                       <h3 className="text-lg font-bold text-white mb-2 text-center">
@@ -144,7 +149,7 @@ export default function RotatingSitesShowcase({ sites, loading }) {
                       </h3>
 
                       {/* Rating */}
-                      <div className="flex items-center justify-center mb-3">
+                      <div className="flex items-center justify-center mb-4">
                         {Array(5).fill(0).map((_, i) => (
                           <Star
                             key={i}
@@ -160,24 +165,29 @@ export default function RotatingSitesShowcase({ sites, loading }) {
                         </span>
                       </div>
 
-                      {/* Hover Overlay - Type and Bonus */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/95 to-slate-900/90 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-6 z-20">
-                        <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30 mb-4 text-sm px-4 py-1">
-                          {formatSiteType(site.type)}
-                        </Badge>
-                        
-                        {site.bonus_offer && (
-                          <div className="text-center">
-                            <div className="flex items-center justify-center mb-2">
-                              <Gift className="w-5 h-5 text-emerald-400 mr-2" />
-                              <span className="text-emerald-400 font-semibold text-sm">Bonus Offer</span>
-                            </div>
-                            <p className="text-white font-bold text-lg">
+                      {/* Sign Up Button */}
+                      <a 
+                        href={site.affiliate_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block w-full"
+                      >
+                        <Button className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold">
+                          Sign Up Now
+                        </Button>
+                      </a>
+
+                      {/* Bonus Offer - show below button if exists */}
+                      {site.bonus_offer && (
+                        <div className="mt-3 text-center">
+                          <div className="flex items-center justify-center">
+                            <Gift className="w-4 h-4 text-emerald-400 mr-1" />
+                            <span className="text-emerald-400 text-sm font-semibold">
                               {site.bonus_offer}
-                            </p>
+                            </span>
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </motion.div>
