@@ -202,40 +202,40 @@ export default function PokerNetworks() {
               <Card 
                 className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 hover:border-cyan-500/50 transition-all group cursor-pointer"
               >
-              <CardContent className="p-6">
-                {/* Logo */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-20 h-20 bg-white/10 rounded-full p-3 flex items-center justify-center overflow-hidden">
-                    <img
-                      src={network.logo}
-                      alt={network.name}
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.parentElement.innerHTML = `<div class="text-2xl font-bold text-white">${network.name.charAt(0)}</div>`;
-                      }}
-                    />
+                <CardContent className="p-6">
+                  {/* Logo */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-20 h-20 bg-white/10 rounded-full p-3 flex items-center justify-center overflow-hidden">
+                      <img
+                        src={network.logo}
+                        alt={network.name}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.innerHTML = `<div class="text-2xl font-bold text-white">${network.name.charAt(0)}</div>`;
+                        }}
+                      />
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  <ArrowRight className="w-5 h-5 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
 
-                {/* Network Name */}
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
-                  {network.name}
-                </h3>
+                  {/* Network Name */}
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
+                    {network.name}
+                  </h3>
 
-                {/* Rooms Count */}
-                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 mb-3">
-                  {network.rooms}
-                </Badge>
+                  {/* Rooms Count */}
+                  <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 mb-3">
+                    {network.rooms}
+                  </Badge>
 
-                {/* Description */}
-                <p className="text-slate-400 text-sm">
-                  {network.description}
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
+                  {/* Description */}
+                  <p className="text-slate-400 text-sm">
+                    {network.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>
