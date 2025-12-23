@@ -128,7 +128,7 @@ export default function RotatingSitesShowcase({ sites, loading }) {
                         href={site.affiliate_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="block w-full h-32 bg-white rounded-lg p-4 flex items-center justify-center mb-4 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                        className="block w-full h-32 bg-white rounded-lg p-1 flex items-center justify-center mb-4 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
                       >
                         {site.logo_url ? (
                           <img
