@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, X, ExternalLink, CreditCard, Smartphone, Monitor, FileText, Network } from "lucide-react";
+import { Star, Check, X, ExternalLink, CreditCard, Smartphone, Monitor, FileText, Network, ThumbsUp, Sparkles, Quote } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createPageUrl } from "@/utils";
 import ImageGallery from "../components/sites/ImageGallery";
@@ -70,6 +70,8 @@ export default function SiteDetail() {
   const [userCountry, setUserCountry] = useState(null);
   const [networkInfo, setNetworkInfo] = useState(null);
   const [loadingNetwork, setLoadingNetwork] = useState(false);
+  const [testimonials, setTestimonials] = useState([]);
+  const [generatingProscons, setGeneratingProscons] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -106,6 +108,11 @@ export default function SiteDetail() {
       if (foundSite && foundSite.poker_network && foundSite.poker_network !== 'no_deal_available') {
         loadNetworkInfo(foundSite.poker_network);
       }
+
+      // Load testimonials
+      if (foundSite) {
+        loadTestimonials(foundSite.id);
+      }
     } catch (error) {
       console.error("Error loading site:", error);
     } finally {
@@ -130,6 +137,76 @@ export default function SiteDetail() {
       console.error("Error loading network info:", error);
     } finally {
       setLoadingNetwork(false);
+    }
+  };
+
+  const loadTestimonials = async (siteId) => {
+    try {
+      const allTestimonials = await base44.entities.UserTestimonial.filter(
+        { site_id: siteId, verified: true },
+        '-created_date',
+        10
+      );
+      setTestimonials(allTestimonials);
+    } catch (error) {
+      console.error("Error loading testimonials:", error);
+    }
+  };
+
+  const generateProsAndCons = async () => {
+    if (!site) return;
+    
+    setGeneratingProscons(true);
+    try {
+      const prompt = `Based on the following information about ${site.name}, generate a comprehensive list of pros and cons:
+
+Site Type: ${formatSiteType(site.type)}
+Rating: ${site.rating}/5
+Bonus: ${site.bonus_offer || 'None'}
+Description: ${site.description || 'No description available'}
+Highlights: ${site.highlights?.join(', ') || 'None'}
+Payment Methods: ${site.payment_methods?.join(', ') || 'Various'}
+Established: ${site.established_year || 'Unknown'}
+
+Please provide:
+1. A list of 4-6 pros (advantages)
+2. A list of 3-5 cons (disadvantages)
+
+Format as JSON with this structure:
+{
+  "pros": ["pro 1", "pro 2", ...],
+  "cons": ["con 1", "con 2", ...]
+}`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            pros: {
+              type: "array",
+              items: { type: "string" }
+            },
+            cons: {
+              type: "array",
+              items: { type: "string" }
+            }
+          }
+        }
+      });
+
+      // Update the site with generated pros and cons
+      await base44.entities.Site.update(site.id, {
+        pros: response.pros,
+        cons: response.cons
+      });
+
+      // Reload site data
+      await loadData();
+    } catch (error) {
+      console.error("Error generating pros and cons:", error);
+    } finally {
+      setGeneratingProscons(false);
     }
   };
 
@@ -679,10 +756,31 @@ export default function SiteDetail() {
             </div>
 
                 <div id="pros-cons" className="scroll-mt-32">
-                  <h3 className="text-2xl font-bold mb-6 text-yellow-400 border-b border-gray-700 pb-2">
-                    Pros and Cons of Playing at {site.name}
-                  </h3>
-                </div>
+                          <div className="flex items-center justify-between mb-6 border-b border-gray-700 pb-2">
+                            <h3 className="text-2xl font-bold text-yellow-400">
+                              Pros and Cons of Playing at {site.name}
+                            </h3>
+                            {(!site.pros || !site.cons || site.pros.length === 0 || site.cons.length === 0) && (
+                              <Button
+                                onClick={generateProsAndCons}
+                                disabled={generatingProscons}
+                                className="bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30"
+                              >
+                                {generatingProscons ? (
+                                  <>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-400 mr-2" />
+                                    Generating...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Sparkles className="w-4 h-4 mr-2" />
+                                    Generate with AI
+                                  </>
+                                )}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
               </CardContent>
             </Card>
           </div>
@@ -712,7 +810,26 @@ export default function SiteDetail() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-400">No pros listed.</p>
+                <div className="text-center py-8">
+                  <p className="text-gray-400 mb-4">No pros listed yet.</p>
+                  <Button
+                    onClick={generateProsAndCons}
+                    disabled={generatingProscons}
+                    className="bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30"
+                  >
+                    {generatingProscons ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-400 mr-2" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Generate with AI
+                      </>
+                    )}
+                  </Button>
+                </div>
               )}
             </CardContent>
           </Card>
@@ -733,11 +850,85 @@ export default function SiteDetail() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-400">No cons listed.</p>
+                <div className="text-center py-8">
+                  <p className="text-gray-400 mb-4">No cons listed yet.</p>
+                  <Button
+                    onClick={generateProsAndCons}
+                    disabled={generatingProscons}
+                    className="bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30"
+                  >
+                    {generatingProscons ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-400 mr-2" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Generate with AI
+                      </>
+                    )}
+                  </Button>
+                </div>
               )}
             </CardContent>
           </Card>
         </div>
+
+        {/* User Testimonials Section */}
+        {testimonials.length > 0 && (
+          <Card className="bg-gray-900 border-gray-800 mb-12">
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
+                <Quote className="w-6 h-6 text-cyan-400 mr-2" />
+                User Testimonials
+              </h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                {testimonials.map((testimonial, idx) => (
+                  <Card key={idx} className="bg-slate-800/50 border-slate-700">
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <p className="font-semibold text-white">{testimonial.user_name}</p>
+                          <p className="text-xs text-gray-400">
+                            {testimonial.user_country} • {new Date(testimonial.date).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {Array(5).fill(0).map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < testimonial.rating
+                                  ? 'fill-yellow-400 text-yellow-400'
+                                  : 'text-gray-600'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-gray-300 text-sm leading-relaxed mb-3">
+                        "{testimonial.testimonial}"
+                      </p>
+                      {testimonial.verified && (
+                        <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
+                          <Check className="w-3 h-3 mr-1" />
+                          Verified User
+                        </Badge>
+                      )}
+                      {testimonial.helpful_count > 0 && (
+                        <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
+                          <ThumbsUp className="w-3 h-3" />
+                          {testimonial.helpful_count} found this helpful
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Poker Network Section */}
         {site.poker_network && site.poker_network !== 'no_deal_available' && (
