@@ -95,21 +95,7 @@ export default function Home() {
             <CardContent className="p-6">
               <div className="text-4xl mb-4">♠</div>
               <h3 className="text-2xl font-bold text-emerald-400 mb-3">Poker Sites</h3>
-              <p className="text-gray-400 mb-4">Top poker rooms with the best rakeback deals and exclusive VIP programs</p>
-              <div className="space-y-2 mb-4">
-                {loading ? (
-                  <div className="animate-pulse space-y-2">
-                    {[1,2,3].map(i => <div key={i} className="h-4 bg-gray-700 rounded w-full"></div>)}
-                  </div>
-                ) : (
-                  topSites.poker.map(site => (
-                    <div key={site.id} className="flex items-center text-sm text-gray-300">
-                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-2" />
-                      {site.name} - {site.rating}/5
-                    </div>
-                  ))
-                )}
-              </div>
+              <p className="text-gray-400 mb-6">Top poker rooms with the best rakeback deals and exclusive VIP programs</p>
               <Link to={createPageUrl("PokerHome")}>
                 <Button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white group-hover:translate-x-1 transition-transform">
                   View Poker Sites <ArrowRight className="w-4 h-4 ml-2" />
@@ -123,21 +109,7 @@ export default function Home() {
             <CardContent className="p-6">
               <div className="text-4xl mb-4">🎰</div>
               <h3 className="text-2xl font-bold text-purple-400 mb-3">Online Casinos</h3>
-              <p className="text-gray-400 mb-4">Best online casinos with generous bonuses and thousands of games</p>
-              <div className="space-y-2 mb-4">
-                {loading ? (
-                  <div className="animate-pulse space-y-2">
-                    {[1,2,3].map(i => <div key={i} className="h-4 bg-gray-700 rounded w-full"></div>)}
-                  </div>
-                ) : (
-                  topSites.casino.map(site => (
-                    <div key={site.id} className="flex items-center text-sm text-gray-300">
-                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-2" />
-                      {site.name} - {site.rating}/5
-                    </div>
-                  ))
-                )}
-              </div>
+              <p className="text-gray-400 mb-6">Best online casinos with generous bonuses and thousands of games</p>
               <Link to={createPageUrl("CasinoHome")}>
                 <Button className="w-full bg-purple-500 hover:bg-purple-600 text-white group-hover:translate-x-1 transition-transform">
                   View Casinos <ArrowRight className="w-4 h-4 ml-2" />
@@ -151,21 +123,7 @@ export default function Home() {
             <CardContent className="p-6">
               <div className="text-4xl mb-4">⚽</div>
               <h3 className="text-2xl font-bold text-orange-400 mb-3">Sportsbooks</h3>
-              <p className="text-gray-400 mb-4">Premier sportsbooks with competitive odds and live betting options</p>
-              <div className="space-y-2 mb-4">
-                {loading ? (
-                  <div className="animate-pulse space-y-2">
-                    {[1,2,3].map(i => <div key={i} className="h-4 bg-gray-700 rounded w-full"></div>)}
-                  </div>
-                ) : (
-                  topSites.sportsbetting.map(site => (
-                    <div key={site.id} className="flex items-center text-sm text-gray-300">
-                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-2" />
-                      {site.name} - {site.rating}/5
-                    </div>
-                  ))
-                )}
-              </div>
+              <p className="text-gray-400 mb-6">Premier sportsbooks with competitive odds and live betting options</p>
               <Link to={createPageUrl("SportsbettingHome")}>
                 <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white group-hover:translate-x-1 transition-transform">
                   View Sportsbooks <ArrowRight className="w-4 h-4 ml-2" />
