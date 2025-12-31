@@ -152,7 +152,7 @@ const navigationItems = [
       { title: "Best poker sites 2025", url: createPageUrl("BestPokerSites") },
       { title: "Best Rakeback", url: createPageUrl("BestRakeback") },
       { title: "New poker sites", url: createPageUrl("NewPokerSites") },
-      { title: "Club-based apps", url: createPageUrl("ClubBasedApps") },
+      { title: "Apps with Private Clubs", url: createPageUrl("ClubBasedApps") },
       { title: "Sweepstakes poker", url: createPageUrl("SweepstakesPoker") },
       { title: "Poker networks", url: createPageUrl("PokerNetworks") },
     ]
