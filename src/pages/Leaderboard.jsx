@@ -20,6 +20,27 @@ export default function Leaderboard() {
       const user = await base44.auth.me();
       setCurrentUser(user);
 
+      // Check access: approved agents, managers, VIPs, or admins
+      if (user.role !== 'admin' && !user.is_agent) {
+        setLoading(false);
+        return;
+      }
+
+      const agents = await base44.entities.Agent.filter({ agent_email: user.email });
+      if (agents.length > 0) {
+        const agent = agents[0];
+        const hasManagerTag = agent.internal_tags?.includes('Manager');
+        const hasVIPTag = agent.internal_tags?.includes('VIP');
+        
+        if (agent.status !== 'approved' && !hasManagerTag && !hasVIPTag && user.role !== 'admin') {
+          setLoading(false);
+          return;
+        }
+      } else if (user.role !== 'admin') {
+        setLoading(false);
+        return;
+      }
+
       const allAgents = await base44.entities.Agent.filter({ status: 'approved' });
       setAgents(allAgents);
     } catch (error) {
@@ -134,6 +155,19 @@ export default function Leaderboard() {
     return (
       <div className="bg-gray-950 text-white min-h-screen py-12 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400"></div>
+      </div>
+    );
+  }
+
+  // Access denied check
+  if (agents.length === 0 && !currentUser) {
+    return (
+      <div className="bg-gray-950 text-white min-h-screen py-12">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <Trophy className="w-16 h-16 text-gray-700 mx-auto mb-4" />
+          <h1 className="text-3xl font-bold mb-2">Access Restricted</h1>
+          <p className="text-gray-400">Agent leaderboard is only available to approved agents, managers, and administrators.</p>
+        </div>
       </div>
     );
   }

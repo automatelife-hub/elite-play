@@ -378,7 +378,10 @@ export default function AgentPortal() {
             <TabsTrigger value="marketing" className="data-[state=active]:bg-yellow-500/20">
               Marketing Hub
             </TabsTrigger>
-          </TabsList>
+            <TabsTrigger value="contests" className="data-[state=active]:bg-yellow-500/20">
+              Contests
+            </TabsTrigger>
+            </TabsList>
 
           {/* Overview Tab */}
           <TabsContent value="overview">
@@ -782,6 +785,24 @@ export default function AgentPortal() {
                   className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white"
                 >
                   Go to Marketing Hub
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Contests Tab */}
+          <TabsContent value="contests">
+            <Card className="bg-gray-900 border-gray-800">
+              <CardContent className="p-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-2">Contest Management</h3>
+                <p className="text-gray-400 mb-4">
+                  Create and manage rake races, wagering contests, and raffles for your players
+                </p>
+                <Button
+                  onClick={() => window.location.href = createPageUrl('AgentContests')}
+                  className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white"
+                >
+                  Go to Contests
                 </Button>
               </CardContent>
             </Card>
