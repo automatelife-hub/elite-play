@@ -3,6 +3,7 @@ import AdminPayouts from './pages/AdminPayouts';
 import AdminStats from './pages/AdminStats';
 import Affiliate from './pages/Affiliate';
 import AffiliateLinks from './pages/AffiliateLinks';
+import AgentContests from './pages/AgentContests';
 import AgentDemo from './pages/AgentDemo';
 import AgentPortal from './pages/AgentPortal';
 import BecomeAgent from './pages/BecomeAgent';
@@ -24,7 +25,6 @@ import Reviews from './pages/Reviews';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
-import AgentContests from './pages/AgentContests';
 import __Layout from './Layout.jsx';
 
 
@@ -34,6 +34,7 @@ export const PAGES = {
     "AdminStats": AdminStats,
     "Affiliate": Affiliate,
     "AffiliateLinks": AffiliateLinks,
+    "AgentContests": AgentContests,
     "AgentDemo": AgentDemo,
     "AgentPortal": AgentPortal,
     "BecomeAgent": BecomeAgent,
@@ -55,7 +56,6 @@ export const PAGES = {
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
-    "AgentContests": AgentContests,
 }
 
 export const pagesConfig = {

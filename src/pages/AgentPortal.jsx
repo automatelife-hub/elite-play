@@ -353,35 +353,37 @@ export default function AgentPortal() {
 
         {/* Main Content */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-gray-900 border-gray-800">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-yellow-500/20">
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="tier" className="data-[state=active]:bg-yellow-500/20">
-              My Tier
-            </TabsTrigger>
-            <TabsTrigger value="players" className="data-[state=active]:bg-yellow-500/20">
-              Players
-            </TabsTrigger>
-            <TabsTrigger value="commissions" className="data-[state=active]:bg-yellow-500/20">
-              Commissions
-            </TabsTrigger>
-            <TabsTrigger value="reports" className="data-[state=active]:bg-yellow-500/20">
-              Reports
-            </TabsTrigger>
-            <TabsTrigger value="offerings" className="data-[state=active]:bg-yellow-500/20">
-              Tracking Links
-            </TabsTrigger>
-            <TabsTrigger value="support" className="data-[state=active]:bg-yellow-500/20">
-              Support
-            </TabsTrigger>
-            <TabsTrigger value="marketing" className="data-[state=active]:bg-yellow-500/20">
-              Marketing Hub
-            </TabsTrigger>
-            <TabsTrigger value="contests" className="data-[state=active]:bg-yellow-500/20">
-              Contests
-            </TabsTrigger>
+          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+            <TabsList className="bg-gray-900 border-gray-800 w-full md:w-auto grid grid-cols-2 md:inline-flex h-auto gap-1">
+              <TabsTrigger value="overview" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                Overview
+              </TabsTrigger>
+              <TabsTrigger value="tier" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                My Tier
+              </TabsTrigger>
+              <TabsTrigger value="players" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                Players
+              </TabsTrigger>
+              <TabsTrigger value="commissions" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                Commissions
+              </TabsTrigger>
+              <TabsTrigger value="reports" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                Reports
+              </TabsTrigger>
+              <TabsTrigger value="offerings" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                Links
+              </TabsTrigger>
+              <TabsTrigger value="support" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                Support
+              </TabsTrigger>
+              <TabsTrigger value="marketing" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                Marketing
+              </TabsTrigger>
+              <TabsTrigger value="contests" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                Contests
+              </TabsTrigger>
             </TabsList>
+          </div>
 
           {/* Overview Tab */}
           <TabsContent value="overview">
