@@ -20,6 +20,7 @@ import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
 import AgentDemo from './pages/AgentDemo';
 import News from './pages/News';
+import AdminPayouts from './pages/AdminPayouts';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +47,7 @@ export const PAGES = {
     "Stats": Stats,
     "AgentDemo": AgentDemo,
     "News": News,
+    "AdminPayouts": AdminPayouts,
 }
 
 export const pagesConfig = {

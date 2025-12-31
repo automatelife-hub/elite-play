@@ -46,6 +46,7 @@ export default function AgentPortal() {
   const [showPaymentRequest, setShowPaymentRequest] = useState(false);
   const [showSupportForm, setShowSupportForm] = useState(false);
   const [supportTickets, setSupportTickets] = useState([]);
+  const [payoutBatches, setPayoutBatches] = useState([]);
 
   const [newPlayer, setNewPlayer] = useState({
     site_id: "",
@@ -69,7 +70,7 @@ export default function AgentPortal() {
         return;
       }
 
-      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, tickets] = await Promise.all([
+      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, tickets, batches] = await Promise.all([
         base44.entities.Agent.filter({ agent_email: currentUser.email }),
         currentUser.agent_id ?
           base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) :
@@ -83,6 +84,9 @@ export default function AgentPortal() {
           [],
         currentUser.agent_id ?
           base44.entities.SupportTicket.filter({ agent_id: currentUser.agent_id }) :
+          [],
+        currentUser.agent_id ?
+          base44.entities.PayoutBatch.filter({ agent_id: currentUser.agent_id }) :
           []
       ]);
 
@@ -99,6 +103,7 @@ export default function AgentPortal() {
       setCommissions(agentCommissions);
       setReferralLinks(agentReferralLinks);
       setSupportTickets(tickets);
+      setPayoutBatches(batches);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load agent data");
@@ -668,18 +673,55 @@ export default function AgentPortal() {
                     <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center flex-shrink-0">
                       <Calendar className="w-6 h-6 text-yellow-400" />
                     </div>
-                    <div>
-                      <h3 className="text-white font-semibold mb-2">Automated Payout Schedule</h3>
+                    <div className="flex-1">
+                      <h3 className="text-white font-semibold mb-2">
+                        {agent?.payment_type === 'performance_based' ? 'Performance-Based Payouts' : 'Automated Payout Schedule'}
+                      </h3>
                       <p className="text-gray-300 text-sm mb-2">
-                        Commissions are automatically processed on the 1st of each month for the previous month's earnings.
+                        {agent?.payment_type === 'performance_based' 
+                          ? 'Your payouts are processed manually based on performance reviews. Contact your account manager for details.'
+                          : 'Commissions are automatically processed on the 1st of each month for the previous month\'s earnings.'
+                        }
                       </p>
                       <p className="text-gray-400 text-xs">
-                        Payment method: {agent?.payment_method || 'Not set'} • Minimum payout: $50
+                        Payment method: {agent?.payment_method || 'Not set'} • Minimum payout: $100
                       </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Recent Payouts */}
+              {payoutBatches.length > 0 && (
+                <Card className="bg-gray-900 border-gray-800">
+                  <CardHeader>
+                    <CardTitle className="text-white">Recent Payouts</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {payoutBatches.slice(0, 5).map(batch => (
+                        <div key={batch.id} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                          <div>
+                            <div className="text-white font-semibold">${batch.total_amount.toFixed(2)}</div>
+                            <div className="text-xs text-gray-400">
+                              {batch.processed_date ? format(new Date(batch.processed_date), 'MMM dd, yyyy') : format(new Date(batch.batch_date), 'MMM dd, yyyy')}
+                            </div>
+                          </div>
+                          <Badge className={
+                            batch.status === 'completed' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                            batch.status === 'processing' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                            batch.status === 'failed' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                            batch.status === 'rejected' ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' :
+                            'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+                          }>
+                            {batch.status.replace('_', ' ')}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </TabsContent>
 
