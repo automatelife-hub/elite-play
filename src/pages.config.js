@@ -4,6 +4,7 @@ import AffiliateLinks from './pages/AffiliateLinks';
 import AgentPortal from './pages/AgentPortal';
 import BecomeAgent from './pages/BecomeAgent';
 import CasinoHome from './pages/CasinoHome';
+import ClubBasedApps from './pages/ClubBasedApps';
 import Compare from './pages/Compare';
 import Guides from './pages/Guides';
 import Home from './pages/Home';
@@ -17,7 +18,7 @@ import Reviews from './pages/Reviews';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
-import ClubBasedApps from './pages/ClubBasedApps';
+import AgentDemo from './pages/AgentDemo';
 import __Layout from './Layout.jsx';
 
 
@@ -28,6 +29,7 @@ export const PAGES = {
     "AgentPortal": AgentPortal,
     "BecomeAgent": BecomeAgent,
     "CasinoHome": CasinoHome,
+    "ClubBasedApps": ClubBasedApps,
     "Compare": Compare,
     "Guides": Guides,
     "Home": Home,
@@ -41,7 +43,7 @@ export const PAGES = {
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
-    "ClubBasedApps": ClubBasedApps,
+    "AgentDemo": AgentDemo,
 }
 
 export const pagesConfig = {
