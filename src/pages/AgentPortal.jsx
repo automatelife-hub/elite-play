@@ -334,7 +334,6 @@ export default function AgentPortal() {
               <PerformanceCharts players={players} commissions={commissions} />
 
               <div className="grid md:grid-cols-2 gap-6">
-
               {/* Quick Actions */}
               <Card className="bg-gray-900 border-gray-800">
                 <CardHeader>
