@@ -35,6 +35,8 @@ export default function Leaderboard() {
     gold: Crown
   };
 
+  const getTierIcon = (tier) => tierIcons[tier] || Award;
+
   const tierColors = {
     bronze: "text-orange-400",
     silver: "text-gray-300",
@@ -71,7 +73,7 @@ export default function Leaderboard() {
     <div className="space-y-2">
       {rankedAgents.map((agent, idx) => {
         const rank = idx + 1;
-        const TierIcon = tierIcons[agent.tier];
+        const TierIcon = getTierIcon(agent.tier || 'bronze');
         const isCurrentUser = currentUser?.agent_id === agent.id;
         
         return (

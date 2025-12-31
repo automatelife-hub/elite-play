@@ -11,6 +11,8 @@ import ClubBasedApps from './pages/ClubBasedApps';
 import Compare from './pages/Compare';
 import Guides from './pages/Guides';
 import Home from './pages/Home';
+import Leaderboard from './pages/Leaderboard';
+import MarketingHub from './pages/MarketingHub';
 import News from './pages/News';
 import NewsMonitor from './pages/NewsMonitor';
 import PokerAdvisor from './pages/PokerAdvisor';
@@ -22,8 +24,6 @@ import Reviews from './pages/Reviews';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
-import MarketingHub from './pages/MarketingHub';
-import Leaderboard from './pages/Leaderboard';
 import __Layout from './Layout.jsx';
 
 
@@ -41,6 +41,8 @@ export const PAGES = {
     "Compare": Compare,
     "Guides": Guides,
     "Home": Home,
+    "Leaderboard": Leaderboard,
+    "MarketingHub": MarketingHub,
     "News": News,
     "NewsMonitor": NewsMonitor,
     "PokerAdvisor": PokerAdvisor,
@@ -52,8 +54,6 @@ export const PAGES = {
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
-    "MarketingHub": MarketingHub,
-    "Leaderboard": Leaderboard,
 }
 
 export const pagesConfig = {
