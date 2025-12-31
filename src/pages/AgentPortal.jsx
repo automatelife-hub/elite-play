@@ -20,9 +20,12 @@ import {
   SelectTrigger,
   SelectValue } from
 "@/components/ui/select";
-import { Users, TrendingUp, DollarSign, Link as LinkIcon, Plus, Search, Copy, Wallet, Calendar, CheckCircle, Clock } from "lucide-react";
+import { Users, TrendingUp, DollarSign, Link as LinkIcon, Plus, Search, Copy, Wallet, Calendar, CheckCircle, Clock, Bell, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import PerformanceCharts from "../components/agent/PerformanceCharts";
+import PaymentRequestDialog from "../components/agent/PaymentRequestDialog";
+import NotificationBell from "../components/agent/NotificationBell";
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -36,6 +39,7 @@ export default function AgentPortal() {
   const [searchTerm, setSearchTerm] = useState("");
   const [platformFilter, setPlatformFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showPaymentRequest, setShowPaymentRequest] = useState(false);
 
   const [newPlayer, setNewPlayer] = useState({
     site_id: "",
@@ -217,23 +221,36 @@ export default function AgentPortal() {
     <div className="bg-gray-950 text-white min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Agent Portal</h1>
-          <p className="text-gray-400">
-            Welcome back, {agent?.agent_name || user.full_name}
-            {user.role === 'admin' && !user.is_agent &&
-            <Badge className="ml-3 bg-red-500/20 text-red-400 border-red-500/30">
-                Admin View
-              </Badge>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Agent Portal</h1>
+            <p className="text-gray-400">
+              Welcome back, {agent?.agent_name || user.full_name}
+              {user.role === 'admin' && !user.is_agent &&
+              <Badge className="ml-3 bg-red-500/20 text-red-400 border-red-500/30">
+                  Admin View
+                </Badge>
+              }
+            </p>
+            {agent?.tracking_code &&
+            <div className="mt-2">
+                <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                  Tracking Code: {agent.tracking_code}
+                </Badge>
+              </div>
             }
-          </p>
-          {agent?.tracking_code &&
-          <div className="mt-2">
-              <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-                Tracking Code: {agent.tracking_code}
-              </Badge>
-            </div>
-          }
+          </div>
+          <div className="flex items-center gap-3">
+            <NotificationBell players={players} commissions={commissions} />
+            <Button
+              onClick={() => setShowPaymentRequest(true)}
+              disabled={pendingCommission < 100}
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold"
+            >
+              <CreditCard className="w-4 h-4 mr-2" />
+              Request Payment
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -312,53 +329,11 @@ export default function AgentPortal() {
 
           {/* Overview Tab */}
           <TabsContent value="overview">
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Performance Chart */}
-              <Card className="bg-gray-900 border-gray-800">
-                <CardHeader>
-                  <CardTitle className="text-white">Recent Performance</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span className="text-gray-400">Monthly Revenue</span>
-                        <span className="text-white font-semibold">${monthlyRevenue.toFixed(2)}</span>
-                      </div>
-                      <div className="w-full bg-gray-800 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full"
-                          style={{ width: `${Math.min((monthlyRevenue / (totalRevenue || 1)) * 100, 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span className="text-gray-400">Active Players</span>
-                        <span className="text-white font-semibold">{activePlayers} / {players.length}</span>
-                      </div>
-                      <div className="w-full bg-gray-800 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full"
-                          style={{ width: `${players.length > 0 ? (activePlayers / players.length) * 100 : 0}%` }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span className="text-gray-400">Link Conversions</span>
-                        <span className="text-white font-semibold">{totalConversions} / {totalClicks}</span>
-                      </div>
-                      <div className="w-full bg-gray-800 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
-                          style={{ width: `${totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="space-y-6">
+              {/* Performance Charts */}
+              <PerformanceCharts players={players} commissions={commissions} />
+
+              <div className="grid md:grid-cols-2 gap-6">
 
               {/* Quick Actions */}
               <Card className="bg-gray-900 border-gray-800">
@@ -910,6 +885,14 @@ export default function AgentPortal() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Payment Request Dialog */}
+      <PaymentRequestDialog
+        open={showPaymentRequest}
+        onOpenChange={setShowPaymentRequest}
+        pendingAmount={pendingCommission}
+        agentId={user?.agent_id}
+      />
     </div>);
 
 }
