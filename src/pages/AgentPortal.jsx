@@ -21,6 +21,7 @@ import {
   SelectValue } from
 "@/components/ui/select";
 import { Users, TrendingUp, DollarSign, Link as LinkIcon, Plus, Search, Copy, Wallet, Calendar, CheckCircle, Clock, Bell, CreditCard } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import PerformanceCharts from "../components/agent/PerformanceCharts";
@@ -372,6 +373,9 @@ export default function AgentPortal() {
             </TabsTrigger>
             <TabsTrigger value="support" className="data-[state=active]:bg-yellow-500/20">
               Support
+            </TabsTrigger>
+            <TabsTrigger value="marketing" className="data-[state=active]:bg-yellow-500/20">
+              Marketing Hub
             </TabsTrigger>
           </TabsList>
 
@@ -757,6 +761,24 @@ export default function AgentPortal() {
               sites={sites}
               agent={agent}
             />
+          </TabsContent>
+
+          {/* Marketing Hub Tab */}
+          <TabsContent value="marketing">
+            <Card className="bg-gray-900 border-gray-800">
+              <CardContent className="p-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-2">Marketing Hub</h3>
+                <p className="text-gray-400 mb-4">
+                  Access professional marketing assets, track campaign performance, and request custom materials
+                </p>
+                <Button
+                  onClick={() => window.location.href = createPageUrl('MarketingHub')}
+                  className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white"
+                >
+                  Go to Marketing Hub
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Support Tab */}
