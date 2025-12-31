@@ -84,7 +84,11 @@ export default function PokerHome() {
 
   return (
     <div className="bg-gray-950 text-white">
-      <NewHeroSection sites={topRated} loading={loading} userCountry={userCountry} />
+      <NewHeroSection 
+        sites={topRated} 
+        loading={loading} 
+        userCountry={userCountry}
+      />
       <TrustIndicators />
       <FeaturedSites sites={featuredSites} loading={loading} userCountry={userCountry} />
       <AIAdvisorCTA />

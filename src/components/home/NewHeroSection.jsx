@@ -1,11 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
-import { Star, ExternalLink, Gift } from "lucide-react";
+import { Star, ExternalLink, Gift, Users } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
 export default function NewHeroSection({ sites, loading, userCountry }) {
-  const topSites = sites?.slice(0, 5) || [];
+  const [showClubApps, setShowClubApps] = useState(false);
+  const [clubApps, setClubApps] = useState([]);
+  const [loadingClubs, setLoadingClubs] = useState(false);
+
+  useEffect(() => {
+    if (showClubApps && clubApps.length === 0) {
+      loadClubApps();
+    }
+  }, [showClubApps]);
+
+  const loadClubApps = async () => {
+    setLoadingClubs(true);
+    try {
+      const allSites = await base44.entities.Site.list('-rating');
+      const clubs = allSites.filter(site => site.is_club_based_app === true);
+      setClubApps(clubs);
+    } catch (error) {
+      console.error("Error loading club apps:", error);
+    } finally {
+      setLoadingClubs(false);
+    }
+  };
+
+  const displaySites = showClubApps ? clubApps.slice(0, 5) : (sites?.slice(0, 5) || []);
+  const isLoading = showClubApps ? loadingClubs : loading;
 
   return (
     <div className="relative min-h-[600px] bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-hidden">
@@ -88,21 +113,36 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
           <div className="bg-gray-900/80 backdrop-blur-sm rounded-xl border border-gray-800 overflow-hidden">
             {/* Header */}
             <div className="grid grid-cols-2 border-b border-gray-800">
-              <div className="px-6 py-4 border-r border-gray-800">
-                <div className="text-white font-semibold">Best rooms</div>
+              <button
+                onClick={() => setShowClubApps(false)}
+                className={`px-6 py-4 border-r border-gray-800 text-left transition-colors ${
+                  !showClubApps ? 'bg-emerald-500/10' : 'hover:bg-gray-800/50'
+                }`}
+              >
+                <div className={`font-semibold ${!showClubApps ? 'text-emerald-400' : 'text-white'}`}>
+                  Best rooms
+                </div>
                 <div className="text-gray-400 text-sm flex items-center">
                   <span className="mr-1">🌍</span> for {userCountry || 'Worldwide'}
                 </div>
-              </div>
-              <div className="px-6 py-4">
-                <div className="text-white font-semibold">Apps</div>
+              </button>
+              <button
+                onClick={() => setShowClubApps(true)}
+                className={`px-6 py-4 text-left transition-colors ${
+                  showClubApps ? 'bg-emerald-500/10' : 'hover:bg-gray-800/50'
+                }`}
+              >
+                <div className={`font-semibold flex items-center ${showClubApps ? 'text-emerald-400' : 'text-white'}`}>
+                  <Users className="w-4 h-4 mr-2" />
+                  Apps
+                </div>
                 <div className="text-gray-400 text-sm">with private clubs</div>
-              </div>
+              </button>
             </div>
 
             {/* Sites List */}
             <div className="divide-y divide-gray-800">
-              {loading ? (
+              {isLoading ? (
                 // Loading skeleton
                 Array(5).fill(0).map((_, i) => (
                   <div key={i} className="px-6 py-4 animate-pulse">
@@ -121,8 +161,8 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
                     </div>
                   </div>
                 ))
-              ) : topSites.length > 0 ? (
-                topSites.map((site, index) => (
+              ) : displaySites.length > 0 ? (
+                displaySites.map((site, index) => (
                   <div key={site.id} className="px-6 py-4 hover:bg-gray-800/50 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
@@ -171,7 +211,7 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
                 ))
               ) : (
                 <div className="px-6 py-8 text-center text-gray-400">
-                  No sites available
+                  {showClubApps ? 'No club-based apps available yet' : 'No sites available'}
                 </div>
               )}
             </div>
