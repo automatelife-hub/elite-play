@@ -76,9 +76,9 @@ export default function Home() {
               Trusted by 50,000+ Players Worldwide
             </Badge>
             
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-              <span className="block text-white">Maximize Your</span>
-              <span className="block bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight pb-2">
+              <span className="block text-white mb-2">Maximize Your</span>
+              <span className="block bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent pb-2">
                 Gaming Rewards
               </span>
             </h1>
