@@ -170,7 +170,7 @@ const navigationItems = [
   },
   {
     title: "News",
-    url: createPageUrl("Reviews"),
+    url: createPageUrl("News"),
     icon: Star,
   },
   {
