@@ -21,6 +21,7 @@ import Stats from './pages/Stats';
 import AgentDemo from './pages/AgentDemo';
 import News from './pages/News';
 import AdminPayouts from './pages/AdminPayouts';
+import AdminAgents from './pages/AdminAgents';
 import __Layout from './Layout.jsx';
 
 
@@ -48,6 +49,7 @@ export const PAGES = {
     "AgentDemo": AgentDemo,
     "News": News,
     "AdminPayouts": AdminPayouts,
+    "AdminAgents": AdminAgents,
 }
 
 export const pagesConfig = {
