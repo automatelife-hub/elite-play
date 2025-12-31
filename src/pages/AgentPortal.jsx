@@ -27,6 +27,7 @@ import PerformanceCharts from "../components/agent/PerformanceCharts";
 import PaymentRequestDialog from "../components/agent/PaymentRequestDialog";
 import NotificationBell from "../components/agent/NotificationBell";
 import ReportGenerator from "../components/agent/ReportGenerator";
+import TierProgressCard from "../components/agent/TierProgressCard";
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -317,6 +318,9 @@ export default function AgentPortal() {
             <TabsTrigger value="overview" className="data-[state=active]:bg-yellow-500/20">
               Overview
             </TabsTrigger>
+            <TabsTrigger value="tier" className="data-[state=active]:bg-yellow-500/20">
+              My Tier
+            </TabsTrigger>
             <TabsTrigger value="players" className="data-[state=active]:bg-yellow-500/20">
               Players
             </TabsTrigger>
@@ -414,6 +418,15 @@ export default function AgentPortal() {
                     </Card>
                     </div>
                     </div>
+                    </TabsContent>
+
+                    {/* Tier Tab */}
+                    <TabsContent value="tier">
+                    <TierProgressCard
+                      agent={agent}
+                      playersCount={players.length}
+                      totalRevenue={totalRevenue}
+                    />
                     </TabsContent>
 
                     {/* Players Tab */}
