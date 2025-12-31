@@ -26,6 +26,7 @@ import { format } from "date-fns";
 import PerformanceCharts from "../components/agent/PerformanceCharts";
 import PaymentRequestDialog from "../components/agent/PaymentRequestDialog";
 import NotificationBell from "../components/agent/NotificationBell";
+import ReportGenerator from "../components/agent/ReportGenerator";
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -321,6 +322,9 @@ export default function AgentPortal() {
             </TabsTrigger>
             <TabsTrigger value="commissions" className="data-[state=active]:bg-yellow-500/20">
               Commissions
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="data-[state=active]:bg-yellow-500/20">
+              Reports
             </TabsTrigger>
             <TabsTrigger value="offerings" className="data-[state=active]:bg-yellow-500/20">
               Tracking Links
@@ -653,6 +657,16 @@ export default function AgentPortal() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Reports Tab */}
+          <TabsContent value="reports">
+            <ReportGenerator
+              players={players}
+              commissions={commissions}
+              sites={sites}
+              agent={agent}
+            />
           </TabsContent>
 
           {/* Offerings Tab */}
