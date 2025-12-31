@@ -66,6 +66,14 @@ export default function AdminAgents() {
       await base44.entities.Agent.update(agentId, {
         status: 'approved'
       });
+      
+      // Trigger onboarding emails
+      try {
+        await base44.functions.invoke('sendOnboardingEmails', { agent_id: agentId });
+      } catch (emailError) {
+        console.error("Failed to send onboarding emails:", emailError);
+      }
+      
       toast.success("Agent approved successfully");
       await loadData();
     } catch (error) {

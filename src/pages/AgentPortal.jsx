@@ -30,6 +30,8 @@ import ReportGenerator from "../components/agent/ReportGenerator";
 import TierProgressCard from "../components/agent/TierProgressCard";
 import SupportTicketForm from "../components/agent/SupportTicketForm";
 import SupportTicketList from "../components/agent/SupportTicketList";
+import AgentOnboardingWizard from "../components/agent/AgentOnboardingWizard";
+import AgentOnboardingChecklist from "../components/agent/AgentOnboardingChecklist";
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -47,6 +49,8 @@ export default function AgentPortal() {
   const [showSupportForm, setShowSupportForm] = useState(false);
   const [supportTickets, setSupportTickets] = useState([]);
   const [payoutBatches, setPayoutBatches] = useState([]);
+  const [onboardingStatus, setOnboardingStatus] = useState(null);
+  const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
 
   const [newPlayer, setNewPlayer] = useState({
     site_id: "",
@@ -70,7 +74,7 @@ export default function AgentPortal() {
         return;
       }
 
-      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, tickets, batches] = await Promise.all([
+      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, tickets, batches, onboarding] = await Promise.all([
         base44.entities.Agent.filter({ agent_email: currentUser.email }),
         currentUser.agent_id ?
           base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) :
@@ -87,6 +91,9 @@ export default function AgentPortal() {
           [],
         currentUser.agent_id ?
           base44.entities.PayoutBatch.filter({ agent_id: currentUser.agent_id }) :
+          [],
+        currentUser.agent_id ?
+          base44.entities.AgentOnboarding.filter({ agent_id: currentUser.agent_id }) :
           []
       ]);
 
@@ -104,6 +111,15 @@ export default function AgentPortal() {
       setReferralLinks(agentReferralLinks);
       setSupportTickets(tickets);
       setPayoutBatches(batches);
+      
+      // Check onboarding status
+      if (onboarding.length > 0) {
+        setOnboardingStatus(onboarding[0]);
+        // Show wizard if not completed setup guide
+        if (!onboarding[0].setup_guide_viewed && !onboarding[0].onboarding_completed) {
+          setShowOnboardingWizard(true);
+        }
+      }
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load agent data");
@@ -324,6 +340,14 @@ export default function AgentPortal() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Onboarding Checklist - Show for non-completed onboarding */}
+        {onboardingStatus && !onboardingStatus.onboarding_completed && (
+          <AgentOnboardingChecklist 
+            agentId={user?.agent_id} 
+            onComplete={loadData}
+          />
+        )}
 
         {/* Main Content */}
         <Tabs defaultValue="overview" className="space-y-6">
@@ -1024,6 +1048,17 @@ export default function AgentPortal() {
         agentId={user?.agent_id}
         onTicketCreated={loadData}
       />
-    </div>);
 
-}
+      {/* Onboarding Wizard */}
+      {showOnboardingWizard && agent && (
+        <AgentOnboardingWizard
+          agent={agent}
+          onComplete={() => {
+            setShowOnboardingWizard(false);
+            loadData();
+          }}
+        />
+      )}
+      </div>);
+
+      }
