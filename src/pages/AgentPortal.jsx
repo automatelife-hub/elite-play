@@ -33,6 +33,7 @@ import SupportTicketForm from "../components/agent/SupportTicketForm";
 import SupportTicketList from "../components/agent/SupportTicketList";
 import AgentOnboardingWizard from "../components/agent/AgentOnboardingWizard";
 import AgentOnboardingChecklist from "../components/agent/AgentOnboardingChecklist";
+import AchievementBadges from "../components/agent/AchievementBadges";
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -382,6 +383,11 @@ export default function AgentPortal() {
           {/* Overview Tab */}
           <TabsContent value="overview">
             <div className="space-y-6">
+              {/* Achievements */}
+              {user?.agent_id && (
+                <AchievementBadges agentId={user.agent_id} />
+              )}
+
               {/* Performance Charts */}
               <PerformanceCharts players={players} commissions={commissions} />
 

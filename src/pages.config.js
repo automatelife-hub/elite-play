@@ -23,6 +23,7 @@ import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
 import MarketingHub from './pages/MarketingHub';
+import Leaderboard from './pages/Leaderboard';
 import __Layout from './Layout.jsx';
 
 
@@ -52,6 +53,7 @@ export const PAGES = {
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
     "MarketingHub": MarketingHub,
+    "Leaderboard": Leaderboard,
 }
 
 export const pagesConfig = {

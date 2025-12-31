@@ -188,6 +188,11 @@ const navigationItems = [
     url: createPageUrl("Guides"),
     icon: BookOpen,
   },
+  {
+    title: "Leaderboard",
+    url: createPageUrl("Leaderboard"),
+    icon: Star,
+  },
 ];
 
 export default function Layout({ children, currentPageName }) {
