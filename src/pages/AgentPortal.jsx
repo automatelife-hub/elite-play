@@ -405,13 +405,14 @@ export default function AgentPortal() {
                         No players yet. Start by submitting your first player!
                       </div>
                     )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+                    </div>
+                    </CardContent>
+                    </Card>
+                    </div>
+                    </div>
+                    </TabsContent>
 
-          {/* Players Tab */}
+                    {/* Players Tab */}
           <TabsContent value="players">
             <Card className="bg-gray-900 border-gray-800">
               <CardHeader>
