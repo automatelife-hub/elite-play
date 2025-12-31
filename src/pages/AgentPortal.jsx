@@ -28,6 +28,8 @@ import PaymentRequestDialog from "../components/agent/PaymentRequestDialog";
 import NotificationBell from "../components/agent/NotificationBell";
 import ReportGenerator from "../components/agent/ReportGenerator";
 import TierProgressCard from "../components/agent/TierProgressCard";
+import SupportTicketForm from "../components/agent/SupportTicketForm";
+import SupportTicketList from "../components/agent/SupportTicketList";
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -42,6 +44,8 @@ export default function AgentPortal() {
   const [platformFilter, setPlatformFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showPaymentRequest, setShowPaymentRequest] = useState(false);
+  const [showSupportForm, setShowSupportForm] = useState(false);
+  const [supportTickets, setSupportTickets] = useState([]);
 
   const [newPlayer, setNewPlayer] = useState({
     site_id: "",
@@ -65,7 +69,7 @@ export default function AgentPortal() {
         return;
       }
 
-      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks] = await Promise.all([
+      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, tickets] = await Promise.all([
         base44.entities.Agent.filter({ agent_email: currentUser.email }),
         currentUser.agent_id ?
           base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) :
@@ -76,6 +80,9 @@ export default function AgentPortal() {
           [],
         currentUser.agent_id ?
           base44.entities.AgentReferralLink.filter({ agent_id: currentUser.agent_id }) :
+          [],
+        currentUser.agent_id ?
+          base44.entities.SupportTicket.filter({ agent_id: currentUser.agent_id }) :
           []
       ]);
 
@@ -91,6 +98,7 @@ export default function AgentPortal() {
       setSites(allSites);
       setCommissions(agentCommissions);
       setReferralLinks(agentReferralLinks);
+      setSupportTickets(tickets);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load agent data");
@@ -332,6 +340,9 @@ export default function AgentPortal() {
             </TabsTrigger>
             <TabsTrigger value="offerings" className="data-[state=active]:bg-yellow-500/20">
               Tracking Links
+            </TabsTrigger>
+            <TabsTrigger value="support" className="data-[state=active]:bg-yellow-500/20">
+              Support
             </TabsTrigger>
           </TabsList>
 
@@ -682,6 +693,48 @@ export default function AgentPortal() {
             />
           </TabsContent>
 
+          {/* Support Tab */}
+          <TabsContent value="support">
+            <div className="space-y-6">
+              <Card className="bg-gray-900 border-gray-800">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-white">Support Tickets</CardTitle>
+                    <Button
+                      onClick={() => setShowSupportForm(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Ticket
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-4 gap-4 mb-6">
+                    <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
+                      <div className="text-2xl font-bold text-blue-400">{supportTickets.filter(t => t.status === 'open').length}</div>
+                      <div className="text-sm text-gray-400">Open</div>
+                    </div>
+                    <div className="p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+                      <div className="text-2xl font-bold text-yellow-400">{supportTickets.filter(t => t.status === 'in_progress').length}</div>
+                      <div className="text-sm text-gray-400">In Progress</div>
+                    </div>
+                    <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/30">
+                      <div className="text-2xl font-bold text-green-400">{supportTickets.filter(t => t.status === 'resolved').length}</div>
+                      <div className="text-sm text-gray-400">Resolved</div>
+                    </div>
+                    <div className="p-3 bg-gray-500/10 rounded-lg border border-gray-500/30">
+                      <div className="text-2xl font-bold text-gray-400">{supportTickets.length}</div>
+                      <div className="text-sm text-gray-400">Total</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <SupportTicketList tickets={supportTickets} sites={sites} />
+            </div>
+          </TabsContent>
+
           {/* Offerings Tab */}
           <TabsContent value="offerings">
             <div className="space-y-6">
@@ -919,6 +972,15 @@ export default function AgentPortal() {
         onOpenChange={setShowPaymentRequest}
         pendingAmount={pendingCommission}
         agentId={user?.agent_id}
+      />
+
+      {/* Support Ticket Form */}
+      <SupportTicketForm
+        open={showSupportForm}
+        onOpenChange={setShowSupportForm}
+        sites={sites}
+        agentId={user?.agent_id}
+        onTicketCreated={loadData}
       />
     </div>);
 
