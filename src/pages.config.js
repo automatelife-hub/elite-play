@@ -17,6 +17,7 @@ import Reviews from './pages/Reviews';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
+import ClubBasedApps from './pages/ClubBasedApps';
 import __Layout from './Layout.jsx';
 
 
@@ -40,6 +41,7 @@ export const PAGES = {
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
+    "ClubBasedApps": ClubBasedApps,
 }
 
 export const pagesConfig = {
