@@ -17,12 +17,11 @@ const TIER_CONFIG = {
       revenue: 0
     },
     benefits: [
-      "25% commission rate",
+      "Deal-based commissions",
       "Basic reporting tools",
       "Email support",
       "Marketing materials"
-    ],
-    commissionRate: 25
+    ]
   },
   silver: {
     name: "Silver",
@@ -36,13 +35,12 @@ const TIER_CONFIG = {
       revenue: 5000
     },
     benefits: [
-      "30% commission rate",
+      "Higher deal commissions",
       "Advanced analytics",
       "Priority email support",
       "Custom landing pages",
       "Monthly strategy calls"
-    ],
-    commissionRate: 30
+    ]
   },
   gold: {
     name: "Gold",
@@ -56,14 +54,13 @@ const TIER_CONFIG = {
       revenue: 15000
     },
     benefits: [
-      "35% commission rate",
+      "Premium deal commissions",
       "Full analytics suite",
       "Dedicated account manager",
       "Custom promotional deals",
       "Weekly strategy sessions",
       "API access"
-    ],
-    commissionRate: 35
+    ]
   }
 };
 
@@ -115,7 +112,7 @@ export default function TierProgressCard({ agent, playersCount, totalRevenue, av
               </div>
             </div>
             <Badge className={`${currentTierConfig.bgColor} ${currentTierConfig.textColor} ${currentTierConfig.borderColor} text-lg px-4 py-2`}>
-              {currentTierConfig.commissionRate}% Commission
+              {averageCommissionRate ? `${averageCommissionRate.toFixed(1)}%` : `${currentTierConfig.commissionRate}%`} Avg Commission
             </Badge>
           </div>
         </CardHeader>
@@ -245,8 +242,8 @@ export default function TierProgressCard({ agent, playersCount, totalRevenue, av
                     <div>• ${tierConfig.requirements.revenue}+ revenue</div>
                   </div>
 
-                  <div className={`text-2xl font-bold ${tierConfig.textColor} mb-3`}>
-                    {tierConfig.commissionRate}%
+                  <div className={`text-sm text-gray-400 mb-3`}>
+                    Based on approved deals
                   </div>
 
                   <ul className="space-y-2">

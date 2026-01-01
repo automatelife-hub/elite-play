@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Users, Search, CheckCircle, XCircle, Edit, Tag, UserCog, Award, Crown, Sparkles } from "lucide-react";
+import { Users, Search, CheckCircle, XCircle, Edit, Tag, UserCog, Award, Crown, Sparkles, Plus, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -34,7 +34,10 @@ export default function AdminAgents() {
   const [paymentTypeFilter, setPaymentTypeFilter] = useState("all");
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDealsDialog, setShowDealsDialog] = useState(false);
   const [editForm, setEditForm] = useState({});
+  const [agentDeals, setAgentDeals] = useState([]);
+  const [sites, setSites] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -51,8 +54,12 @@ export default function AdminAgents() {
         return;
       }
 
-      const agentsList = await base44.entities.Agent.list('-created_date');
+      const [agentsList, sitesList] = await Promise.all([
+        base44.entities.Agent.list('-created_date'),
+        base44.entities.Site.list()
+      ]);
       setAgents(agentsList);
+      setSites(sitesList);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load agents");
@@ -137,6 +144,50 @@ export default function AdminAgents() {
         ...editForm,
         internal_tags: [...currentTags, tag]
       });
+    }
+  };
+
+  const openDealsDialog = async (agent) => {
+    setSelectedAgent(agent);
+    try {
+      const deals = await base44.entities.AgentDeal.filter({ agent_id: agent.id });
+      setAgentDeals(deals);
+      setShowDealsDialog(true);
+    } catch (error) {
+      console.error("Error loading deals:", error);
+      toast.error("Failed to load agent deals");
+    }
+  };
+
+  const createDeal = async (siteId, commissionRate) => {
+    if (!selectedAgent) return;
+    try {
+      await base44.entities.AgentDeal.create({
+        agent_id: selectedAgent.id,
+        site_id: siteId,
+        commission_rate: commissionRate,
+        status: 'approved',
+        approved_date: new Date().toISOString().split('T')[0]
+      });
+      toast.success("Deal created successfully");
+      await openDealsDialog(selectedAgent);
+    } catch (error) {
+      console.error("Error creating deal:", error);
+      toast.error("Failed to create deal");
+    }
+  };
+
+  const updateDealStatus = async (dealId, status) => {
+    try {
+      await base44.entities.AgentDeal.update(dealId, { 
+        status,
+        approved_date: status === 'approved' ? new Date().toISOString().split('T')[0] : null
+      });
+      toast.success(`Deal ${status}`);
+      await openDealsDialog(selectedAgent);
+    } catch (error) {
+      console.error("Error updating deal:", error);
+      toast.error("Failed to update deal");
     }
   };
 
@@ -415,6 +466,14 @@ export default function AdminAgents() {
                         <Edit className="w-4 h-4 mr-2" />
                         Edit
                       </Button>
+                      <Button
+                        onClick={() => openDealsDialog(agent)}
+                        variant="outline"
+                        className="border-cyan-700 text-cyan-300 hover:bg-cyan-800/20"
+                      >
+                        <DollarSign className="w-4 h-4 mr-2" />
+                        Deals
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -572,6 +631,144 @@ export default function AdminAgents() {
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Agent Deals Dialog */}
+      <Dialog open={showDealsDialog} onOpenChange={setShowDealsDialog}>
+        <DialogContent className="bg-gray-900 border-gray-800 text-white max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
+              Manage Deals: {selectedAgent?.agent_name}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {/* Add New Deal */}
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white text-lg">Add New Deal</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  {sites.map(site => {
+                    const existingDeal = agentDeals.find(d => d.site_id === site.id);
+                    return (
+                      <div key={site.id} className="flex items-center justify-between p-3 bg-gray-900 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          {site.logo_url && (
+                            <img src={site.logo_url} alt={site.name} className="w-10 h-10 object-contain bg-white rounded p-1" />
+                          )}
+                          <div>
+                            <div className="font-semibold text-white">{site.name}</div>
+                            <div className="text-xs text-gray-400">{site.type}</div>
+                          </div>
+                        </div>
+                        {existingDeal ? (
+                          <Badge className={
+                            existingDeal.status === 'approved' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                            existingDeal.status === 'paused' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                            'bg-gray-500/20 text-gray-400 border-gray-500/30'
+                          }>
+                            {existingDeal.commission_rate}% - {existingDeal.status}
+                          </Badge>
+                        ) : (
+                          <div className="flex gap-2">
+                            <Input
+                              type="number"
+                              placeholder="Rate %"
+                              id={`rate-${site.id}`}
+                              className="w-24 bg-gray-800 border-gray-700 text-white"
+                            />
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                const input = document.getElementById(`rate-${site.id}`);
+                                const rate = parseFloat(input.value);
+                                if (rate && rate > 0) {
+                                  createDeal(site.id, rate);
+                                  input.value = '';
+                                }
+                              }}
+                              className="bg-cyan-600 hover:bg-cyan-700"
+                            >
+                              <Plus className="w-4 h-4 mr-1" />
+                              Add
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Existing Deals */}
+            {agentDeals.length > 0 && (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-white text-lg">Current Deals</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {agentDeals.map(deal => {
+                      const site = sites.find(s => s.id === deal.site_id);
+                      return (
+                        <div key={deal.id} className="flex items-center justify-between p-3 bg-gray-900 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            {site?.logo_url && (
+                              <img src={site.logo_url} alt={site.name} className="w-10 h-10 object-contain bg-white rounded p-1" />
+                            )}
+                            <div>
+                              <div className="font-semibold text-white">{site?.name || 'Unknown'}</div>
+                              <div className="text-sm text-green-400">{deal.commission_rate}% Commission</div>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            {deal.status === 'approved' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateDealStatus(deal.id, 'paused')}
+                                className="border-yellow-700 text-yellow-400 hover:bg-yellow-800/20"
+                              >
+                                Pause
+                              </Button>
+                            )}
+                            {deal.status === 'paused' && (
+                              <Button
+                                size="sm"
+                                onClick={() => updateDealStatus(deal.id, 'approved')}
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                Activate
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowDealsDialog(false);
+                setSelectedAgent(null);
+                setAgentDeals([]);
+              }}
+              className="border-gray-700 text-gray-300 hover:bg-gray-800"
+            >
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
