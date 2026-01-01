@@ -53,6 +53,8 @@ export default function AgentPortal() {
   const [payoutBatches, setPayoutBatches] = useState([]);
   const [onboardingStatus, setOnboardingStatus] = useState(null);
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+  const [agentDeals, setAgentDeals] = useState([]);
+  const [averageCommissionRate, setAverageCommissionRate] = useState(0);
 
   const [newPlayer, setNewPlayer] = useState({
     site_id: "",
@@ -76,7 +78,7 @@ export default function AgentPortal() {
         return;
       }
 
-      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, tickets, batches, onboarding] = await Promise.all([
+      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, tickets, batches, onboarding, deals] = await Promise.all([
         base44.entities.Agent.filter({ agent_email: currentUser.email }),
         currentUser.agent_id ?
           base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) :
@@ -96,6 +98,9 @@ export default function AgentPortal() {
           [],
         currentUser.agent_id ?
           base44.entities.AgentOnboarding.filter({ agent_id: currentUser.agent_id }) :
+          [],
+        currentUser.agent_id ?
+          base44.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) :
           []
       ]);
 
@@ -113,6 +118,14 @@ export default function AgentPortal() {
       setReferralLinks(agentReferralLinks);
       setSupportTickets(tickets);
       setPayoutBatches(batches);
+      setAgentDeals(deals);
+      
+      // Calculate average commission rate from approved deals
+      const approvedDeals = deals.filter(d => d.status === 'approved');
+      if (approvedDeals.length > 0) {
+        const avgRate = approvedDeals.reduce((sum, d) => sum + d.commission_rate, 0) / approvedDeals.length;
+        setAverageCommissionRate(avgRate);
+      }
       
       // Check onboarding status
       if (onboarding.length > 0) {
@@ -481,7 +494,45 @@ export default function AgentPortal() {
                       agent={agent}
                       playersCount={players.length}
                       totalRevenue={totalRevenue}
+                      averageCommissionRate={averageCommissionRate}
                     />
+
+                    {/* Agent Deals */}
+                    <Card className="bg-gray-900 border-gray-800 mt-6">
+                      <CardHeader>
+                        <CardTitle className="text-white">Your Approved Deals</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {agentDeals.filter(d => d.status === 'approved').map(deal => {
+                            const site = sites.find(s => s.id === deal.site_id);
+                            return (
+                              <div key={deal.id} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                  {site?.logo_url && (
+                                    <img src={site.logo_url} alt={site.name} className="w-10 h-10 object-contain bg-white rounded p-1" />
+                                  )}
+                                  <div>
+                                    <div className="font-semibold text-white">{site?.name || 'Unknown Site'}</div>
+                                    <div className="text-xs text-gray-400">
+                                      Approved {deal.approved_date ? new Date(deal.approved_date).toLocaleDateString() : ''}
+                                    </div>
+                                  </div>
+                                </div>
+                                <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                                  {deal.commission_rate}% Commission
+                                </Badge>
+                              </div>
+                            );
+                          })}
+                          {agentDeals.filter(d => d.status === 'approved').length === 0 && (
+                            <div className="text-center py-8 text-gray-500">
+                              No approved deals yet. Contact admin to get deals approved.
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
                     </TabsContent>
 
                     {/* Players Tab */}

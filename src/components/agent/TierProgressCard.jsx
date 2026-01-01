@@ -69,7 +69,7 @@ const TIER_CONFIG = {
 
 const TIER_ORDER = ['bronze', 'silver', 'gold'];
 
-export default function TierProgressCard({ agent, playersCount, totalRevenue }) {
+export default function TierProgressCard({ agent, playersCount, totalRevenue, averageCommissionRate }) {
   const currentTier = agent?.tier || 'bronze';
   const currentTierConfig = TIER_CONFIG[currentTier];
   const currentTierIndex = TIER_ORDER.indexOf(currentTier);
