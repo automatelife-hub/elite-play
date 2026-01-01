@@ -17,7 +17,11 @@ import {
   ArrowRight,
   Sparkles,
   Target,
-  Headphones } from
+  Headphones,
+  Trophy,
+  Award,
+  Ticket,
+  LineChart } from
 "lucide-react";
 import { createPageUrl } from "@/utils";
 import AgentApplicationForm from "../components/agent/AgentApplicationForm";
@@ -134,117 +138,233 @@ export default function BecomeAgent() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Multi-Source Tracking */}
-            <Card className="bg-slate-900 border-slate-700 hover:border-cyan-500/50 transition-all">
+            {/* Agent Tier System */}
+            <Card className="bg-slate-900 border-slate-700 hover:border-yellow-500/50 transition-all">
               <CardHeader>
-                <div className="w-14 h-14 bg-cyan-500/20 border border-cyan-400/30 rounded-xl flex items-center justify-center mb-4">
-                  <BarChart3 className="w-7 h-7 text-cyan-400" />
+                <div className="w-14 h-14 bg-yellow-500/20 border border-yellow-400/30 rounded-xl flex items-center justify-center mb-4">
+                  <Award className="w-7 h-7 text-yellow-400" />
                 </div>
-                <CardTitle className="text-xl text-white">Advanced Traffic Tracking</CardTitle>
+                <CardTitle className="text-xl text-white">Progressive Tier System</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-slate-400 mb-4">
-                  Track unlimited traffic sources with granular analytics. Monitor performance by campaign, source, medium, and custom parameters.
+                  Grow from Bronze to Gold tier and unlock increasing commission rates, exclusive benefits, and premium features as you scale.
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-center text-slate-300 text-sm">
-                    <CheckCircle className="w-4 h-4 text-cyan-400 mr-2 flex-shrink-0" />
-                    Real-time conversion tracking
+                    <CheckCircle className="w-4 h-4 text-yellow-400 mr-2 flex-shrink-0" />
+                    Bronze: 25-30% commission
                   </li>
                   <li className="flex items-center text-slate-300 text-sm">
-                    <CheckCircle className="w-4 h-4 text-cyan-400 mr-2 flex-shrink-0" />
-                    Custom UTM parameters
+                    <CheckCircle className="w-4 h-4 text-yellow-400 mr-2 flex-shrink-0" />
+                    Silver: 30-35% commission
                   </li>
                   <li className="flex items-center text-slate-300 text-sm">
-                    <CheckCircle className="w-4 h-4 text-cyan-400 mr-2 flex-shrink-0" />
-                    Multi-channel attribution
+                    <CheckCircle className="w-4 h-4 text-yellow-400 mr-2 flex-shrink-0" />
+                    Gold: 35-40% commission
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
-            {/* Sub-Affiliate Management */}
+            {/* Gamification & Achievements */}
             <Card className="bg-slate-900 border-slate-700 hover:border-purple-500/50 transition-all">
               <CardHeader>
                 <div className="w-14 h-14 bg-purple-500/20 border border-purple-400/30 rounded-xl flex items-center justify-center mb-4">
-                  <Users className="w-7 h-7 text-purple-400" />
+                  <Trophy className="w-7 h-7 text-purple-400" />
                 </div>
-                <CardTitle className="text-xl text-white">Sub-Affiliate Network</CardTitle>
+                <CardTitle className="text-xl text-white">Gamification & Leaderboards</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-slate-400 mb-4">
-                  Build and manage your own network of sub-affiliates. Recruit, track, and reward your partners - all under your brand.
+                  Earn achievement badges, compete on leaderboards, and track your progress with engaging gamification features.
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-center text-slate-300 text-sm">
                     <CheckCircle className="w-4 h-4 text-purple-400 mr-2 flex-shrink-0" />
-                    Unlimited sub-affiliates
+                    Achievement badge system
                   </li>
                   <li className="flex items-center text-slate-300 text-sm">
                     <CheckCircle className="w-4 h-4 text-purple-400 mr-2 flex-shrink-0" />
-                    Individual dashboards
+                    Agent leaderboards
                   </li>
                   <li className="flex items-center text-slate-300 text-sm">
                     <CheckCircle className="w-4 h-4 text-purple-400 mr-2 flex-shrink-0" />
-                    Custom commission structures
+                    Performance milestones
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
-            {/* Deal Customization */}
+            {/* Contest Management */}
+            <Card className="bg-slate-900 border-slate-700 hover:border-pink-500/50 transition-all">
+              <CardHeader>
+                <div className="w-14 h-14 bg-pink-500/20 border border-pink-400/30 rounded-xl flex items-center justify-center mb-4">
+                  <Ticket className="w-7 h-7 text-pink-400" />
+                </div>
+                <CardTitle className="text-xl text-white">Player Contest System</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-400 mb-4">
+                  Create and manage rake races, wagering contests, and raffles to boost player engagement and retention.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-pink-400 mr-2 flex-shrink-0" />
+                    Rake race tournaments
+                  </li>
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-pink-400 mr-2 flex-shrink-0" />
+                    Casino wagering contests
+                  </li>
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-pink-400 mr-2 flex-shrink-0" />
+                    Raffle systems
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Advanced Analytics */}
+            <Card className="bg-slate-900 border-slate-700 hover:border-cyan-500/50 transition-all">
+              <CardHeader>
+                <div className="w-14 h-14 bg-cyan-500/20 border border-cyan-400/30 rounded-xl flex items-center justify-center mb-4">
+                  <LineChart className="w-7 h-7 text-cyan-400" />
+                </div>
+                <CardTitle className="text-xl text-white">Advanced Analytics & Reports</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-400 mb-4">
+                  Comprehensive performance dashboards, exportable reports, and real-time tracking with beautiful visualizations.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-cyan-400 mr-2 flex-shrink-0" />
+                    Performance charts & graphs
+                  </li>
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-cyan-400 mr-2 flex-shrink-0" />
+                    CSV & PDF exports
+                  </li>
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-cyan-400 mr-2 flex-shrink-0" />
+                    Custom date ranges
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Marketing Hub */}
+            <Card className="bg-slate-900 border-slate-700 hover:border-indigo-500/50 transition-all">
+              <CardHeader>
+                <div className="w-14 h-14 bg-indigo-500/20 border border-indigo-400/30 rounded-xl flex items-center justify-center mb-4">
+                  <Sparkles className="w-7 h-7 text-indigo-400" />
+                </div>
+                <CardTitle className="text-xl text-white">Marketing Asset Library</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-400 mb-4">
+                  Access professional marketing materials, track campaign performance, and request custom assets for your promotions.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-indigo-400 mr-2 flex-shrink-0" />
+                    Ready-made banners & graphics
+                  </li>
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-indigo-400 mr-2 flex-shrink-0" />
+                    Campaign tracking
+                  </li>
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-indigo-400 mr-2 flex-shrink-0" />
+                    Custom asset requests
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Player Management */}
             <Card className="bg-slate-900 border-slate-700 hover:border-emerald-500/50 transition-all">
               <CardHeader>
                 <div className="w-14 h-14 bg-emerald-500/20 border border-emerald-400/30 rounded-xl flex items-center justify-center mb-4">
-                  <Settings className="w-7 h-7 text-emerald-400" />
+                  <Users className="w-7 h-7 text-emerald-400" />
                 </div>
-                <CardTitle className="text-xl text-white">Tiered Deal Management</CardTitle>
+                <CardTitle className="text-xl text-white">Player Management</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-slate-400 mb-4">
-                  Create custom deals for different player tiers. Offer VIP treatment to high rollers while optimizing recreational player acquisition.
+                  Comprehensive player tracking with detailed statistics, filtering, and real-time status updates across all platforms.
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-center text-slate-300 text-sm">
                     <CheckCircle className="w-4 h-4 text-emerald-400 mr-2 flex-shrink-0" />
-                    Flexible tier structures
+                    Unlimited player tracking
                   </li>
                   <li className="flex items-center text-slate-300 text-sm">
                     <CheckCircle className="w-4 h-4 text-emerald-400 mr-2 flex-shrink-0" />
-                    Custom bonus packages
+                    Platform filtering
                   </li>
                   <li className="flex items-center text-slate-300 text-sm">
                     <CheckCircle className="w-4 h-4 text-emerald-400 mr-2 flex-shrink-0" />
-                    Dynamic commission rates
+                    Revenue per player tracking
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
-            {/* White-Label Branding */}
+            {/* Support System */}
             <Card className="bg-slate-900 border-slate-700 hover:border-blue-500/50 transition-all">
               <CardHeader>
                 <div className="w-14 h-14 bg-blue-500/20 border border-blue-400/30 rounded-xl flex items-center justify-center mb-4">
-                  <Building2 className="w-7 h-7 text-blue-400" />
+                  <Headphones className="w-7 h-7 text-blue-400" />
                 </div>
-                <CardTitle className="text-xl text-white">White-Label Platform</CardTitle>
+                <CardTitle className="text-xl text-white">Integrated Support System</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-slate-400 mb-4">
-                  Run everything under your own brand. Custom domain, logo, colors - your affiliates see YOUR agency, not ours.
+                  Built-in ticketing system for quick issue resolution. Track all support requests and get help when you need it.
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-center text-slate-300 text-sm">
                     <CheckCircle className="w-4 h-4 text-blue-400 mr-2 flex-shrink-0" />
-                    Custom domain setup
+                    Support ticket management
                   </li>
                   <li className="flex items-center text-slate-300 text-sm">
                     <CheckCircle className="w-4 h-4 text-blue-400 mr-2 flex-shrink-0" />
-                    Branded reporting
+                    Priority categorization
                   </li>
                   <li className="flex items-center text-slate-300 text-sm">
                     <CheckCircle className="w-4 h-4 text-blue-400 mr-2 flex-shrink-0" />
-                    Custom email templates
+                    Fast response times
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Payment Management */}
+            <Card className="bg-slate-900 border-slate-700 hover:border-green-500/50 transition-all">
+              <CardHeader>
+                <div className="w-14 h-14 bg-green-500/20 border border-green-400/30 rounded-xl flex items-center justify-center mb-4">
+                  <DollarSign className="w-7 h-7 text-green-400" />
+                </div>
+                <CardTitle className="text-xl text-white">Automated Payouts</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-400 mb-4">
+                  Request payouts directly from your dashboard. Choose between automated monthly payments or performance-based processing.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-green-400 mr-2 flex-shrink-0" />
+                    One-click payment requests
+                  </li>
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-green-400 mr-2 flex-shrink-0" />
+                    Multiple payment methods
+                  </li>
+                  <li className="flex items-center text-slate-300 text-sm">
+                    <CheckCircle className="w-4 h-4 text-green-400 mr-2 flex-shrink-0" />
+                    Detailed payout history
                   </li>
                 </ul>
               </CardContent>
@@ -343,31 +463,35 @@ export default function BecomeAgent() {
                 <div className="space-y-3 flex-1">
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">Complete agency platform access</span>
+                    <span className="text-slate-300">Complete agent dashboard</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">Unlimited traffic source tracking</span>
+                    <span className="text-slate-300">Unlimited player tracking</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">Unlimited sub-affiliates</span>
+                    <span className="text-slate-300">Tier progression system</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">Custom deal management</span>
+                    <span className="text-slate-300">Contest management tools</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">White-label branding</span>
+                    <span className="text-slate-300">Marketing asset library</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">Advanced analytics & reporting</span>
+                    <span className="text-slate-300">Performance analytics & reports</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">Email support</span>
+                    <span className="text-slate-300">Support ticket system</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-300">Automated payment processing</span>
                   </div>
                 </div>
 
@@ -419,7 +543,15 @@ export default function BecomeAgent() {
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">Priority support</span>
+                    <span className="text-slate-300">Achievement badges & gamification</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-300">Leaderboard access</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-300">Priority support tickets</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
@@ -427,11 +559,7 @@ export default function BecomeAgent() {
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">Custom feature requests</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-300">API access (coming soon)</span>
+                    <span className="text-slate-300">Custom marketing assets</span>
                   </div>
                 </div>
 
@@ -534,9 +662,9 @@ export default function BecomeAgent() {
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500/20 to-purple-600/20 border-2 border-purple-500/40 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-2xl font-bold text-purple-400">2</span>
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Configure Your Deals</h3>
+              <h3 className="text-xl font-bold text-white mb-3">Set Up Your Dashboard</h3>
               <p className="text-slate-400">
-                Set up your commission structures, create player tiers, and customize deals across our 50+ poker sites and casinos.
+                Complete onboarding wizard, configure payment details, and access tracking links for 50+ poker sites and casinos.
               </p>
             </div>
 
@@ -546,7 +674,7 @@ export default function BecomeAgent() {
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Start Promoting & Earning</h3>
               <p className="text-slate-400">
-                Launch your campaigns, recruit sub-affiliates, and watch your revenue grow. Real-time tracking shows every conversion.
+                Submit players, create contests, use marketing materials, and track performance. Climb tier levels and unlock higher commissions.
               </p>
             </div>
           </div>
