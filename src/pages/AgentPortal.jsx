@@ -34,6 +34,7 @@ import SupportTicketList from "../components/agent/SupportTicketList";
 import AgentOnboardingWizard from "../components/agent/AgentOnboardingWizard";
 import AgentOnboardingChecklist from "../components/agent/AgentOnboardingChecklist";
 import AchievementBadges from "../components/agent/AchievementBadges";
+import ReferralSystem from "../components/agent/ReferralSystem";
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -395,7 +396,10 @@ export default function AgentPortal() {
               <TabsTrigger value="contests" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
                 Contests
               </TabsTrigger>
-            </TabsList>
+              <TabsTrigger value="referrals" className="data-[state=active]:bg-yellow-500/20 text-xs md:text-sm whitespace-nowrap">
+                Referrals
+              </TabsTrigger>
+              </TabsList>
           </div>
 
           {/* Overview Tab */}
@@ -859,6 +863,11 @@ export default function AgentPortal() {
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Referrals Tab */}
+          <TabsContent value="referrals">
+            <ReferralSystem agent={agent} agentId={user?.agent_id} />
           </TabsContent>
 
           {/* Support Tab */}
