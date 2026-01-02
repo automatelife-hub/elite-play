@@ -7,12 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import React, { useState, useEffect } from "react";
 import { Loader2, Send, CheckCircle, Mail, Clock } from "lucide-react";
 
 export default function AgentApplicationForm({ onSuccess }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [applicantEmail, setApplicantEmail] = useState("");
+  const [referralCode, setReferralCode] = useState("");
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -36,6 +38,15 @@ export default function AgentApplicationForm({ onSuccess }) {
     why_join: "",
     preferred_plan: "performance"
   });
+
+  useEffect(() => {
+    // Check for agent referral code in URL
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get('ref');
+    if (refCode) {
+      setReferralCode(refCode);
+    }
+  }, []);
 
   const handleCheckboxChange = (source) => {
     setFormData({
@@ -62,11 +73,30 @@ export default function AgentApplicationForm({ onSuccess }) {
 
     try {
       console.log("Creating agent record...");
+      
+      // Generate unique codes
+      const trackingCode = `${formData.full_name.substring(0, 3).toUpperCase()}${Date.now().toString().slice(-6)}`;
+      const agentReferralCode = `AGT${Date.now().toString().slice(-8)}`;
+      
+      // Find referrer if code exists
+      let referrerAgentId = null;
+      if (referralCode) {
+        const referrers = await base44.entities.Agent.filter({ 
+          agent_referral_code: referralCode 
+        });
+        if (referrers.length > 0) {
+          referrerAgentId = referrers[0].id;
+        }
+      }
+      
       // Create agent record
-      await base44.entities.Agent.create({
+      const agent = await base44.entities.Agent.create({
         agent_email: formData.email,
         agent_name: formData.full_name,
         company_name: formData.company_name,
+        tracking_code: trackingCode,
+        agent_referral_code: agentReferralCode,
+        referrer_agent_id: referrerAgentId,
         status: "pending",
         notes: JSON.stringify({
           phone: formData.phone,
@@ -78,10 +108,22 @@ export default function AgentApplicationForm({ onSuccess }) {
           experience: formData.experience,
           why_join: formData.why_join,
           preferred_plan: formData.preferred_plan,
-          applied_date: new Date().toISOString()
+          applied_date: new Date().toISOString(),
+          referred_by: referralCode || null
         })
       });
       console.log("Agent record created successfully");
+
+      // Create referral tracking if referred
+      if (referrerAgentId) {
+        await base44.entities.AgentReferral.create({
+          referrer_agent_id: referrerAgentId,
+          referred_agent_id: agent.id,
+          referral_code: referralCode,
+          status: 'pending',
+          referral_date: new Date().toISOString().split('T')[0]
+        });
+      }
 
       console.log("Sending confirmation email to applicant...");
       // Send confirmation email to applicant
