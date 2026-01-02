@@ -5,11 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, Image, TrendingUp, Plus, Search, FileText, Video, Layout } from "lucide-react";
+import { Download, Image, TrendingUp, Plus, Search, FileText, Video, Layout, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import MarketingAssetLibrary from "../components/marketing/MarketingAssetLibrary";
 import MarketingRequestForm from "../components/marketing/MarketingRequestForm";
 import CampaignPerformance from "../components/marketing/CampaignPerformance";
+import AIMarketingAssistant from "../components/marketing/AIMarketingAssistant";
 
 export default function MarketingHub() {
   const [user, setUser] = useState(null);
@@ -17,6 +18,8 @@ export default function MarketingHub() {
   const [assets, setAssets] = useState([]);
   const [campaigns, setCampaigns] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [sites, setSites] = useState([]);
+  const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showRequestForm, setShowRequestForm] = useState(false);
 
@@ -35,13 +38,16 @@ export default function MarketingHub() {
         return;
       }
 
-      const [agentData, allAssets, agentCampaigns, agentRequests] = await Promise.all([
+      const [agentData, allAssets, agentCampaigns, agentRequests, allSites, agentPlayers] = await Promise.all([
         base44.entities.Agent.filter({ agent_email: currentUser.email }),
         base44.entities.MarketingAsset.list('-created_date'),
         currentUser.agent_id ? 
           base44.entities.MarketingCampaign.filter({ agent_id: currentUser.agent_id }) : [],
         currentUser.agent_id ?
-          base44.entities.MarketingRequest.filter({ agent_id: currentUser.agent_id }) : []
+          base44.entities.MarketingRequest.filter({ agent_id: currentUser.agent_id }) : [],
+        base44.entities.Site.list(),
+        currentUser.agent_id ?
+          base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : []
       ]);
 
       if (agentData.length > 0) {
@@ -51,6 +57,8 @@ export default function MarketingHub() {
       setAssets(allAssets);
       setCampaigns(agentCampaigns);
       setRequests(agentRequests);
+      setSites(allSites);
+      setPlayers(agentPlayers);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load marketing data");
@@ -155,8 +163,12 @@ export default function MarketingHub() {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="library" className="space-y-6">
+        <Tabs defaultValue="ai" className="space-y-6">
           <TabsList className="bg-gray-900 border-gray-800">
+            <TabsTrigger value="ai" className="data-[state=active]:bg-purple-500/20">
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI Assistant
+            </TabsTrigger>
             <TabsTrigger value="library" className="data-[state=active]:bg-purple-500/20">
               Asset Library
             </TabsTrigger>
@@ -167,6 +179,15 @@ export default function MarketingHub() {
               My Requests
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="ai">
+            <AIMarketingAssistant
+              sites={sites}
+              agent={agent}
+              players={players}
+              campaigns={campaigns}
+            />
+          </TabsContent>
 
           <TabsContent value="library">
             <MarketingAssetLibrary 
