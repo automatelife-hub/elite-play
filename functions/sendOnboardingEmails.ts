@@ -26,6 +26,29 @@ Deno.serve(async (req) => {
 
     const agent = agents[0];
 
+    // Generate tracking code and agent referral code if not exists
+    const trackingCode = agent.tracking_code || `${agent.agent_name.substring(0, 3).toUpperCase()}${Date.now().toString().slice(-6)}`;
+    const agentReferralCode = agent.agent_referral_code || `AGT${Date.now().toString().slice(-8)}`;
+    
+    await base44.asServiceRole.entities.Agent.update(agent_id, {
+      tracking_code: trackingCode,
+      agent_referral_code: agentReferralCode
+    });
+
+    // If agent was referred, activate the referral
+    if (agent.referrer_agent_id) {
+      const referrals = await base44.asServiceRole.entities.AgentReferral.filter({
+        referred_agent_id: agent_id,
+        status: 'pending'
+      });
+      
+      if (referrals.length > 0) {
+        await base44.asServiceRole.entities.AgentReferral.update(referrals[0].id, {
+          status: 'active'
+        });
+      }
+    }
+
     // Create onboarding record
     await base44.asServiceRole.entities.AgentOnboarding.create({
       agent_id: agent_id,
@@ -42,7 +65,8 @@ Dear ${agent.agent_name},
 Congratulations! Your agency application has been approved. Welcome to the AceRakeback family!
 
 🎯 Your Account Details:
-- Tracking Code: ${agent.tracking_code}
+- Tracking Code: ${trackingCode}
+- Agent Referral Code: ${agentReferralCode}
 - Commission Rate: ${agent.commission_rate || 25}%
 - Tier: ${agent.tier || 'bronze'} (upgradable based on performance)
 
