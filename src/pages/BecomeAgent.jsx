@@ -32,9 +32,16 @@ export default function BecomeAgent() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showApplication, setShowApplication] = useState(false);
+  const [referralCode, setReferralCode] = useState("");
 
   useEffect(() => {
     checkUser();
+    // Check for referral code
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    if (ref) {
+      setReferralCode(ref);
+    }
   }, []);
 
   const checkUser = async () => {
@@ -705,13 +712,31 @@ export default function BecomeAgent() {
       </section>
 
       {/* Application Form Section */}
-      {showApplication &&
-      <section id="application-form" className="py-20 bg-slate-950">
+      {showApplication && (
+        <section id="application-form" className="py-20 bg-slate-950">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {referralCode && (
+              <div className="mb-8">
+                <Card className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border-purple-500/30 max-w-3xl mx-auto">
+                  <CardContent className="p-6 text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Users className="w-5 h-5 text-purple-400" />
+                      <h3 className="text-lg font-semibold text-white">You've Been Referred!</h3>
+                    </div>
+                    <p className="text-gray-300 mb-2">
+                      An existing agent has invited you to join our platform.
+                    </p>
+                    <p className="text-purple-400 text-sm">
+                      Their referral code will be automatically applied to your application.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
             <AgentApplicationForm onSuccess={handleApplicationSuccess} />
           </div>
         </section>
-      }
-    </div>);
-
+      )}
+    </div>
+  );
 }
