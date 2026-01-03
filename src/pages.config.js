@@ -21,11 +21,11 @@ import PokerHome from './pages/PokerHome';
 import PokerNetworkDetail from './pages/PokerNetworkDetail';
 import PokerNetworks from './pages/PokerNetworks';
 import Profile from './pages/Profile';
+import ReferralSignup from './pages/ReferralSignup';
 import Reviews from './pages/Reviews';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
-import ReferralSignup from './pages/ReferralSignup';
 import __Layout from './Layout.jsx';
 
 
@@ -53,11 +53,11 @@ export const PAGES = {
     "PokerNetworkDetail": PokerNetworkDetail,
     "PokerNetworks": PokerNetworks,
     "Profile": Profile,
+    "ReferralSignup": ReferralSignup,
     "Reviews": Reviews,
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
-    "ReferralSignup": ReferralSignup,
 }
 
 export const pagesConfig = {
