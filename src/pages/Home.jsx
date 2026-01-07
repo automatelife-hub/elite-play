@@ -20,8 +20,8 @@ export default function Home() {
   const loadData = async () => {
     try {
       const [allSites] = await Promise.all([
-        Site.list('-rating', 6)
-      ]);
+      Site.list('-rating', 6)]
+      );
       setTopSites(allSites);
     } catch (error) {
       console.error("Error loading data:", error);
@@ -45,8 +45,8 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+            transition={{ duration: 0.8 }}>
+
             <Badge className="glass-card-light text-emerald-400 border-emerald-500/30 mb-8 px-6 py-2.5 text-sm font-medium">
               <Sparkles className="w-4 h-4 mr-2 inline" />
               Trusted by 50,000+ Players Worldwide
@@ -54,8 +54,8 @@ export default function Home() {
             
             <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold mb-8 leading-tight">
               <span className="block text-white/90 mb-3">Maximize Your</span>
-              <span className="block bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                Rakeback
+              <span className="block bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">Revenue
+
               </span>
             </h1>
             
@@ -81,23 +81,23 @@ export default function Home() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
               {[
-                { value: "$2M+", label: "Paid in Rakeback", icon: DollarSign },
-                { value: "150+", label: "Partner Sites", icon: Target },
-                { value: "24/7", label: "Expert Support", icon: Shield },
-                { value: "40%", label: "Commission", icon: TrendingUp }
-              ].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-                  className="glass-card-light rounded-xl p-6 hover:border-emerald-500/30 transition-all"
-                >
+              { value: "$2M+", label: "Paid in Rakeback", icon: DollarSign },
+              { value: "150+", label: "Partner Sites", icon: Target },
+              { value: "24/7", label: "Expert Support", icon: Shield },
+              { value: "40%", label: "Commission", icon: TrendingUp }].
+              map((stat, index) =>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
+                className="glass-card-light rounded-xl p-6 hover:border-emerald-500/30 transition-all">
+
                   <stat.icon className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
                   <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
                   <div className="text-sm text-gray-400">{stat.label}</div>
                 </motion.div>
-              ))}
+              )}
             </div>
           </motion.div>
         </div>
@@ -117,8 +117,8 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+            className="text-center mb-16">
+
             <h2 className="text-5xl font-bold mb-4">
               Top Rated <span className="text-emerald-400">Sites</span>
             </h2>
@@ -128,27 +128,27 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {topSites.slice(0, 6).map((site, idx) => (
-              <motion.div
-                key={site.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-              >
+            {topSites.slice(0, 6).map((site, idx) =>
+            <motion.div
+              key={site.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1 }}>
+
                 <Card className="bg-white border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden h-full">
                   <div className="flex flex-col sm:flex-row">
                     {/* Dark Left Image Section - 165px square */}
                     <div className="w-full sm:w-[165px] h-[165px] bg-slate-900 flex items-center justify-center p-4 flex-shrink-0">
-                      {site.logo_url ? (
-                        <img 
-                          src={site.logo_url} 
-                          alt={site.name} 
-                          className="max-w-full max-h-full object-contain"
-                        />
-                      ) : (
-                        <Star className="w-16 h-16 text-gray-600" />
-                      )}
+                      {site.logo_url ?
+                    <img
+                      src={site.logo_url}
+                      alt={site.name}
+                      className="max-w-full max-h-full object-contain" /> :
+
+
+                    <Star className="w-16 h-16 text-gray-600" />
+                    }
                     </div>
 
                     {/* White Content Area */}
@@ -158,30 +158,30 @@ export default function Home() {
                         <h3 className="text-xl font-bold text-gray-900 mb-2">{site.name}</h3>
                         
                         {/* Network */}
-                        {site.poker_network && site.poker_network !== 'independent' && site.poker_network !== 'no_deal_available' && (
-                          <p className="text-sm text-gray-600 mb-2 capitalize">
+                        {site.poker_network && site.poker_network !== 'independent' && site.poker_network !== 'no_deal_available' &&
+                      <p className="text-sm text-gray-600 mb-2 capitalize">
                             {site.poker_network.replace(/_/g, ' ').replace(' network', '')}
                           </p>
-                        )}
+                      }
 
                         {/* Star Rating */}
                         <div className="flex items-center gap-1 mb-3">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-4 h-4 ${
-                                i < Math.floor(site.rating)
-                                  ? 'text-yellow-500 fill-yellow-500'
-                                  : 'text-gray-300'
-                              }`}
-                            />
-                          ))}
+                          {[...Array(5)].map((_, i) =>
+                        <Star
+                          key={i}
+                          className={`w-4 h-4 ${
+                          i < Math.floor(site.rating) ?
+                          'text-yellow-500 fill-yellow-500' :
+                          'text-gray-300'}`
+                          } />
+
+                        )}
                           <span className="ml-1 text-sm font-semibold text-gray-700">{site.rating.toFixed(1)}</span>
                         </div>
 
                         {/* Bonus Info */}
-                        {site.bonus_offer && (
-                          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
+                        {site.bonus_offer &&
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
                             <div className="flex items-start gap-2">
                               <Gift className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
                               <div>
@@ -190,31 +190,31 @@ export default function Home() {
                               </div>
                             </div>
                           </div>
-                        )}
+                      }
 
                         {/* Rakeback */}
-                        {site.commission_rate && (
-                          <div className="text-sm text-gray-700 mb-3">
+                        {site.commission_rate &&
+                      <div className="text-sm text-gray-700 mb-3">
                             <span className="font-semibold">Rakeback:</span> Up to {site.commission_rate}%
                           </div>
-                        )}
+                      }
                       </div>
 
                       {/* Buttons */}
                       <div className="flex items-center gap-3 mt-4">
                         <a href={site.affiliate_url} target="_blank" rel="noopener noreferrer" className="flex-1">
-                          <Button 
-                            className="w-full font-bold text-white hover:opacity-90 transition-opacity"
-                            style={{ backgroundColor: '#e02d3c' }}
-                          >
+                          <Button
+                          className="w-full font-bold text-white hover:opacity-90 transition-opacity"
+                          style={{ backgroundColor: '#e02d3c' }}>
+
                             Sign Up
                             <ExternalLink className="w-4 h-4 ml-2" />
                           </Button>
                         </a>
-                        <Link 
-                          to={createPageUrl("SiteDetail") + `?id=${site.id}`}
-                          className="text-gray-700 hover:text-gray-900 underline font-medium text-sm"
-                        >
+                        <Link
+                        to={createPageUrl("SiteDetail") + `?id=${site.id}`}
+                        className="text-gray-700 hover:text-gray-900 underline font-medium text-sm">
+
                           Review
                         </Link>
                       </div>
@@ -222,7 +222,7 @@ export default function Home() {
                   </div>
                 </Card>
               </motion.div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -259,22 +259,22 @@ export default function Home() {
 
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { value: "$8.5K", label: "Avg Monthly", icon: DollarSign },
-                  { value: "1,200+", label: "Active Agents", icon: Users },
-                  { value: "$2.1M", label: "Total Payouts", icon: TrendingUp },
-                  { value: "40%", label: "Commission", icon: Trophy }
-                ].map((stat, idx) => (
-                  <div key={idx} className="glass-card-light rounded-xl p-6">
+                { value: "$8.5K", label: "Avg Monthly", icon: DollarSign },
+                { value: "1,200+", label: "Active Agents", icon: Users },
+                { value: "$2.1M", label: "Total Payouts", icon: TrendingUp },
+                { value: "40%", label: "Commission", icon: Trophy }].
+                map((stat, idx) =>
+                <div key={idx} className="glass-card-light rounded-xl p-6">
                     <stat.icon className="w-6 h-6 text-emerald-400 mb-3" />
                     <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
                     <div className="text-sm text-gray-400">{stat.label}</div>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>);
+
 }
