@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Users, Search, CheckCircle, XCircle, Edit, Tag, UserCog, Award, Crown, Sparkles, Plus, DollarSign } from "lucide-react";
 import { toast } from "sonner";
-import { format } from "date-fns";
 
 export default function AdminAgents() {
   const [user, setUser] = useState(null);
