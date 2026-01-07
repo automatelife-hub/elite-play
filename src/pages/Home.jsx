@@ -6,7 +6,7 @@ import { Site, Article } from "@/entities/all";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, TrendingUp, ArrowRight, Sparkles, Shield, Zap, Trophy, DollarSign, Users, Target } from "lucide-react";
+import { Star, TrendingUp, ArrowRight, Sparkles, Shield, Zap, Trophy, DollarSign, Users, Target, Gift, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
@@ -110,7 +110,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Top Sites Section */}
+      {/* Top Sites Section - WorldPokerDeals Style */}
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -127,7 +127,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
             {topSites.slice(0, 6).map((site, idx) => (
               <motion.div
                 key={site.id}
@@ -136,48 +136,91 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
               >
-                <Link to={createPageUrl("SiteDetail") + `?id=${site.id}`}>
-                  <Card className="group glass-card hover:border-emerald-500/30 transition-all duration-300 h-full cursor-pointer overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-cyan-500/0 group-hover:from-emerald-500/10 group-hover:to-cyan-500/10 transition-all duration-500" />
-                    
-                    <CardContent className="relative p-6">
-                      {site.logo_url && (
-                        <div className="h-20 flex items-center justify-center mb-4 bg-white/5 rounded-lg p-3">
-                          <img src={site.logo_url} alt={site.name} className="max-h-full max-w-full object-contain" />
-                        </div>
+                <Card className="bg-white border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden h-full">
+                  <div className="flex flex-col sm:flex-row">
+                    {/* Dark Left Image Section - 165px square */}
+                    <div className="w-full sm:w-[165px] h-[165px] bg-slate-900 flex items-center justify-center p-4 flex-shrink-0">
+                      {site.logo_url ? (
+                        <img 
+                          src={site.logo_url} 
+                          alt={site.name} 
+                          className="max-w-full max-h-full object-contain"
+                        />
+                      ) : (
+                        <Star className="w-16 h-16 text-gray-600" />
                       )}
-                      
-                      <h3 className="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
-                        {site.name}
-                      </h3>
-                      
-                      <div className="flex items-center gap-1 mb-3">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < Math.floor(site.rating)
-                                ? 'text-yellow-400 fill-yellow-400'
-                                : 'text-gray-600'
-                            }`}
-                          />
-                        ))}
-                        <span className="ml-2 text-sm text-gray-400">{site.rating.toFixed(1)}</span>
+                    </div>
+
+                    {/* White Content Area */}
+                    <div className="flex-1 p-5 flex flex-col justify-between bg-white">
+                      <div>
+                        {/* Site Name */}
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">{site.name}</h3>
+                        
+                        {/* Network */}
+                        {site.poker_network && site.poker_network !== 'independent' && site.poker_network !== 'no_deal_available' && (
+                          <p className="text-sm text-gray-600 mb-2 capitalize">
+                            {site.poker_network.replace(/_/g, ' ').replace(' network', '')}
+                          </p>
+                        )}
+
+                        {/* Star Rating */}
+                        <div className="flex items-center gap-1 mb-3">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < Math.floor(site.rating)
+                                  ? 'text-yellow-500 fill-yellow-500'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                          <span className="ml-1 text-sm font-semibold text-gray-700">{site.rating.toFixed(1)}</span>
+                        </div>
+
+                        {/* Bonus Info */}
+                        {site.bonus_offer && (
+                          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
+                            <div className="flex items-start gap-2">
+                              <Gift className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                              <div>
+                                <div className="text-xs font-semibold text-green-800 mb-1">WELCOME BONUS</div>
+                                <div className="text-sm font-bold text-green-700">{site.bonus_offer}</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Rakeback */}
+                        {site.commission_rate && (
+                          <div className="text-sm text-gray-700 mb-3">
+                            <span className="font-semibold">Rakeback:</span> Up to {site.commission_rate}%
+                          </div>
+                        )}
                       </div>
 
-                      {site.bonus_offer && (
-                        <div className="glass-card-light rounded-lg p-3 mb-4">
-                          <div className="text-sm text-emerald-400 font-semibold">{site.bonus_offer}</div>
-                        </div>
-                      )}
-
-                      <Button className="w-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-cyan-500/30 text-emerald-400 border border-emerald-500/30 group-hover:border-emerald-500/50">
-                        View Details
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+                      {/* Buttons */}
+                      <div className="flex items-center gap-3 mt-4">
+                        <a href={site.affiliate_url} target="_blank" rel="noopener noreferrer" className="flex-1">
+                          <Button 
+                            className="w-full font-bold text-white hover:opacity-90 transition-opacity"
+                            style={{ backgroundColor: '#e02d3c' }}
+                          >
+                            Sign Up
+                            <ExternalLink className="w-4 h-4 ml-2" />
+                          </Button>
+                        </a>
+                        <Link 
+                          to={createPageUrl("SiteDetail") + `?id=${site.id}`}
+                          className="text-gray-700 hover:text-gray-900 underline font-medium text-sm"
+                        >
+                          Review
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
               </motion.div>
             ))}
           </div>
