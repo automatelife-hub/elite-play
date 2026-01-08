@@ -111,15 +111,16 @@ Deno.serve(async (req) => {
       }
     ];
 
-    // Get agent data
-    const agents = await base44.asServiceRole.entities.Agent.filter({ id: agent_id });
-    if (agents.length === 0) {
+    // Get agent data using list() with query filter
+    const agents = await base44.asServiceRole.entities.Agent.list();
+    const agent = agents.find(a => a.id === agent_id);
+    if (!agent) {
       return Response.json({ error: 'Agent not found' }, { status: 404 });
     }
-    const agent = agents[0];
 
-    // Get existing achievements
-    const existingAchievements = await base44.asServiceRole.entities.AgentAchievement.filter({ agent_id });
+    // Get existing achievements using list() and filter manually
+    const allAchievements = await base44.asServiceRole.entities.AgentAchievement.list();
+    const existingAchievements = allAchievements.filter(a => a.agent_id === agent_id);
     const earnedIds = existingAchievements.map(a => a.achievement_id);
 
     // Prepare agent data for checks
