@@ -2,16 +2,32 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { Site, Article } from "@/entities/all";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, TrendingUp, ArrowRight, Sparkles, Shield, Zap, Trophy, DollarSign, Users, Target, Gift, ExternalLink } from "lucide-react";
+import { 
+  Shield, 
+  TrendingUp, 
+  Zap, 
+  Target, 
+  Eye, 
+  AlertTriangle, 
+  CheckCircle, 
+  Flame,
+  FileText,
+  BarChart3,
+  Users,
+  Radar,
+  Lock,
+  Cpu,
+  Activity
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
   const [topSites, setTopSites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -19,10 +35,11 @@ export default function Home() {
 
   const loadData = async () => {
     try {
-      const [allSites] = await Promise.all([
-      Site.list('-rating', 6)]
-      );
-      setTopSites(allSites);
+      const currentUser = await base44.auth.me().catch(() => null);
+      setUser(currentUser);
+      
+      const sites = await base44.entities.Site.list('-rating', 6);
+      setTopSites(sites);
     } catch (error) {
       console.error("Error loading data:", error);
     } finally {
@@ -31,250 +48,330 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-slate-950 text-white">
-      {/* Hero Section - Full Viewport */}
-      <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-500/10 rounded-full blur-3xl" />
+    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #1A0000, #0F0F0F)' }}>
+      {/* Hero Section - Fire Theme */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
+        {/* Animated Fire Background */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-red-900 to-orange-600 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-orange-600 to-yellow-600 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-red-800 to-orange-700 rounded-full blur-3xl opacity-20" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}>
-
-            <Badge className="glass-card-light text-emerald-400 border-emerald-500/30 mb-8 px-6 py-2.5 text-sm font-medium">
-              <Sparkles className="w-4 h-4 mr-2 inline" />
-              Trusted by 50,000+ Players Worldwide
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16">
+            
+            <Badge className="fire-glass-light text-orange-400 border-orange-600 mb-8 px-6 py-3 text-base font-bold">
+              <Flame className="w-5 h-5 mr-2 inline animate-pulse" />
+              INTELLIGENCE OPERATIONS AGENCY
             </Badge>
             
             <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold mb-8 leading-tight">
-              <span className="block text-white/90 mb-3">Maximize Your</span>
-              <span className="block bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">Revenue
-
+              <span className="block text-white mb-3">Gaming Intel</span>
+              <span className="block bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+                Agency
               </span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-              Premium deals, exclusive bonuses, and professional agency programs
+            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+              Classified intelligence on poker rooms, casinos & networks. Risk analysis. Opportunity assessment. Mission-critical support.
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 mb-16">
-              <Link to={createPageUrl("PokerHome")}>
-                <Button className="group relative bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 px-10 py-7 text-lg rounded-xl shadow-2xl hover:scale-105 transition-all">
-                  <Zap className="w-5 h-5 mr-2" />
-                  Explore Poker
+              <Link to={createPageUrl("AgentPortal")}>
+                <Button className="group fire-gradient hover:fire-glow px-10 py-7 text-lg rounded-xl shadow-2xl transition-all">
+                  <Radar className="w-5 h-5 mr-2" />
+                  Agent Mission Control
                 </Button>
               </Link>
-              <Link to={createPageUrl("CasinoHome")}>
-                <Button className="group relative bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 px-10 py-7 text-lg rounded-xl shadow-2xl hover:scale-105 transition-all">
-                  <Star className="w-5 h-5 mr-2" />
-                  Explore Casino
+              <Link to={createPageUrl("Stats")}>
+                <Button className="group fire-glass-light border-2 border-orange-600 hover:bg-orange-600/20 px-10 py-7 text-lg rounded-xl text-orange-400 transition-all">
+                  <Cpu className="w-5 h-5 mr-2" />
+                  Player Intel Command
                 </Button>
               </Link>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-              {[
-              { value: "$2M+", label: "Paid in Rakeback", icon: DollarSign },
-              { value: "150+", label: "Partner Sites", icon: Target },
-              { value: "24/7", label: "Expert Support", icon: Shield },
-              { value: "40%", label: "Commission", icon: TrendingUp }].
-              map((stat, index) =>
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-                className="glass-card-light rounded-xl p-6 hover:border-emerald-500/30 transition-all">
-
-                  <stat.icon className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
-                  <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
-                  <div className="text-sm text-gray-400">{stat.label}</div>
-                </motion.div>
-              )}
             </div>
           </motion.div>
-        </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-gray-600 rounded-full flex justify-center p-2">
-            <div className="w-1 h-3 bg-gradient-to-b from-emerald-400 to-transparent rounded-full" />
+          {/* Bento Grid - Intelligence Overview */}
+          <div className="grid grid-cols-12 gap-4 max-w-6xl mx-auto">
+            {/* Large Feature - Agency Services */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="col-span-12 md:col-span-8">
+              <Card className="fire-glass fire-glow border-orange-600/30 h-full hover:border-orange-500 transition-all">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-orange-400 flex items-center gap-2">
+                    <Shield className="w-6 h-6" />
+                    Agency Intelligence Services
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <FileText className="w-5 h-5 text-orange-500 mt-1" />
+                        <div>
+                          <div className="font-semibold text-white mb-1">Intel Briefs</div>
+                          <div className="text-sm text-gray-400">Detailed files on 150+ poker rooms, casinos & networks</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-red-500 mt-1" />
+                        <div>
+                          <div className="font-semibold text-white mb-1">Risk Assessment</div>
+                          <div className="text-sm text-gray-400">Real-time threat analysis & scam protection</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <TrendingUp className="w-5 h-5 text-green-500 mt-1" />
+                        <div>
+                          <div className="font-semibold text-white mb-1">Opportunity Intel</div>
+                          <div className="text-sm text-gray-400">EV signals, value opportunities, deal analysis</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <Users className="w-5 h-5 text-blue-500 mt-1" />
+                        <div>
+                          <div className="font-semibold text-white mb-1">Agent Operations</div>
+                          <div className="text-sm text-gray-400">Track players, revenue, commissions & deals</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Cpu className="w-5 h-5 text-purple-500 mt-1" />
+                        <div>
+                          <div className="font-semibold text-white mb-1">Bot Detection</div>
+                          <div className="text-sm text-gray-400">AI-powered analysis & intelligent screening</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Activity className="w-5 h-5 text-cyan-500 mt-1" />
+                        <div>
+                          <div className="font-semibold text-white mb-1">24/7 Support</div>
+                          <div className="text-sm text-gray-400">Mission-critical customer support operations</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Stats Column */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="col-span-12 md:col-span-4 space-y-4">
+              <Card className="fire-glass border-red-600/30 hover:border-red-500 transition-all">
+                <CardContent className="p-6 text-center">
+                  <Eye className="w-8 h-8 text-red-500 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-white mb-1">150+</div>
+                  <div className="text-sm text-gray-400">Sites Under Surveillance</div>
+                </CardContent>
+              </Card>
+              <Card className="fire-glass border-orange-600/30 hover:border-orange-500 transition-all">
+                <CardContent className="p-6 text-center">
+                  <Lock className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-white mb-1">$2M+</div>
+                  <div className="text-sm text-gray-400">Protected Revenue</div>
+                </CardContent>
+              </Card>
+              <Card className="fire-glass border-yellow-600/30 hover:border-yellow-500 transition-all">
+                <CardContent className="p-6 text-center">
+                  <Zap className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-white mb-1">24/7</div>
+                  <div className="text-sm text-gray-400">Operations Active</div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Medium Cards - Access Points */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="col-span-12 md:col-span-6">
+              <Link to={createPageUrl("AgentPortal")}>
+                <Card className="fire-glass border-orange-600/30 hover:border-orange-500 hover:fire-glow transition-all cursor-pointer h-full group">
+                  <CardContent className="p-8">
+                    <Radar className="w-12 h-12 text-orange-500 mb-4 group-hover:animate-pulse" />
+                    <h3 className="text-2xl font-bold text-white mb-2">GIA Mission Control</h3>
+                    <p className="text-gray-400 mb-4">Agent operations console. Track players, revenue, offers & risk signals. Command center for affiliate operations.</p>
+                    <div className="flex items-center gap-2 text-orange-400">
+                      <span className="font-semibold">Access Console</span>
+                      <Target className="w-4 h-4" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="col-span-12 md:col-span-6">
+              <Link to={createPageUrl("Stats")}>
+                <Card className="fire-glass border-blue-600/30 hover:border-blue-500 hover:fire-glow transition-all cursor-pointer h-full group">
+                  <CardContent className="p-8">
+                    <Cpu className="w-12 h-12 text-blue-500 mb-4 group-hover:animate-pulse" />
+                    <h3 className="text-2xl font-bold text-white mb-2">Player Intelligence Command</h3>
+                    <p className="text-gray-400 mb-4">Player command center. Access improved rooms, rake deals & scam protection. Intelligent analysis & bot detection.</p>
+                    <div className="flex items-center gap-2 text-blue-400">
+                      <span className="font-semibold">Enter Command Center</span>
+                      <Activity className="w-4 h-4" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
+
+            {/* Small Cards - Quick Access */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6 }}
+              className="col-span-6 md:col-span-3">
+              <Link to={createPageUrl("BestPokerSites")}>
+                <Card className="fire-glass border-green-600/30 hover:border-green-500 transition-all cursor-pointer h-full">
+                  <CardContent className="p-6 text-center">
+                    <FileText className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                    <div className="font-bold text-white mb-1">Poker Files</div>
+                    <div className="text-xs text-gray-400">Room intelligence</div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7 }}
+              className="col-span-6 md:col-span-3">
+              <Link to={createPageUrl("CasinoHome")}>
+                <Card className="fire-glass border-purple-600/30 hover:border-purple-500 transition-all cursor-pointer h-full">
+                  <CardContent className="p-6 text-center">
+                    <FileText className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+                    <div className="font-bold text-white mb-1">Casino Files</div>
+                    <div className="text-xs text-gray-400">Casino dossiers</div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8 }}
+              className="col-span-6 md:col-span-3">
+              <Link to={createPageUrl("PokerNetworks")}>
+                <Card className="fire-glass border-cyan-600/30 hover:border-cyan-500 transition-all cursor-pointer h-full">
+                  <CardContent className="p-6 text-center">
+                    <BarChart3 className="w-8 h-8 text-cyan-500 mx-auto mb-2" />
+                    <div className="font-bold text-white mb-1">Network Intel</div>
+                    <div className="text-xs text-gray-400">Network analysis</div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.9 }}
+              className="col-span-6 md:col-span-3">
+              <Link to={createPageUrl("PokerAdvisor")}>
+                <Card className="fire-glass border-yellow-600/30 hover:border-yellow-500 transition-all cursor-pointer h-full">
+                  <CardContent className="p-6 text-center">
+                    <Zap className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                    <div className="font-bold text-white mb-1">AI Advisor</div>
+                    <div className="text-xs text-gray-400">Intel analysis</div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Top Sites Section - WorldPokerDeals Style */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8">
+      {/* Classified Files Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 relative">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16">
-
-            <h2 className="text-5xl font-bold mb-4">
-              Top Rated <span className="text-emerald-400">Sites</span>
+            className="text-center mb-12">
+            <Badge className="fire-glass-light text-red-400 border-red-600 mb-4 px-4 py-2">
+              <AlertTriangle className="w-4 h-4 mr-2 inline" />
+              CLASSIFIED INTELLIGENCE
+            </Badge>
+            <h2 className="text-4xl font-bold mb-4 text-white">
+              Top Priority <span className="text-orange-500">Target Files</span>
             </h2>
-            <p className="text-xl text-gray-400">
-              Hand-picked platforms with the best deals
-            </p>
+            <p className="text-xl text-gray-400">High-value opportunities under active surveillance</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {topSites.slice(0, 6).map((site, idx) =>
-            <motion.div
-              key={site.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}>
-
-                <Card className="bg-white border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden h-full">
-                  <div className="flex flex-col sm:flex-row">
-                    {/* Dark Left Image Section - 165px square */}
-                    <div className="w-full sm:w-[165px] h-[165px] bg-slate-900 flex items-center justify-center p-4 flex-shrink-0">
-                      {site.logo_url ?
-                    <img
-                      src={site.logo_url}
-                      alt={site.name}
-                      className="max-w-full max-h-full object-contain" /> :
-
-
-                    <Star className="w-16 h-16 text-gray-600" />
-                    }
-                    </div>
-
-                    {/* White Content Area */}
-                    <div className="flex-1 p-5 flex flex-col justify-between bg-white">
-                      <div>
-                        {/* Site Name */}
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">{site.name}</h3>
-                        
-                        {/* Network */}
-                        {site.poker_network && site.poker_network !== 'independent' && site.poker_network !== 'no_deal_available' &&
-                      <p className="text-sm text-gray-600 mb-2 capitalize">
-                            {site.poker_network.replace(/_/g, ' ').replace(' network', '')}
-                          </p>
-                      }
-
-                        {/* Star Rating */}
-                        <div className="flex items-center gap-1 mb-3">
-                          {[...Array(5)].map((_, i) =>
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                          i < Math.floor(site.rating) ?
-                          'text-yellow-500 fill-yellow-500' :
-                          'text-gray-300'}`
-                          } />
-
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {topSites.slice(0, 6).map((site, idx) => (
+              <motion.div
+                key={site.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}>
+                <Card className="fire-glass border-orange-600/30 hover:border-orange-500 hover:fire-glow transition-all">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="w-20 h-20 bg-gray-900 rounded-lg flex items-center justify-center p-2">
+                        {site.logo_url ? (
+                          <img src={site.logo_url} alt={site.name} className="max-w-full max-h-full object-contain" />
+                        ) : (
+                          <FileText className="w-8 h-8 text-gray-600" />
                         )}
-                          <span className="ml-1 text-sm font-semibold text-gray-700">{site.rating.toFixed(1)}</span>
-                        </div>
-
-                        {/* Bonus Info */}
-                        {site.bonus_offer &&
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
-                            <div className="flex items-start gap-2">
-                              <Gift className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                              <div>
-                                <div className="text-xs font-semibold text-green-800 mb-1">WELCOME BONUS</div>
-                                <div className="text-sm font-bold text-green-700">{site.bonus_offer}</div>
-                              </div>
-                            </div>
-                          </div>
-                      }
-
-                        {/* Rakeback */}
-                        {site.commission_rate &&
-                      <div className="text-sm text-gray-700 mb-3">
-                            <span className="font-semibold">Rakeback:</span> Up to {site.commission_rate}%
-                          </div>
-                      }
                       </div>
-
-                      {/* Buttons */}
-                      <div className="flex items-center gap-3 mt-4">
-                        <a href={site.affiliate_url} target="_blank" rel="noopener noreferrer" className="flex-1">
-                          <Button
-                          className="w-full font-bold text-white hover:opacity-90 transition-opacity"
-                          style={{ backgroundColor: '#e02d3c' }}>
-
-                            Sign Up
-                            <ExternalLink className="w-4 h-4 ml-2" />
-                          </Button>
-                        </a>
-                        <Link
-                        to={createPageUrl("SiteDetail") + `?id=${site.id}`}
-                        className="text-gray-700 hover:text-gray-900 underline font-medium text-sm">
-
-                          Review
-                        </Link>
-                      </div>
+                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        VERIFIED
+                      </Badge>
                     </div>
-                  </div>
+                    
+                    <h3 className="text-lg font-bold text-white mb-2">{site.name}</h3>
+                    <div className="text-sm text-gray-400 mb-3 capitalize">{site.type.replace(/_/g, ' ')}</div>
+                    
+                    {site.bonus_offer && (
+                      <div className="bg-orange-500/10 border border-orange-600/30 rounded-lg p-3 mb-3">
+                        <div className="text-xs text-orange-400 font-semibold mb-1">OFFER INTEL</div>
+                        <div className="text-sm text-white">{site.bonus_offer}</div>
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm text-gray-400">
+                        Threat Level: <span className="text-green-400 font-semibold">LOW</span>
+                      </div>
+                      <Link to={createPageUrl("SiteDetail") + `?id=${site.id}`}>
+                        <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white">
+                          View File
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
                 </Card>
               </motion.div>
-            )}
+            ))}
           </div>
         </div>
       </section>
-
-      {/* Become Agent CTA */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900/50 to-slate-950/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="glass-card rounded-3xl p-12 border-emerald-500/20">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 mb-6 px-4 py-2">
-                  <Trophy className="w-4 h-4 mr-2 inline" />
-                  Premium Program
-                </Badge>
-                
-                <h2 className="text-5xl font-bold mb-6 leading-tight">
-                  Launch Your <br />
-                  <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                    iGaming Agency
-                  </span>
-                </h2>
-                
-                <p className="text-xl text-gray-300 mb-8">
-                  Earn lifetime commissions. Professional tools. Dedicated support.
-                </p>
-                
-                <Link to={createPageUrl("BecomeAgent")}>
-                  <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 px-8 py-6 text-lg rounded-xl shadow-xl">
-                    Start Your Agency
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                { value: "$8.5K", label: "Avg Monthly", icon: DollarSign },
-                { value: "1,200+", label: "Active Agents", icon: Users },
-                { value: "$2.1M", label: "Total Payouts", icon: TrendingUp },
-                { value: "40%", label: "Commission", icon: Trophy }].
-                map((stat, idx) =>
-                <div key={idx} className="glass-card-light rounded-xl p-6">
-                    <stat.icon className="w-6 h-6 text-emerald-400 mb-3" />
-                    <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-                    <div className="text-sm text-gray-400">{stat.label}</div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>);
-
+    </div>
+  );
 }

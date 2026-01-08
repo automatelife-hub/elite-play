@@ -27,6 +27,8 @@ import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
 import AgentDeals from './pages/AgentDeals';
+import AgentMissionControl from './pages/AgentMissionControl';
+import PlayerIntelCommand from './pages/PlayerIntelCommand';
 import __Layout from './Layout.jsx';
 
 
@@ -60,6 +62,8 @@ export const PAGES = {
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
     "AgentDeals": AgentDeals,
+    "AgentMissionControl": AgentMissionControl,
+    "PlayerIntelCommand": PlayerIntelCommand,
 }
 
 export const pagesConfig = {

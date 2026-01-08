@@ -235,9 +235,26 @@ export default function Layout({ children, currentPageName }) {
       <style>
         {`
           :root {
+            --fire-black: #1A0000;
+            --fire-dark: #8B0000;
+            --fire-red: #FF4500;
+            --fire-orange: #FFA500;
             --primary-cyan: #22D3EE;
             --primary-purple: #A78BFA;
             --dark-slate: #0F172A;
+          }
+          
+          /* Fire Theme Glassmorphism */
+          .fire-glass {
+            background: rgba(26, 0, 0, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 69, 0, 0.2);
+          }
+          
+          .fire-glass-light {
+            background: rgba(139, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 165, 0, 0.3);
           }
           
           /* Glassmorphism utilities */
@@ -251,6 +268,15 @@ export default function Layout({ children, currentPageName }) {
             background: rgba(30, 41, 59, 0.4);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+          }
+          
+          /* Fire gradient backgrounds */
+          .fire-gradient {
+            background: linear-gradient(135deg, #1A0000 0%, #8B0000 50%, #FF4500 100%);
+          }
+          
+          .fire-glow {
+            box-shadow: 0 0 20px rgba(255, 69, 0, 0.3), 0 0 40px rgba(255, 165, 0, 0.2);
           }
         `}
       </style>
