@@ -9,9 +9,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Search, CheckCircle, Clock, Archive, Plus, ExternalLink, 
-  TrendingUp, Users, DollarSign, AlertCircle, FileText, X 
+  TrendingUp, Users, DollarSign, AlertCircle, FileText, X, Target 
 } from "lucide-react";
 import { toast } from "sonner";
+import CustomDealRequestForm from "../components/agent/CustomDealRequestForm";
 
 export default function AgentDeals() {
   const [user, setUser] = useState(null);
@@ -24,6 +25,7 @@ export default function AgentDeals() {
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [filterType, setFilterType] = useState("all");
+  const [showCustomDealForm, setShowCustomDealForm] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -232,9 +234,18 @@ export default function AgentDeals() {
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2">Deal Management</h1>
-        <p className="text-gray-400">Manage your partnerships and apply for new deals</p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-white mb-2">Deal Management</h1>
+          <p className="text-gray-400">Manage your partnerships and apply for new deals</p>
+        </div>
+        <Button
+          onClick={() => setShowCustomDealForm(true)}
+          className="fire-gradient fire-glow"
+        >
+          <Target className="w-4 h-4 mr-2" />
+          Request Custom Deal
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -587,6 +598,15 @@ export default function AgentDeals() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Custom Deal Request Form */}
+      <CustomDealRequestForm
+        open={showCustomDealForm}
+        onOpenChange={setShowCustomDealForm}
+        agentId={user?.agent_id}
+        sites={sites}
+        onSuccess={loadData}
+      />
     </div>
   );
 }
