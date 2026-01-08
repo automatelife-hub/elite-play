@@ -14,6 +14,9 @@ import { format } from "date-fns";
 import PerformanceCharts from "../components/agent/PerformanceCharts";
 import TierProgressCard from "../components/agent/TierProgressCard";
 import AchievementBadges from "../components/agent/AchievementBadges";
+import RealtimePerformance from "../components/agent/RealtimePerformance";
+import DealsOverview from "../components/agent/DealsOverview";
+import NotificationBell from "../components/agent/NotificationBell";
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -119,9 +122,12 @@ export default function AgentPortal() {
   return (
     <div className="max-w-[1600px] mx-auto">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2">Agent Dashboard</h1>
-        <p className="text-gray-400">Welcome back, {agent?.agent_name || user.full_name}</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-white mb-2">Agent Dashboard</h1>
+          <p className="text-gray-400">Welcome back, {agent?.agent_name || user.full_name}</p>
+        </div>
+        <NotificationBell players={players} commissions={commissions} agentDeals={agentDeals} />
       </div>
 
       {/* 12-Column Grid Stats */}
@@ -197,12 +203,31 @@ export default function AgentPortal() {
           </CardContent>
         </Card>
 
+        {/* Real-Time Performance */}
+        <div className="col-span-12">
+          <RealtimePerformance 
+            players={players} 
+            commissions={commissions} 
+            agentDeals={agentDeals}
+            referralLinks={referralLinks}
+          />
+        </div>
+
         {/* Achievements Banner */}
         {user?.agent_id && (
           <div className="col-span-12">
             <AchievementBadges agentId={user.agent_id} />
           </div>
         )}
+
+        {/* Deals Overview */}
+        <div className="col-span-12">
+          <DealsOverview 
+            agentDeals={agentDeals} 
+            sites={sites} 
+            referralLinks={referralLinks}
+          />
+        </div>
 
         {/* Performance Charts - 8 columns */}
         <div className="col-span-12 lg:col-span-8">

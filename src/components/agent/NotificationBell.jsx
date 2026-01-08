@@ -9,14 +9,15 @@ import { Badge } from "@/components/ui/badge";
 import { Bell, Check, DollarSign, UserPlus, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 
-export default function NotificationBell({ players, commissions }) {
+export default function NotificationBell({ players, commissions, agentDeals = [] }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [viewedDeals, setViewedDeals] = useState(new Set());
 
   useEffect(() => {
     generateNotifications();
-  }, [players, commissions]);
+  }, [players, commissions, agentDeals]);
 
   const generateNotifications = () => {
     const notifs = [];
@@ -70,6 +71,26 @@ export default function NotificationBell({ players, commissions }) {
         unread: true
       });
     }
+
+    // Deal status changes (approved/rejected)
+    agentDeals.forEach(deal => {
+      const dealKey = `deal-${deal.id}-${deal.status}`;
+      if (!viewedDeals.has(dealKey) && deal.approved_date) {
+        const approvalDate = new Date(deal.approved_date);
+        if (approvalDate > sevenDaysAgo) {
+          notifs.push({
+            id: dealKey,
+            type: 'deal_status',
+            icon: deal.status === 'approved' ? Check : AlertCircle,
+            color: deal.status === 'approved' ? 'text-green-400' : 'text-red-400',
+            title: `Deal ${deal.status === 'approved' ? 'Approved' : 'Status Changed'}`,
+            message: `Your deal has been ${deal.status}`,
+            date: approvalDate,
+            unread: true
+          });
+        }
+      }
+    });
 
     // Sort by date, most recent first
     notifs.sort((a, b) => b.date - a.date);
