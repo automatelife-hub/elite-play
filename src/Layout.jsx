@@ -76,6 +76,7 @@ export default function Layout({ children, currentPageName }) {
       section: "Dashboard",
       items: [
         { title: "Overview", url: createPageUrl("AgentPortal"), icon: BarChart3 },
+        { title: "My Deals", url: createPageUrl("AgentDeals"), icon: Target },
         { title: "Marketing Hub", url: createPageUrl("MarketingHub"), icon: TrendingUp },
         { title: "Contests", url: createPageUrl("AgentContests"), icon: Trophy },
       ]
