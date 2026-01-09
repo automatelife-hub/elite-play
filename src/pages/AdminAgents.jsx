@@ -432,12 +432,7 @@ export default function AdminAgents() {
                         )}
                       </div>
 
-                      {agent.notes && agent.notes.trim() && (
-                        <div className="mt-3 p-3 bg-gray-800/50 rounded-lg">
-                          <div className="text-xs text-gray-400 mb-1">Admin Notes:</div>
-                          <div className="text-sm text-gray-300">{agent.notes}</div>
-                        </div>
-                      )}
+
                     </div>
 
                     <div className="flex gap-2">
