@@ -8,7 +8,8 @@ import TopRatedSection from "../components/home/TopRatedSection";
 import AIAdvisorCTA from "../components/home/AIAdvisorCTA";
 import LatestArticles from "../components/home/LatestArticles";
 import TrustIndicators from "../components/home/TrustIndicators";
-import LocationBanner from "../components/geo/LocationBanner";
+import GeoMapSelector from "../components/geo/GeoMapSelector";
+import RegionStats from "../components/geo/RegionStats";
 import { checkSiteAvailability } from "../components/sites/SiteAvailabilityBadge";
 
 export default function Home() {
@@ -34,6 +35,8 @@ export default function Home() {
         Article.filter({ published: true }, '-created_date', 4)
       ]);
 
+      setSites(allSites);
+      
       // Filter only poker sites
       const pokerSites = allSites.filter(site => 
         site.type === 'poker' || 
@@ -77,10 +80,28 @@ export default function Home() {
     });
   };
 
-  const handleLocationConfirmed = (country) => {
+  const handleCountrySelect = (country) => {
     setUserCountry(country);
-    loadData(); // Reload with new location
+    if (country) {
+      // Re-sort sites based on new country selection
+      const [allSites] = [sites];
+      const pokerSites = allSites.filter(site => 
+        site.type === 'poker' || 
+        site.type === 'poker_casino' || 
+        site.type === 'poker_sportsbetting' || 
+        site.type === 'all'
+      );
+      const sortedByGeo = sortSitesByAvailability(pokerSites, country);
+      const featured = sortedByGeo.filter(site => site.featured).slice(0, 3);
+      const topRatedSites = sortedByGeo.slice(0, 6);
+      setFeaturedSites(featured);
+      setTopRated(topRatedSites);
+    } else {
+      loadData();
+    }
   };
+
+  const [sites, setSites] = useState([]);
 
   return (
     <div className="bg-gray-950 text-white">
@@ -92,10 +113,17 @@ export default function Home() {
       <TrustIndicators />
       <FeaturedSites sites={featuredSites} loading={loading} userCountry={userCountry} />
       <AIAdvisorCTA />
+      
+      <GeoMapSelector 
+        currentCountry={userCountry} 
+        onCountrySelect={handleCountrySelect}
+        sites={sites}
+      />
+      
+      <RegionStats sites={sites} countryCode={userCountry} />
+      
       <TopRatedSection sites={topRated} loading={loading} userCountry={userCountry} />
       <LatestArticles articles={latestArticles} loading={loading} />
-      
-      {user && <LocationBanner user={user} onLocationConfirmed={handleLocationConfirmed} />}
     </div>
   );
 }
