@@ -357,7 +357,7 @@ export default function AdminAgents() {
         {/* Agents List */}
         <div className="space-y-4">
           {filteredAgents.map(agent => {
-            const TierIcon = tierIcons[agent.tier];
+            const TierIcon = tierIcons[agent.tier || 'bronze'];
             return (
               <Card key={agent.id} className="bg-gray-900 border-gray-800">
                 <CardContent className="p-6">
@@ -368,12 +368,14 @@ export default function AdminAgents() {
                         <Badge className={statusColors[agent.status]}>
                           {agent.status}
                         </Badge>
-                        <div className="flex items-center gap-1">
-                          <TierIcon className={`w-4 h-4 ${tierColors[agent.tier]}`} />
-                          <span className={`text-sm font-semibold ${tierColors[agent.tier]} capitalize`}>
-                            {agent.tier}
-                          </span>
-                        </div>
+                        {TierIcon && (
+                          <div className="flex items-center gap-1">
+                            <TierIcon className={`w-4 h-4 ${tierColors[agent.tier || 'bronze']}`} />
+                            <span className={`text-sm font-semibold ${tierColors[agent.tier || 'bronze']} capitalize`}>
+                              {agent.tier || 'bronze'}
+                            </span>
+                          </div>
+                        )}
                         {agent.payment_type === 'performance_based' && (
                           <Badge variant="outline" className="text-purple-400 border-purple-500/30">
                             Performance Based
