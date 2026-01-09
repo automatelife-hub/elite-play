@@ -20,7 +20,6 @@ import News from './pages/News';
 import NewsMonitor from './pages/NewsMonitor';
 import PlayerIntelCommand from './pages/PlayerIntelCommand';
 import PokerAdvisor from './pages/PokerAdvisor';
-import PokerHome from './pages/PokerHome';
 import PokerNetworkDetail from './pages/PokerNetworkDetail';
 import PokerNetworks from './pages/PokerNetworks';
 import Profile from './pages/Profile';
@@ -55,7 +54,6 @@ export const PAGES = {
     "NewsMonitor": NewsMonitor,
     "PlayerIntelCommand": PlayerIntelCommand,
     "PokerAdvisor": PokerAdvisor,
-    "PokerHome": PokerHome,
     "PokerNetworkDetail": PokerNetworkDetail,
     "PokerNetworks": PokerNetworks,
     "Profile": Profile,

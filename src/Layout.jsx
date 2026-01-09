@@ -36,7 +36,7 @@ export default function Layout({ children, currentPageName }) {
   }, []);
 
   const isLandingPage = currentPageName === "Home" || currentPageName === "BecomeAgent" || 
-                        currentPageName === "PokerHome" || currentPageName === "CasinoHome" || 
+                        currentPageName === "CasinoHome" || 
                         currentPageName === "SportsbettingHome";
 
   const isAgentPortal = currentPageName === "AgentPortal" || currentPageName === "MarketingHub" || 
