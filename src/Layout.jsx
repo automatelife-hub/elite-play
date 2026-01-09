@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { User } from "@/entities/all";
+// User entity is accessed via base44.auth.me()
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,10 +27,10 @@ export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
-    User.me().then(currentUser => {
-      setUser(currentUser);
+    base44.auth.me().then(currentUser => {
+    setUser(currentUser);
     }).catch(() => {
-      setUser(null);
+    setUser(null);
     });
   }, []);
 
@@ -164,7 +164,7 @@ export default function Layout({ children, currentPageName }) {
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator className="bg-slate-700" />
-                      <DropdownMenuItem onClick={() => User.logout()} className="text-red-400 cursor-pointer">
+                      <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-400 cursor-pointer">
                         <LogOut className="w-4 h-4 mr-2" />
                         Logout
                       </DropdownMenuItem>
@@ -449,7 +449,7 @@ export default function Layout({ children, currentPageName }) {
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator className="bg-slate-700" />
-                    <DropdownMenuItem onClick={() => User.logout()} className="text-red-400 cursor-pointer">
+                    <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-400 cursor-pointer">
                       <LogOut className="w-4 h-4 mr-2" />
                       Logout
                     </DropdownMenuItem>

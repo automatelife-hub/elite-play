@@ -4,7 +4,9 @@ import AdminStats from './pages/AdminStats';
 import Affiliate from './pages/Affiliate';
 import AffiliateLinks from './pages/AffiliateLinks';
 import AgentContests from './pages/AgentContests';
+import AgentDeals from './pages/AgentDeals';
 import AgentDemo from './pages/AgentDemo';
+import AgentMissionControl from './pages/AgentMissionControl';
 import AgentPortal from './pages/AgentPortal';
 import BecomeAgent from './pages/BecomeAgent';
 import CasinoHome from './pages/CasinoHome';
@@ -16,6 +18,7 @@ import Leaderboard from './pages/Leaderboard';
 import MarketingHub from './pages/MarketingHub';
 import News from './pages/News';
 import NewsMonitor from './pages/NewsMonitor';
+import PlayerIntelCommand from './pages/PlayerIntelCommand';
 import PokerAdvisor from './pages/PokerAdvisor';
 import PokerHome from './pages/PokerHome';
 import PokerNetworkDetail from './pages/PokerNetworkDetail';
@@ -26,9 +29,6 @@ import Reviews from './pages/Reviews';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
-import AgentDeals from './pages/AgentDeals';
-import AgentMissionControl from './pages/AgentMissionControl';
-import PlayerIntelCommand from './pages/PlayerIntelCommand';
 import __Layout from './Layout.jsx';
 
 
@@ -39,7 +39,9 @@ export const PAGES = {
     "Affiliate": Affiliate,
     "AffiliateLinks": AffiliateLinks,
     "AgentContests": AgentContests,
+    "AgentDeals": AgentDeals,
     "AgentDemo": AgentDemo,
+    "AgentMissionControl": AgentMissionControl,
     "AgentPortal": AgentPortal,
     "BecomeAgent": BecomeAgent,
     "CasinoHome": CasinoHome,
@@ -51,6 +53,7 @@ export const PAGES = {
     "MarketingHub": MarketingHub,
     "News": News,
     "NewsMonitor": NewsMonitor,
+    "PlayerIntelCommand": PlayerIntelCommand,
     "PokerAdvisor": PokerAdvisor,
     "PokerHome": PokerHome,
     "PokerNetworkDetail": PokerNetworkDetail,
@@ -61,9 +64,6 @@ export const PAGES = {
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
-    "AgentDeals": AgentDeals,
-    "AgentMissionControl": AgentMissionControl,
-    "PlayerIntelCommand": PlayerIntelCommand,
 }
 
 export const pagesConfig = {
