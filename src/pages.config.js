@@ -28,6 +28,8 @@ import Reviews from './pages/Reviews';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
+import ServicesMarketplace from './pages/ServicesMarketplace';
+import AdminServices from './pages/AdminServices';
 import __Layout from './Layout.jsx';
 
 
@@ -62,6 +64,8 @@ export const PAGES = {
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
+    "ServicesMarketplace": ServicesMarketplace,
+    "AdminServices": AdminServices,
 }
 
 export const pagesConfig = {
