@@ -92,11 +92,18 @@ export default function FeaturedSites({ sites, loading, userCountry }) {
                             </div>
                             <span className="text-yellow-400 font-semibold">{site.rating}</span>
                           </div>
-                          {site.bonus_offer && (
-                            <p className="text-green-400 text-sm font-medium">
-                              🎁 {site.bonus_offer}
-                            </p>
-                          )}
+                          <div className="space-y-1">
+                            {site.bonus_offer && (
+                              <p className="text-green-400 text-sm font-medium">
+                                🎁 {site.bonus_offer}
+                              </p>
+                            )}
+                            {site.rakeback && (
+                              <p className="text-emerald-400 text-sm font-medium">
+                                💰 {site.rakeback}% Rakeback
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </div>
 
