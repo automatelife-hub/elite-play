@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -37,14 +36,11 @@ export default function LatestArticles({ articles, loading }) {
   }
 
   return (
-    <section className="py-20 bg-slate-900/30">
+    <section className="py-24 bg-slate-900/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <BookOpen className="w-6 h-6 text-cyan-400 mr-2" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white">Latest Insights</h2>
-          </div>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Latest Insights</h2>
+          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto font-light">
             Expert strategies, tips, and industry news to elevate your game
           </p>
         </div>
@@ -100,10 +96,9 @@ export default function LatestArticles({ articles, loading }) {
           )}
         </div>
 
-        <div className="text-center mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="text-center mt-16 flex flex-col sm:flex-row items-center justify-center gap-6">
           <Link to={createPageUrl("Guides")}>
-            <Button variant="outline" className="bg-yellow-400 hover:bg-yellow-500 text-slate-900 hover:text-white px-8 py-3 text-lg font-semibold rounded-xl border-2 border-yellow-500 hover:border-yellow-600 transition-all duration-300 transform hover:scale-105">
-
+            <Button variant="outline" className="border-2 border-emerald-500/70 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400 px-10 py-6 text-lg font-bold transition-all duration-300">
               Read All Guides
             </Button>
           </Link>
@@ -111,8 +106,7 @@ export default function LatestArticles({ articles, loading }) {
             href={whatsappURL}
             target="_blank"
             rel="noopener noreferrer">
-
-            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 text-lg rounded-xl font-semibold flex items-center gap-2">
+            <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-10 py-6 text-lg font-bold shadow-2xl shadow-emerald-500/50 hover:shadow-emerald-500/70 transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
               <MessageSquare className="w-5 h-5" /> Chat with Advisor
             </Button>
           </a>

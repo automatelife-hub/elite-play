@@ -72,6 +72,7 @@ import PlayerIntelCommand from './pages/PlayerIntelCommand';
 import PokerAdvisor from './pages/PokerAdvisor';
 import PokerNetworkDetail from './pages/PokerNetworkDetail';
 import PokerNetworks from './pages/PokerNetworks';
+import PremiumLanding from './pages/PremiumLanding';
 import Profile from './pages/Profile';
 import ReferralSignup from './pages/ReferralSignup';
 import Reviews from './pages/Reviews';
@@ -79,7 +80,6 @@ import ServicesMarketplace from './pages/ServicesMarketplace';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
-import PremiumLanding from './pages/PremiumLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -109,6 +109,7 @@ export const PAGES = {
     "PokerAdvisor": PokerAdvisor,
     "PokerNetworkDetail": PokerNetworkDetail,
     "PokerNetworks": PokerNetworks,
+    "PremiumLanding": PremiumLanding,
     "Profile": Profile,
     "ReferralSignup": ReferralSignup,
     "Reviews": Reviews,
@@ -116,7 +117,6 @@ export const PAGES = {
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
-    "PremiumLanding": PremiumLanding,
 }
 
 export const pagesConfig = {

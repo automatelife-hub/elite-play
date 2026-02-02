@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -42,11 +41,11 @@ export default function TopRatedSection({ sites, loading, userCountry }) {
   }
 
   return (
-    <section className="py-20 bg-slate-950">
+    <section className="py-24 bg-slate-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">All Top Rated Poker Sites</h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">All Top Rated Poker Sites</h2>
+          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto font-light">
             Complete list of the highest rated poker sites, with available sites shown first
           </p>
         </div>
@@ -159,10 +158,10 @@ export default function TopRatedSection({ sites, loading, userCountry }) {
           })}
         </div>
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-16">
           <Link to={createPageUrl("Reviews")}>
-            <Button variant="outline" className="bg-yellow-400 hover:bg-yellow-500 text-slate-900 hover:text-white px-8 py-3 text-lg font-semibold rounded-xl border-2 border-yellow-500 hover:border-yellow-600 transition-all duration-300 transform hover:scale-105">
-              View All Reviews
+            <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-12 py-7 text-lg font-bold rounded-xl shadow-2xl shadow-emerald-500/50 hover:shadow-emerald-500/70 transition-all duration-300 transform hover:scale-105">
+              View All Reviews →
             </Button>
           </Link>
         </div>

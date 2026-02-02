@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Shield, Award, Users, Clock } from "lucide-react";
 
@@ -54,19 +53,18 @@ const colorClasses = {
 
 export default function TrustIndicators() {
   return (
-    <section className="py-16 bg-slate-900/50">
+    <section className="py-20 bg-slate-900/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-4 gap-10">
           {indicators.map((indicator, index) => {
             const colors = colorClasses[indicator.color];
             return (
               <div key={index} className="text-center group">
-                <div className={`w-16 h-16 bg-gradient-to-r ${colors.bg} border ${colors.border} rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-300`}>
-                  <indicator.icon className={`w-8 h-8 ${colors.icon}`} />
+                <div className={`w-20 h-20 bg-gradient-to-r ${colors.bg} border-2 ${colors.border} rounded-2xl flex items-center justify-center mx-auto mb-5 transition-all duration-300`}>
+                  <indicator.icon className={`w-10 h-10 ${colors.icon}`} />
                 </div>
-                {/* Heading color remains text-white, which is visible on a dark background. No change specified in outline. */}
-                <h3 className="font-semibold text-white mb-2">{indicator.title}</h3>
-                <p className="text-gray-400 text-sm">{indicator.description}</p>
+                <h3 className="font-bold text-white mb-3 text-lg">{indicator.title}</h3>
+                <p className="text-gray-400 text-base">{indicator.description}</p>
               </div>
             );
           })}

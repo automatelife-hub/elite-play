@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,7 +10,7 @@ export default function AIAdvisorCTA() {
   const whatsappURL = base44.agents.getWhatsAppConnectURL('poker_advisor');
 
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 relative overflow-hidden">
+    <section className="py-24 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 relative overflow-hidden">
       {/* Background decoration with images */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 left-10 text-blue-400 text-8xl">♠</div>
@@ -30,26 +29,26 @@ export default function AIAdvisorCTA() {
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <div className="flex items-center justify-center md:justify-start gap-2 mb-3">
-                  <Sparkles className="w-5 h-5 text-purple-400" />
-                  <span className="text-purple-400 font-semibold uppercase text-sm tracking-wider">New Feature</span>
+                <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+                  <Sparkles className="w-5 h-5 text-emerald-400" />
+                  <span className="text-emerald-400 font-bold uppercase text-sm tracking-wider">AI Powered</span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
                   Meet Your Personal Poker Advisor
                 </h2>
-                <p className="text-xl text-gray-300 mb-6">
+                <p className="text-xl md:text-2xl text-gray-400 mb-8 font-light">
                   Get instant expert advice on poker sites, strategies, bonuses, and more. 
                   Available 24/7 via web chat or WhatsApp.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <div className="flex flex-col sm:flex-row gap-5 justify-center md:justify-start">
                   <Link to={createPageUrl("PokerAdvisor")}>
-                    <Button className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold px-8 py-3 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold px-10 py-6 text-lg rounded-xl shadow-2xl shadow-emerald-500/50 hover:shadow-emerald-500/70 transition-all duration-300 transform hover:scale-105">
                       <Bot className="w-5 h-5 mr-2" />
                       Start Chatting
                     </Button>
                   </Link>
                   <a href={whatsappURL} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" className="border-2 border-emerald-500 text-emerald-400 hover:bg-emerald-500 hover:text-white px-8 py-3 text-lg rounded-xl font-semibold transition-all duration-300">
+                    <Button variant="outline" className="border-2 border-emerald-500/70 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400 px-10 py-6 text-lg font-bold transition-all duration-300">
                       <MessageSquare className="w-5 h-5 mr-2" />
                       Chat on WhatsApp
                     </Button>
@@ -58,23 +57,23 @@ export default function AIAdvisorCTA() {
               </div>
             </div>
 
-            {/* Feature highlights - varied colors */}
-            <div className="grid md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-slate-700">
+            {/* Feature highlights */}
+            <div className="grid md:grid-cols-4 gap-6 mt-10 pt-10 border-t border-slate-700/50">
               <div className="text-center">
-                <div className="text-blue-400 font-bold text-lg mb-1">24/7</div>
-                <div className="text-gray-400 text-sm">Always Available</div>
+                <div className="text-emerald-400 font-bold text-2xl mb-2">24/7</div>
+                <div className="text-gray-400 text-base">Always Available</div>
               </div>
               <div className="text-center">
-                <div className="text-purple-400 font-bold text-lg mb-1">Instant</div>
-                <div className="text-gray-400 text-sm">Quick Answers</div>
+                <div className="text-cyan-400 font-bold text-2xl mb-2">Instant</div>
+                <div className="text-gray-400 text-base">Quick Answers</div>
               </div>
               <div className="text-center">
-                <div className="text-emerald-400 font-bold text-lg mb-1">Expert</div>
-                <div className="text-gray-400 text-sm">AI-Powered</div>
+                <div className="text-emerald-400 font-bold text-2xl mb-2">Expert</div>
+                <div className="text-gray-400 text-base">AI-Powered</div>
               </div>
               <div className="text-center">
-                <div className="text-slate-300 font-bold text-lg mb-1">Free</div>
-                <div className="text-gray-400 text-sm">No Cost</div>
+                <div className="text-cyan-400 font-bold text-2xl mb-2">Free</div>
+                <div className="text-gray-400 text-base">No Cost</div>
               </div>
             </div>
           </CardContent>

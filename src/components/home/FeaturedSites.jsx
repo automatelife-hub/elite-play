@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -42,11 +41,11 @@ export default function FeaturedSites({ sites, loading, userCountry }) {
   }
 
   return (
-    <section className="py-20 bg-slate-900/30">
+    <section className="py-24 bg-slate-900/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Top Available Poker Sites</h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Top Available Poker Sites</h2>
+          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto font-light">
             The highest rated poker sites available in your region
           </p>
         </div>

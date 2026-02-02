@@ -63,46 +63,43 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left Content */}
-          <div className="pt-8">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
+          <div className="pt-12">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
               Your Premium<br />
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">iGaming Partner</span>
+              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">iGaming Partner</span>
             </h1>
 
-            {/* Vertical badges */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              <span className="px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-emerald-400 text-sm font-medium">♠ Poker</span>
-              <span className="px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-400 text-sm font-medium">🎰 Casino</span>
-              <span className="px-3 py-1 bg-orange-500/20 border border-orange-500/30 rounded-full text-orange-400 text-sm font-medium">⚽ Sportsbetting</span>
-            </div>
+            <p className="text-xl md:text-2xl text-gray-300 mb-10 font-light leading-relaxed max-w-xl">
+              Premium deals, expert guidance, and the best rakeback offers across poker, casino, and sportsbetting.
+            </p>
 
-            <ul className="space-y-4 mb-10">
-              <li className="flex items-center text-gray-300">
-                <span className="text-cyan-400 mr-3">✦</span>
+            <ul className="space-y-5 mb-12">
+              <li className="flex items-center text-lg text-gray-300">
+                <span className="text-emerald-400 mr-4 text-xl">✓</span>
                 24/7 player & agent support
               </li>
-              <li className="flex items-center text-gray-300">
-                <span className="text-cyan-400 mr-3">✦</span>
-                Top rakeback & VIP deals across all platforms
+              <li className="flex items-center text-lg text-gray-300">
+                <span className="text-emerald-400 mr-4 text-xl">✓</span>
+                Top rakeback & VIP deals
               </li>
-              <li className="flex items-center text-gray-300">
-                <span className="text-cyan-400 mr-3">✦</span>
-                50+ sites: poker rooms, casinos & sportsbooks
+              <li className="flex items-center text-lg text-gray-300">
+                <span className="text-emerald-400 mr-4 text-xl">✓</span>
+                50+ verified sites
               </li>
-              <li className="flex items-center text-gray-300">
-                <span className="text-cyan-400 mr-3">✦</span>
-                Affiliate & Agency programs available
+              <li className="flex items-center text-lg text-gray-300">
+                <span className="text-emerald-400 mr-4 text-xl">✓</span>
+                Affiliate programs available
               </li>
             </ul>
 
             <div className="flex flex-wrap gap-4">
               <Link to={createPageUrl("Reviews")}>
-                <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold px-8 py-6 text-lg">
+                <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold px-10 py-7 text-lg shadow-2xl shadow-emerald-500/50 hover:shadow-emerald-500/70 transition-all duration-300 transform hover:scale-105">
                   Explore Sites
                 </Button>
               </Link>
               <Link to={createPageUrl("BecomeAgent")}>
-                <Button variant="outline" className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 px-8 py-6 text-lg">
+                <Button variant="outline" className="border-2 border-emerald-500/70 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400 px-10 py-7 text-lg font-bold transition-all duration-300">
                   Start an Agency
                 </Button>
               </Link>
