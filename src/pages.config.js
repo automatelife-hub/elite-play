@@ -80,6 +80,7 @@ import ServicesMarketplace from './pages/ServicesMarketplace';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
+import AffiliateProgram from './pages/AffiliateProgram';
 import __Layout from './Layout.jsx';
 
 
@@ -117,6 +118,7 @@ export const PAGES = {
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
+    "AffiliateProgram": AffiliateProgram,
 }
 
 export const pagesConfig = {
