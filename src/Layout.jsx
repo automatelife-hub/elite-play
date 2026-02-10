@@ -289,6 +289,38 @@ export default function Layout({ children, currentPageName }) {
             backdrop-filter: blur(16px);
             border: 1px solid rgba(34, 211, 238, 0.1);
           }
+
+          /* Mobile optimizations */
+          @media (max-width: 768px) {
+            * {
+              -webkit-user-select: none;
+              user-select: none;
+              -webkit-tap-highlight-color: transparent;
+            }
+
+            /* Hide scrollbars */
+            ::-webkit-scrollbar {
+              display: none;
+            }
+            * {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+            }
+
+            /* Disable overscroll bounce */
+            body {
+              overscroll-behavior-y: contain;
+            }
+
+            /* Safe area insets */
+            .mobile-header {
+              padding-top: env(safe-area-inset-top);
+            }
+
+            .mobile-bottom-nav {
+              padding-bottom: env(safe-area-inset-bottom);
+            }
+          }
         `}
       </style>
 
@@ -377,17 +409,28 @@ export default function Layout({ children, currentPageName }) {
       {/* Main Content Area */}
       <div className={`transition-all duration-300 ${sidebarOpen ? 'md:pl-64' : 'md:pl-20'}`}>
         {/* Top Bar */}
-        <header className="sticky top-0 z-40 h-16 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50">
+        <header className="sticky top-0 z-40 h-16 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50 mobile-header">
           <div className="h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-gray-300"
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
+            {/* Mobile Back Button or Menu */}
+            {!isRootPage ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate(-1)}
+                className="md:hidden text-gray-300"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden text-gray-300"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            )}
 
             {/* Search Bar */}
             <div className="flex-1 max-w-xl mx-4">
