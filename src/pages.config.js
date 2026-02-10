@@ -53,6 +53,7 @@ import AdminServices from './pages/AdminServices';
 import AdminStats from './pages/AdminStats';
 import Affiliate from './pages/Affiliate';
 import AffiliateLinks from './pages/AffiliateLinks';
+import AffiliateProgram from './pages/AffiliateProgram';
 import AgentContests from './pages/AgentContests';
 import AgentDeals from './pages/AgentDeals';
 import AgentDemo from './pages/AgentDemo';
@@ -80,7 +81,6 @@ import ServicesMarketplace from './pages/ServicesMarketplace';
 import SiteDetail from './pages/SiteDetail';
 import SportsbettingHome from './pages/SportsbettingHome';
 import Stats from './pages/Stats';
-import AffiliateProgram from './pages/AffiliateProgram';
 import __Layout from './Layout.jsx';
 
 
@@ -91,6 +91,7 @@ export const PAGES = {
     "AdminStats": AdminStats,
     "Affiliate": Affiliate,
     "AffiliateLinks": AffiliateLinks,
+    "AffiliateProgram": AffiliateProgram,
     "AgentContests": AgentContests,
     "AgentDeals": AgentDeals,
     "AgentDemo": AgentDemo,
@@ -118,7 +119,6 @@ export const PAGES = {
     "SiteDetail": SiteDetail,
     "SportsbettingHome": SportsbettingHome,
     "Stats": Stats,
-    "AffiliateProgram": AffiliateProgram,
 }
 
 export const pagesConfig = {

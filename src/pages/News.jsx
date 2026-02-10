@@ -29,6 +29,7 @@ export default function News() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     loadArticles();
@@ -50,8 +51,61 @@ export default function News() {
     }
   };
 
+  const handlePullToRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await loadArticles();
+    setRefreshing(false);
+  }, [selectedCategory]);
+
+  React.useEffect(() => {
+    let startY = 0;
+    let pulling = false;
+
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0 && window.innerWidth < 768) {
+        startY = e.touches[0].clientY;
+        pulling = true;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (pulling && window.innerWidth < 768) {
+        const currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+        if (diff > 80 && !refreshing) {
+          handlePullToRefresh();
+          pulling = false;
+        }
+      }
+    };
+
+    const handleTouchEnd = () => {
+      pulling = false;
+    };
+
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [refreshing, handlePullToRefresh]);
+
   return (
     <div className="min-h-screen bg-gray-950 text-white py-12">
+      {refreshing && (
+        <div className="fixed top-16 left-0 right-0 z-50 flex justify-center">
+          <div className="bg-emerald-500/20 backdrop-blur-sm px-4 py-2 rounded-full border border-emerald-500/30">
+            <div className="flex items-center gap-2 text-emerald-400 text-sm">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-400"></div>
+              Refreshing...
+            </div>
+          </div>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

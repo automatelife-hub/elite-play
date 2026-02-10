@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { User, Site, UserSiteSignup } from "@/entities/all";
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { UserCircle, Mail, Globe, Plus, Trash2, ExternalLink } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { UserCircle, Mail, Globe, Plus, Trash2, ExternalLink, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 import AddSiteSignupDialog from "../components/profile/AddSiteSignupDialog";
@@ -91,6 +103,17 @@ export default function Profile() {
     } catch (error) {
       console.error("Error deleting signup:", error);
       toast.error("Failed to remove site signup");
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      // This will log out the user and redirect to login
+      await base44.auth.logout();
+      toast.success("Account deletion requested. Please contact support to complete the process.");
+    } catch (error) {
+      console.error("Error initiating account deletion:", error);
+      toast.error("Failed to initiate account deletion");
     }
   };
 
@@ -182,13 +205,51 @@ export default function Profile() {
                   </Button>
                 </form>
 
-                <div className="mt-6 pt-6 border-t border-gray-800">
+                <div className="mt-6 pt-6 border-t border-gray-800 space-y-4">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-400">Account Role</span>
                     <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
                       {user?.role}
                     </Badge>
                   </div>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete Account
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-gray-900 border-gray-800">
+                      <AlertDialogHeader>
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+                            <AlertTriangle className="w-6 h-6 text-red-400" />
+                          </div>
+                          <AlertDialogTitle className="text-white text-xl">
+                            Delete Account?
+                          </AlertDialogTitle>
+                        </div>
+                        <AlertDialogDescription className="text-gray-400 leading-relaxed">
+                          This action cannot be undone. This will permanently delete your account and remove all your data from our servers. You will be logged out immediately.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700">
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleDeleteAccount}
+                          className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                          Delete Account
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </CardContent>
             </Card>

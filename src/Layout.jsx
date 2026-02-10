@@ -1,12 +1,12 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { 
   Home, Star, BarChart3, BookOpen, Bot, Building2, 
   Search, Bell, User as UserIcon, LogOut, Settings, 
   Menu, X, ChevronDown, Wallet, TrendingUp, Trophy,
-  Gift, Newspaper, Target, Users, Crown
+  Gift, Newspaper, Target, Users, Crown, ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,10 +22,14 @@ import { Badge } from "@/components/ui/badge";
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [user, setUser] = React.useState(null);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  const rootPages = ["Home", "PokerAdvisor", "Reviews", "Profile"];
+  const isRootPage = rootPages.includes(currentPageName);
 
   React.useEffect(() => {
     base44.auth.me().then(currentUser => {
@@ -107,11 +111,43 @@ export default function Layout({ children, currentPageName }) {
               --primary-purple: #A78BFA;
               --dark-slate: #0F172A;
             }
+
+            /* Mobile optimizations */
+            @media (max-width: 768px) {
+              * {
+                -webkit-user-select: none;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+              }
+
+              /* Hide scrollbars */
+              ::-webkit-scrollbar {
+                display: none;
+              }
+              * {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+              }
+
+              /* Disable overscroll bounce */
+              body {
+                overscroll-behavior-y: contain;
+              }
+
+              /* Safe area insets */
+              .mobile-header {
+                padding-top: env(safe-area-inset-top);
+              }
+
+              .mobile-bottom-nav {
+                padding-bottom: env(safe-area-inset-bottom);
+              }
+            }
           `}
         </style>
         
         {/* Top Navigation Bar for Landing Pages */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50 mobile-header">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <Link to={createPageUrl("Home")} className="flex items-center space-x-3">
@@ -481,10 +517,60 @@ export default function Layout({ children, currentPageName }) {
         )}
 
         {/* Main Content */}
-        <main className="min-h-[calc(100vh-4rem)] p-4 sm:p-6 lg:p-8">
+        <main className="min-h-[calc(100vh-4rem)] md:min-h-[calc(100vh-4rem)] pb-20 md:pb-0 p-4 sm:p-6 lg:p-8" style={{ overscrollBehaviorY: 'contain' }}>
           {children}
         </main>
-      </div>
-    </div>
-  );
-}
+
+        {/* Mobile Bottom Navigation */}
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800/50 md:hidden mobile-bottom-nav">
+          <div className="flex items-center justify-around h-16 px-2">
+            <Link
+              to={createPageUrl("Home")}
+              className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-all ${
+                currentPageName === "Home"
+                  ? "text-emerald-400"
+                  : "text-gray-400"
+              }`}
+            >
+              <Home className="w-5 h-5" />
+              <span className="text-xs font-medium">Home</span>
+            </Link>
+            <Link
+              to={createPageUrl("PokerAdvisor")}
+              className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-all ${
+                currentPageName === "PokerAdvisor"
+                  ? "text-emerald-400"
+                  : "text-gray-400"
+              }`}
+            >
+              <Bot className="w-5 h-5" />
+              <span className="text-xs font-medium">Advisor</span>
+            </Link>
+            <Link
+              to={createPageUrl("Reviews")}
+              className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-all ${
+                currentPageName === "Reviews"
+                  ? "text-emerald-400"
+                  : "text-gray-400"
+              }`}
+            >
+              <Star className="w-5 h-5" />
+              <span className="text-xs font-medium">Reviews</span>
+            </Link>
+            <Link
+              to={createPageUrl("Profile")}
+              className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-all ${
+                currentPageName === "Profile"
+                  ? "text-emerald-400"
+                  : "text-gray-400"
+              }`}
+            >
+              <UserIcon className="w-5 h-5" />
+              <span className="text-xs font-medium">Profile</span>
+            </Link>
+          </div>
+        </nav>
+        </div>
+        </div>
+        );
+        }
