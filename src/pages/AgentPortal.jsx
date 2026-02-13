@@ -17,6 +17,8 @@ import AchievementBadges from "../components/agent/AchievementBadges";
 import RealtimePerformance from "../components/agent/RealtimePerformance";
 import DealsOverview from "../components/agent/DealsOverview";
 import NotificationBell from "../components/agent/NotificationBell";
+import KPIAnalytics from "../components/agent/KPIAnalytics";
+import CustomDealManager from "../components/agent/CustomDealManager";
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -226,6 +228,23 @@ export default function AgentPortal() {
             agentDeals={agentDeals} 
             sites={sites} 
             referralLinks={referralLinks}
+          />
+        </div>
+
+        {/* KPI Analytics */}
+        <div className="col-span-12">
+          <KPIAnalytics 
+            players={players}
+            commissions={commissions}
+            referralLinks={referralLinks}
+          />
+        </div>
+
+        {/* Custom Deal Manager */}
+        <div className="col-span-12">
+          <CustomDealManager 
+            agentId={user?.agent_id}
+            sites={sites}
           />
         </div>
 
