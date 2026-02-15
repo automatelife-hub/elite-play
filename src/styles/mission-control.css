@@ -1,0 +1,270 @@
+/* Gamble Intel - Mission Control Comprehensive Styles */
+
+/* Button Styles - Tactical Variants */
+.btn-mission-primary {
+  background: linear-gradient(135deg, var(--intel-blue), var(--intel-cyan));
+  border: 2px solid var(--intel-cyan);
+  color: white;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px var(--intel-cyan), 0 0 20px var(--intel-cyan);
+  position: relative;
+  overflow: hidden;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-mission-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn-mission-primary:hover::before {
+  left: 100%;
+}
+
+.btn-mission-primary:hover {
+  box-shadow: 0 0 20px var(--intel-cyan), 0 0 30px var(--intel-cyan), 0 0 40px var(--intel-blue);
+  transform: scale(1.05);
+}
+
+.btn-mission-secondary {
+  background: transparent;
+  border: 2px solid var(--intel-cyan);
+  color: var(--intel-cyan);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-mission-secondary:hover {
+  background: rgba(0, 217, 255, 0.1);
+  box-shadow: 0 0 10px var(--intel-cyan);
+}
+
+.btn-alert {
+  background: var(--alert-red);
+  border: 2px solid #FF6B6B;
+  color: white;
+  font-weight: 700;
+  animation: alert-pulse 1s ease-in-out infinite;
+}
+
+@keyframes alert-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px var(--alert-red);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--alert-red), 0 0 30px var(--alert-red);
+  }
+}
+
+/* Mission Control Hero Background */
+.mission-control-hero {
+  position: relative;
+  background: var(--intel-dark);
+  overflow: hidden;
+}
+
+.mission-control-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,%3Csvg width="50" height="50" xmlns="http://www.w3.org/2000/svg"%3E%3Cg stroke="rgba(0,217,255,0.1)" stroke-width="0.5" fill="none"%3E%3Cline x1="0" y1="0" x2="50" y2="50"/%3E%3Cline x1="50" y1="0" x2="0" y2="50"/%3E%3C/g%3E%3C/svg%3E');
+  pointer-events: none;
+}
+
+.mission-control-hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(10, 14, 39, 0.5) 100%);
+  pointer-events: none;
+}
+
+/* Status Bar Styles */
+.status-bar {
+  background: var(--intel-navy);
+  border-bottom: 2px solid var(--intel-cyan);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.875rem;
+  letter-spacing: 1px;
+  color: var(--intel-cyan);
+  box-shadow: 0 4px 6px rgba(0, 217, 255, 0.1);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--secure-green);
+  box-shadow: 0 0 8px var(--secure-green);
+  animation: radar-pulse 2s ease-out infinite;
+}
+
+/* Floating Card with Neon Border */
+.floating-card {
+  background: rgba(10, 14, 39, 0.95);
+  border: 1px solid var(--intel-cyan);
+  position: relative;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.floating-card::before,
+.floating-card::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--intel-cyan);
+}
+
+.floating-card::before {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+.floating-card::after {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+
+/* Mission Grid Layout */
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Data Stream Animation */
+@keyframes data-stream {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh);
+  }
+}
+
+.data-stream-item {
+  animation: data-stream 4s linear infinite;
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--intel-cyan);
+  text-shadow: 0 0 10px var(--intel-cyan);
+}
+
+/* Glowing Text */
+.glowing-heading {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: white;
+  text-shadow: 0 0 10px var(--intel-cyan), 0 0 20px var(--intel-cyan), 0 0 30px var(--intel-blue);
+  text-transform: uppercase;
+}
+
+/* Tactical Brackets Corner */
+.tactical-corner {
+  position: relative;
+  padding: 20px;
+}
+
+.tactical-corner-tl::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border-top: 2px solid var(--intel-cyan);
+  border-left: 2px solid var(--intel-cyan);
+}
+
+/* Floating Card Bottom Corners */
+.floating-card > :first-child::before,
+.floating-card > :first-child::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--intel-cyan);
+}
+
+.floating-card > :first-child::before {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+}
+
+.floating-card > :first-child::after {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+/* Neon Gold Border Accent */
+.neon-gold-accent {
+  border: 2px solid var(--mission-gold);
+  box-shadow: 0 0 10px var(--mission-gold), 0 0 20px var(--mission-gold);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .glowing-heading {
+    font-size: 2rem;
+  }
+  
+  .mission-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .floating-card {
+    padding: 16px;
+  }
+}
