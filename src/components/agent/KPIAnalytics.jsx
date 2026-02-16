@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format, subDays, startOfDay, endOfDay, isWithinInterval } from "date-fns";
 import { Calendar as CalendarIcon, TrendingUp, Users, DollarSign, Target, ArrowUp, ArrowDown } from "lucide-react";
@@ -132,25 +132,21 @@ export default function KPIAnalytics({ players, commissions, referralLinks }) {
               </Button>
             ))}
 
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="border-slate-700 text-gray-300 hover:bg-slate-800">
-                  <CalendarIcon className="w-4 h-4 mr-2" />
-                  {dateRange.from && dateRange.to 
-                    ? `${format(dateRange.from, "MMM dd")} - ${format(dateRange.to, "MMM dd")}`
-                    : "Custom Range"
-                  }
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-slate-900 border-slate-700" align="end">
-                <Calendar
-                  mode="range"
-                  selected={dateRange}
-                  onSelect={setDateRange}
-                  numberOfMonths={2}
-                />
-              </PopoverContent>
-            </Popover>
+            <div className="flex items-center gap-2">
+              <Input
+                type="date"
+                value={dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : ''}
+                onChange={(e) => setDateRange(prev => ({ ...prev, from: e.target.value ? new Date(e.target.value) : null }))}
+                className="w-36 bg-slate-800 border-slate-700 text-gray-300"
+              />
+              <span className="text-gray-400">to</span>
+              <Input
+                type="date"
+                value={dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : ''}
+                onChange={(e) => setDateRange(prev => ({ ...prev, to: e.target.value ? new Date(e.target.value) : null }))}
+                className="w-36 bg-slate-800 border-slate-700 text-gray-300"
+              />
+            </div>
           </div>
         </div>
       </CardHeader>
