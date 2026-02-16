@@ -150,16 +150,22 @@ export default function Layout({ children, currentPageName }) {
         <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50 mobile-header">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
-              <Link to={createPageUrl("Home")} className="flex items-center space-x-3">
+              <Link to={createPageUrl("Home")} className="flex items-center space-x-2">
                 <div className="relative w-9 h-9">
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-lg shadow-lg shadow-emerald-500/30" />
-                  <div className="absolute inset-0.5 bg-slate-950 rounded-md flex items-center justify-center">
-                    <span className="text-emerald-400 font-bold">♠</span>
-                  </div>
+                  <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                    <circle cx="60" cy="60" r="58" fill="none" stroke="#00D9FF" strokeWidth="2" />
+                    <circle cx="60" cy="60" r="50" fill="rgba(0, 71, 171, 0.1)" />
+                    <path d="M 60 30 C 55 35 50 40 50 48 C 50 56 54 62 60 62 C 66 62 70 56 70 48 C 70 40 65 35 60 30 Z" fill="#00D9FF" />
+                    <path d="M 55 62 L 52 70 L 68 70 L 65 62" fill="#00D9FF" />
+                    <text x="60" y="90" textAnchor="middle" fontSize="10" fill="#FFD700" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="2">GIA</text>
+                  </svg>
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                  AceRakeback
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold text-cyan-400 tracking-wider uppercase" style={{ textShadow: '0 0 10px #00D9FF' }}>
+                    Gamble Intel
+                  </span>
+                  <span className="text-[9px] text-yellow-500 tracking-wide uppercase">Intelligence Agency</span>
+                </div>
               </Link>
 
               <div className="hidden md:flex items-center space-x-6">
@@ -334,18 +340,30 @@ export default function Layout({ children, currentPageName }) {
             {sidebarOpen ? (
               <Link to={createPageUrl("Home")} className="flex items-center space-x-2">
                 <div className="relative w-8 h-8">
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-lg" />
-                  <div className="absolute inset-0.5 bg-slate-950 rounded-md flex items-center justify-center">
-                    <span className="text-emerald-400 font-bold text-sm">♠</span>
-                  </div>
+                  <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                    <circle cx="60" cy="60" r="58" fill="none" stroke="#00D9FF" strokeWidth="2" />
+                    <circle cx="60" cy="60" r="50" fill="rgba(0, 71, 171, 0.1)" />
+                    <path d="M 60 30 C 55 35 50 40 50 48 C 50 56 54 62 60 62 C 66 62 70 56 70 48 C 70 40 65 35 60 30 Z" fill="#00D9FF" />
+                    <path d="M 55 62 L 52 70 L 68 70 L 65 62" fill="#00D9FF" />
+                    <text x="60" y="90" textAnchor="middle" fontSize="10" fill="#FFD700" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="2">GIA</text>
+                  </svg>
                 </div>
-                <span className="font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                  AceRakeback
-                </span>
+                <div className="flex flex-col">
+                  <span className="font-bold text-cyan-400 text-sm tracking-wider uppercase" style={{ textShadow: '0 0 10px #00D9FF' }}>
+                    Gamble Intel
+                  </span>
+                  <span className="text-[8px] text-yellow-500 tracking-wide uppercase">Intelligence Agency</span>
+                </div>
               </Link>
             ) : (
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-lg flex items-center justify-center mx-auto">
-                <span className="text-white font-bold text-sm">♠</span>
+              <div className="w-8 h-8 mx-auto">
+                <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                  <circle cx="60" cy="60" r="58" fill="none" stroke="#00D9FF" strokeWidth="2" />
+                  <circle cx="60" cy="60" r="50" fill="rgba(0, 71, 171, 0.1)" />
+                  <path d="M 60 30 C 55 35 50 40 50 48 C 50 56 54 62 60 62 C 66 62 70 56 70 48 C 70 40 65 35 60 30 Z" fill="#00D9FF" />
+                  <path d="M 55 62 L 52 70 L 68 70 L 65 62" fill="#00D9FF" />
+                  <text x="60" y="90" textAnchor="middle" fontSize="10" fill="#FFD700" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="2">GIA</text>
+                </svg>
               </div>
             )}
             <Button
@@ -526,13 +544,22 @@ export default function Layout({ children, currentPageName }) {
             <div className="absolute inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
             <div className="absolute left-0 top-0 bottom-0 w-64 bg-slate-900 border-r border-slate-800">
               <div className="p-4 border-b border-slate-800">
-                <Link to={createPageUrl("Home")} className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">♠</span>
-                  </div>
-                  <span className="font-bold text-white">AceRakeback</span>
-                </Link>
-              </div>
+                  <Link to={createPageUrl("Home")} className="flex items-center space-x-2">
+                    <div className="w-8 h-8">
+                      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                        <circle cx="60" cy="60" r="58" fill="none" stroke="#00D9FF" strokeWidth="2" />
+                        <circle cx="60" cy="60" r="50" fill="rgba(0, 71, 171, 0.1)" />
+                        <path d="M 60 30 C 55 35 50 40 50 48 C 50 56 54 62 60 62 C 66 62 70 56 70 48 C 70 40 65 35 60 30 Z" fill="#00D9FF" />
+                        <path d="M 55 62 L 52 70 L 68 70 L 65 62" fill="#00D9FF" />
+                        <text x="60" y="90" textAnchor="middle" fontSize="10" fill="#FFD700" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="2">GIA</text>
+                      </svg>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-cyan-400 text-sm tracking-wider uppercase">Gamble Intel</span>
+                      <span className="text-[7px] text-yellow-500 tracking-wide uppercase">Intelligence Agency</span>
+                    </div>
+                  </Link>
+                </div>
               <nav className="py-4 px-3">
                 {currentNavItems.map((section, idx) => (
                   <div key={idx} className="mb-4">
