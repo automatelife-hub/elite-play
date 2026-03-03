@@ -46,8 +46,10 @@ export default function VisualEditAgent() {
 		void element.offsetWidth;
 
 		const rect = element.getBoundingClientRect();
-		overlay.style.top = `${rect.top + window.scrollY}px`;
-		overlay.style.left = `${rect.left + window.scrollX}px`; // weird bug with the offset
+		const bodyRect = document.body.getBoundingClientRect();
+
+		overlay.style.top = `${rect.top - bodyRect.top}px`;
+		overlay.style.left = `${rect.left - bodyRect.left}px`;
 		overlay.style.width = `${rect.width}px`;
 		overlay.style.height = `${rect.height}px`;
 
