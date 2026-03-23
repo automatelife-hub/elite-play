@@ -1,50 +1,43 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createServiceClient, getAuthUser } from "./_shared/supabase.ts";
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const db = createServiceClient();
+    const user = await getAuthUser(req, db);
 
-    // Admin only
-    if (user?.role !== 'admin') {
-      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+    if (user?.role !== "admin") {
+      return Response.json({ error: "Forbidden: Admin access required" }, { status: 403 });
     }
 
     const { agent_id, period_start, period_end } = await req.json();
 
     if (!agent_id || !period_start || !period_end) {
-      return Response.json({ error: 'Missing required fields' }, { status: 400 });
+      return Response.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Get agent and their deals
-    const [agents, agentDeals, players, sites] = await Promise.all([
-      base44.asServiceRole.entities.Agent.filter({ id: agent_id }),
-      base44.asServiceRole.entities.AgentDeal.filter({ agent_id, status: 'approved' }),
-      base44.asServiceRole.entities.AgentPlayer.filter({ agent_id }),
-      base44.asServiceRole.entities.Site.list()
+    const [{ data: agents }, { data: agentDeals }, { data: players }] = await Promise.all([
+      db.from("agents").select("*").eq("id", agent_id),
+      db.from("agent_deals").select("*").eq("agent_id", agent_id).eq("status", "approved"),
+      db.from("agent_players").select("*").eq("agent_id", agent_id),
     ]);
 
-    if (agents.length === 0) {
-      return Response.json({ error: 'Agent not found' }, { status: 404 });
+    if (!agents?.length) {
+      return Response.json({ error: "Agent not found" }, { status: 404 });
     }
 
     const agent = agents[0];
-    const commissionsCreated = [];
+    const commissionsCreated: any[] = [];
 
-    // Calculate commission for each player in the period
-    for (const player of players) {
-      if (player.status !== 'active' && player.status !== 'approved') continue;
+    for (const player of players ?? []) {
+      if (player.status !== "active" && player.status !== "approved") continue;
+      const deal = agentDeals?.find((d: any) => d.site_id === player.site_id);
+      if (!deal) continue;
 
-      // Find the deal for this player's site
-      const deal = agentDeals.find(d => d.site_id === player.site_id);
-      if (!deal) continue; // Skip if no approved deal for this site
-
-      // Mock calculation - in production, this would pull actual revenue data
       const revenueGenerated = player.monthly_revenue || 0;
       const commissionAmount = (revenueGenerated * deal.commission_rate) / 100;
 
       if (commissionAmount > 0) {
-        const commission = await base44.asServiceRole.entities.AgentCommission.create({
+        const { data: commission } = await db.from("agent_commissions").insert({
           agent_id,
           player_id: player.id,
           site_id: player.site_id,
@@ -53,37 +46,35 @@ Deno.serve(async (req) => {
           revenue_generated: revenueGenerated,
           commission_rate: deal.commission_rate,
           commission_amount: commissionAmount,
-          payout_status: 'pending'
-        });
-
-        commissionsCreated.push(commission);
+          payout_status: "pending",
+        }).select().single();
+        if (commission) commissionsCreated.push(commission);
       }
     }
 
-    // Calculate total commission
     const totalCommission = commissionsCreated.reduce((sum, c) => sum + c.commission_amount, 0);
-
-    // Create payout batch if total exceeds minimum
     let payoutBatch = null;
+
     if (totalCommission >= 100) {
-      payoutBatch = await base44.asServiceRole.entities.PayoutBatch.create({
+      const { data } = await db.from("payout_batches").insert({
         agent_id,
-        batch_date: new Date().toISOString().split('T')[0],
+        batch_date: new Date().toISOString().split("T")[0],
         total_amount: totalCommission,
-        commission_ids: commissionsCreated.map(c => c.id),
-        status: agent.payment_type === 'automated' ? 'approved' : 'pending_approval',
-        payment_method: agent.payment_method
-      });
+        commission_ids: commissionsCreated.map((c) => c.id),
+        status: agent.payment_type === "automated" ? "approved" : "pending_approval",
+        payment_method: agent.payment_method,
+      }).select().single();
+      payoutBatch = data;
     }
 
     return Response.json({
       success: true,
       commissionsCreated: commissionsCreated.length,
       totalCommission,
-      payoutBatch: payoutBatch?.id || null
+      payoutBatch: payoutBatch?.id || null,
     });
   } catch (error) {
-    console.error('Error calculating commissions:', error);
+    console.error("Error calculating commissions:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

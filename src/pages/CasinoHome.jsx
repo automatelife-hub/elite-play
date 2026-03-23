@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Site, Article } from "@/entities/all";
 
 import NewHeroSection from "../components/home/NewHeroSection";
@@ -25,7 +25,7 @@ export default function CasinoHome() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
       setUserCountry(currentUser?.country_code);
 

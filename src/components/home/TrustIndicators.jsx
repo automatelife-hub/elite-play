@@ -40,9 +40,9 @@ const colorClasses = {
     icon: "text-purple-400"
   },
   emerald: {
-    bg: "from-emerald-400/10 to-emerald-600/10",
-    border: "border-emerald-500/20 group-hover:border-emerald-500/40",
-    icon: "text-emerald-400"
+    bg: "from-emerald-400/10 to-blue-600/10",
+    border: "border-blue-500/20 group-hover:border-blue-500/40",
+    icon: "text-blue-400"
   },
   slate: {
     bg: "from-slate-400/10 to-slate-600/10",
@@ -53,7 +53,7 @@ const colorClasses = {
 
 export default function TrustIndicators() {
   return (
-    <section className="py-20 bg-slate-900/50">
+    <section className="py-20 bg-[#0D1424]/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-10">
           {indicators.map((indicator, index) => {

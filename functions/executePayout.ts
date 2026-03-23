@@ -1,137 +1,95 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createServiceClient, getAuthUser } from "./_shared/supabase.ts";
 
-/**
- * Execute Payout - Processes a specific payout batch through payment gateway
- * Called manually by admin or automatically after batch approval
- */
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const db = createServiceClient();
+    const user = await getAuthUser(req, db);
 
-    if (user?.role !== 'admin') {
-      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+    if (user?.role !== "admin") {
+      return Response.json({ error: "Forbidden: Admin access required" }, { status: 403 });
     }
 
     const { batch_id } = await req.json();
-
     if (!batch_id) {
-      return Response.json({ error: 'Missing batch_id' }, { status: 400 });
+      return Response.json({ error: "Missing batch_id" }, { status: 400 });
     }
 
-    // Get the payout batch
-    const batches = await base44.asServiceRole.entities.PayoutBatch.filter({ id: batch_id });
-    if (batches.length === 0) {
-      return Response.json({ error: 'Batch not found' }, { status: 404 });
+    const { data: batch } = await db.from("payout_batches").select("*").eq("id", batch_id).single();
+    if (!batch) {
+      return Response.json({ error: "Batch not found" }, { status: 404 });
+    }
+    if (batch.status === "completed") {
+      return Response.json({ error: "Batch already completed" }, { status: 400 });
+    }
+    if (batch.status !== "approved") {
+      return Response.json({ error: "Batch must be approved before processing" }, { status: 400 });
     }
 
-    const batch = batches[0];
+    await db.from("payout_batches").update({ status: "processing" }).eq("id", batch_id);
 
-    // Check if already processed
-    if (batch.status === 'completed') {
-      return Response.json({ error: 'Batch already completed' }, { status: 400 });
-    }
+    const { data: agent } = await db.from("agents").select("*").eq("id", batch.agent_id).single();
 
-    if (batch.status !== 'approved') {
-      return Response.json({ error: 'Batch must be approved before processing' }, { status: 400 });
-    }
-
-    // Update batch to processing
-    await base44.asServiceRole.entities.PayoutBatch.update(batch_id, {
-      status: 'processing'
+    // Call mock payment gateway edge function
+    const gatewayUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/mockPaymentGateway`;
+    const gatewayRes = await fetch(gatewayUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: req.headers.get("Authorization") || "",
+      },
+      body: JSON.stringify({
+        amount: batch.total_amount,
+        agent_id: batch.agent_id,
+        payment_method: batch.payment_method,
+      }),
     });
-
-    // Get agent info
-    const agents = await base44.asServiceRole.entities.Agent.filter({ id: batch.agent_id });
-    const agent = agents[0];
-
-    // Call mock payment gateway
-    const paymentResponse = await base44.asServiceRole.functions.invoke('mockPaymentGateway', {
-      amount: batch.total_amount,
-      agent_id: batch.agent_id,
-      payment_method: batch.payment_method
-    });
+    const paymentResponse = await gatewayRes.json();
 
     if (paymentResponse.success) {
-      // Payment successful - update batch
-      await base44.asServiceRole.entities.PayoutBatch.update(batch_id, {
-        status: 'completed',
+      await db.from("payout_batches").update({
+        status: "completed",
         transaction_id: paymentResponse.transaction_id,
-        processed_date: new Date().toISOString().split('T')[0]
-      });
+        processed_date: new Date().toISOString().split("T")[0],
+      }).eq("id", batch_id);
 
-      // Update all commissions in batch to completed
-      for (const commissionId of batch.commission_ids) {
-        await base44.asServiceRole.entities.AgentCommission.update(commissionId, {
-          payout_status: 'completed',
-          payout_date: new Date().toISOString().split('T')[0],
-          transaction_id: paymentResponse.transaction_id
-        });
+      for (const commissionId of batch.commission_ids ?? []) {
+        await db.from("agent_commissions").update({
+          payout_status: "completed",
+          payout_date: new Date().toISOString().split("T")[0],
+          transaction_id: paymentResponse.transaction_id,
+        }).eq("id", commissionId);
       }
 
-      // Update agent's total paid out and last payout date
-      await base44.asServiceRole.entities.Agent.update(batch.agent_id, {
-        total_paid_out: (agent.total_paid_out || 0) + batch.total_amount,
-        last_payout_date: new Date().toISOString().split('T')[0]
-      });
+      await db.from("agents").update({
+        total_paid_out: (agent?.total_paid_out || 0) + batch.total_amount,
+        last_payout_date: new Date().toISOString().split("T")[0],
+      }).eq("id", batch.agent_id);
 
-      // Send notification email to agent
-      try {
-        await base44.asServiceRole.integrations.Core.SendEmail({
-          to: agent.agent_email,
-          subject: 'Commission Payout Processed Successfully',
-          body: `
-Dear ${agent.agent_name},
-
-Your commission payout has been processed successfully!
-
-Amount: $${batch.total_amount.toFixed(2)}
-Transaction ID: ${paymentResponse.transaction_id}
-Payment Method: ${batch.payment_method}
-Date: ${new Date().toLocaleDateString()}
-
-The funds should appear in your account within 2-5 business days.
-
-Best regards,
-AceRakeback Team
-          `
-        });
-      } catch (emailError) {
-        console.error('Failed to send notification email:', emailError);
-      }
+      // TODO: Send email notification via Resend or similar service
 
       return Response.json({
         success: true,
-        message: 'Payout processed successfully',
+        message: "Payout processed successfully",
         transaction_id: paymentResponse.transaction_id,
-        amount: batch.total_amount
+        amount: batch.total_amount,
       });
-
     } else {
-      // Payment failed - update batch
-      await base44.asServiceRole.entities.PayoutBatch.update(batch_id, {
-        status: 'failed',
-        notes: paymentResponse.error || 'Payment gateway error'
-      });
+      await db.from("payout_batches").update({
+        status: "failed",
+        notes: paymentResponse.error || "Payment gateway error",
+      }).eq("id", batch_id);
 
-      // Update commissions back to pending
-      for (const commissionId of batch.commission_ids) {
-        await base44.asServiceRole.entities.AgentCommission.update(commissionId, {
-          payout_status: 'pending'
-        });
+      for (const commissionId of batch.commission_ids ?? []) {
+        await db.from("agent_commissions").update({ payout_status: "pending" }).eq("id", commissionId);
       }
 
       return Response.json({
         success: false,
-        error: paymentResponse.error || 'Payment processing failed',
-        batch_id: batch_id
+        error: paymentResponse.error || "Payment processing failed",
+        batch_id,
       }, { status: 500 });
     }
-
   } catch (error) {
-    return Response.json({ 
-      success: false,
-      error: error.message 
-    }, { status: 500 });
+    return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 });

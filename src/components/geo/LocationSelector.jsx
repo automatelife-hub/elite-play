@@ -15,7 +15,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { MapPin } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { toast } from "sonner";
 
 const countries = [
@@ -49,7 +49,7 @@ export default function LocationSelector({ currentCountry, onLocationChanged }) 
   const handleSave = async () => {
     setSaving(true);
     try {
-      await base44.auth.updateMe({
+      await db.auth.updateMe({
         country_code: selectedCountry,
         location_confirmed: true
       });

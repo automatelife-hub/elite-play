@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, DollarSign, TrendingUp, Activity, ArrowUp, ArrowDown, Target, Award } from "lucide-react";
@@ -25,7 +25,7 @@ export default function AdminStats() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (currentUser.role !== 'admin') {
@@ -34,9 +34,9 @@ export default function AdminStats() {
       }
 
       const [agents, players, commissions] = await Promise.all([
-        base44.entities.Agent.list(),
-        base44.entities.AgentPlayer.list(),
-        base44.entities.AgentCommission.list()
+        db.entities.Agent.list(),
+        db.entities.AgentPlayer.list(),
+        db.entities.AgentCommission.list()
       ]);
 
       setStats({

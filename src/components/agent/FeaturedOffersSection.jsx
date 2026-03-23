@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ export default function FeaturedOffersSection({ isApprovedAgent = false }) {
 
   const loadSites = async () => {
     try {
-      const allSites = await base44.entities.Site.list('-rating');
+      const allSites = await db.entities.Site.list('-rating');
       // Filter for featured agent offers
       const featuredSites = allSites.filter(site => site.featured_for_agents || site.featured);
       setSites(featuredSites);

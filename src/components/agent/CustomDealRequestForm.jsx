@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,7 @@ export default function CustomDealRequestForm({ open, onOpenChange, agentId, sit
 
     setSubmitting(true);
     try {
-      await base44.entities.CustomDealRequest.create({
+      await db.entities.CustomDealRequest.create({
         agent_id: agentId,
         site_id: formData.site_id,
         requested_commission_rate: parseFloat(formData.requested_commission_rate),

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ export default function ContestLeaderboard({ contest, onClose }) {
   const loadParticipants = async () => {
     setLoading(true);
     try {
-      const data = await base44.entities.ContestParticipant.filter({ contest_id: contest.id });
+      const data = await db.entities.ContestParticipant.filter({ contest_id: contest.id });
       
       // Sort by points/raffle tickets
       const sorted = data.sort((a, b) => {

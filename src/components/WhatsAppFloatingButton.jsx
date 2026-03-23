@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { MessageSquare, X } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 
 export default function WhatsAppFloatingButton() {
   const [isHovered, setIsHovered] = useState(false);
-  const whatsappURL = base44.agents.getWhatsAppConnectURL('poker_advisor');
+  const whatsappURL = db.agents.getWhatsAppConnectURL('poker_advisor');
 
   return (
     <div className="fixed bottom-6 right-6 z-50">

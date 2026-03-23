@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,7 +17,7 @@ export default function Leaderboard() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const user = await base44.auth.me();
+      const user = await db.auth.me();
       setCurrentUser(user);
 
       // Check access: approved agents, managers, VIPs, or admins
@@ -26,7 +26,7 @@ export default function Leaderboard() {
         return;
       }
 
-      const agents = await base44.entities.Agent.filter({ agent_email: user.email });
+      const agents = await db.entities.Agent.filter({ agent_email: user.email });
       if (agents.length > 0) {
         const agent = agents[0];
         const hasManagerTag = agent.internal_tags?.includes('Manager');
@@ -41,7 +41,7 @@ export default function Leaderboard() {
         return;
       }
 
-      const allAgents = await base44.entities.Agent.filter({ status: 'approved' });
+      const allAgents = await db.entities.Agent.filter({ status: 'approved' });
       setAgents(allAgents);
     } catch (error) {
       console.error("Error loading leaderboard:", error);

@@ -116,7 +116,7 @@ export default function TopRatedSection({ sites, loading, userCountry }) {
                             </p>
                           )}
                           {site.rakeback && isAvailable && (
-                            <p className="text-emerald-400 text-sm font-medium">
+                            <p className="text-blue-400 text-sm font-medium">
                               💰 {site.rakeback}% Rakeback
                             </p>
                           )}
@@ -167,7 +167,7 @@ export default function TopRatedSection({ sites, loading, userCountry }) {
 
         <div className="text-center mt-16">
           <Link to={createPageUrl("Reviews")}>
-            <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-12 py-7 text-lg font-bold rounded-xl shadow-2xl shadow-emerald-500/50 hover:shadow-emerald-500/70 transition-all duration-300 transform hover:scale-105">
+            <Button className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white px-12 py-7 text-lg font-bold rounded-xl shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 transform hover:scale-105">
               View All Reviews →
             </Button>
           </Link>

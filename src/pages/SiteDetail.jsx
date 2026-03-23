@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +24,7 @@ export default function SiteDetail() {
         return;
       }
 
-      const sites = await base44.entities.Site.filter({ id: siteId });
+      const sites = await db.entities.Site.filter({ id: siteId });
       if (sites.length > 0) {
         setSite(sites[0]);
       }

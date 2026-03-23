@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +36,7 @@ export default function AdminServices() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (currentUser.role !== 'admin') {
@@ -45,8 +45,8 @@ export default function AdminServices() {
       }
 
       const [allServices, allOrders] = await Promise.all([
-        base44.entities.ServicePackage.list('-created_date'),
-        base44.entities.ServiceOrder.list('-created_date')
+        db.entities.ServicePackage.list('-created_date'),
+        db.entities.ServiceOrder.list('-created_date')
       ]);
 
       setServices(allServices);
@@ -63,10 +63,10 @@ export default function AdminServices() {
     e.preventDefault();
     try {
       if (editingService) {
-        await base44.entities.ServicePackage.update(editingService.id, serviceForm);
+        await db.entities.ServicePackage.update(editingService.id, serviceForm);
         toast.success("Service updated");
       } else {
-        await base44.entities.ServicePackage.create(serviceForm);
+        await db.entities.ServicePackage.create(serviceForm);
         toast.success("Service created");
       }
       setShowServiceDialog(false);
@@ -86,7 +86,7 @@ export default function AdminServices() {
 
   const updateOrderStatus = async (orderId, status) => {
     try {
-      await base44.entities.ServiceOrder.update(orderId, { 
+      await db.entities.ServiceOrder.update(orderId, { 
         status,
         completed_date: status === 'completed' ? new Date().toISOString().split('T')[0] : null
       });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,17 +42,17 @@ export default function StatsManagement({ user, signups, sites }) {
 
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await db.integrations.Core.UploadFile({ file });
       
-      const result = await base44.integrations.Core.ExtractDataFromUploadedFile({
+      const result = await db.integrations.Core.ExtractDataFromUploadedFile({
         file_url,
-        json_schema: await base44.entities.UserStats.schema()
+        json_schema: await db.entities.UserStats.schema()
       });
 
       if (result.status === "success" && result.output) {
         const statsArray = Array.isArray(result.output) ? result.output : [result.output];
         
-        await base44.entities.UserStats.bulkCreate(statsArray);
+        await db.entities.UserStats.bulkCreate(statsArray);
         
         toast.success(`Successfully uploaded ${statsArray.length} stat records`);
       } else {
@@ -81,7 +81,7 @@ export default function StatsManagement({ user, signups, sites }) {
         return;
       }
 
-      await base44.entities.UserStats.create({
+      await db.entities.UserStats.create({
         ...formData,
         user_email: signup.user_email
       });

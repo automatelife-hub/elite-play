@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -80,7 +80,7 @@ export default function AgentApplicationForm({ onSuccess }) {
       // Find referrer if code exists
       let referrerAgentId = null;
       if (referralCode) {
-        const referrers = await base44.entities.Agent.filter({ 
+        const referrers = await db.entities.Agent.filter({ 
           agent_referral_code: referralCode 
         });
         if (referrers.length > 0) {
@@ -89,7 +89,7 @@ export default function AgentApplicationForm({ onSuccess }) {
       }
       
       // Create agent record
-      const agent = await base44.entities.Agent.create({
+      const agent = await db.entities.Agent.create({
         agent_email: formData.email,
         agent_name: formData.full_name,
         company_name: formData.company_name,
@@ -115,7 +115,7 @@ export default function AgentApplicationForm({ onSuccess }) {
 
       // Create referral tracking if referred
       if (referrerAgentId) {
-        await base44.entities.AgentReferral.create({
+        await db.entities.AgentReferral.create({
           referrer_agent_id: referrerAgentId,
           referred_agent_id: agent.id,
           referral_code: referralCode,
@@ -126,7 +126,7 @@ export default function AgentApplicationForm({ onSuccess }) {
 
       console.log("Sending confirmation email to applicant...");
       // Send confirmation email to applicant
-      await base44.integrations.Core.SendEmail({
+      await db.integrations.Core.SendEmail({
         from_name: "AceRakeback Team",
         to: formData.email,
         subject: "Your Agent Application Has Been Received",
@@ -155,7 +155,7 @@ This is an automated confirmation email. Please do not reply directly to this me
 
       console.log("Sending notification email to admin...");
       // Send notification email to admin
-      await base44.integrations.Core.SendEmail({
+      await db.integrations.Core.SendEmail({
         from_name: "Agent Application System",
         to: "admin@acerakeback.com",
         subject: `🚨 New Agent Application: ${formData.full_name}`,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,7 @@ export default function CustomDealManager({ agentId, sites }) {
 
   const loadCustomDeals = async () => {
     try {
-      const deals = await base44.entities.CustomDealRequest.filter({ agent_id: agentId });
+      const deals = await db.entities.CustomDealRequest.filter({ agent_id: agentId });
       setCustomDeals(deals);
     } catch (error) {
       console.error("Error loading custom deals:", error);
@@ -46,7 +46,7 @@ export default function CustomDealManager({ agentId, sites }) {
   const handleCreateDeal = async (e) => {
     e.preventDefault();
     try {
-      await base44.entities.CustomDealRequest.create({
+      await db.entities.CustomDealRequest.create({
         ...newDeal,
         agent_id: agentId,
         requested_commission_rate: parseFloat(newDeal.requested_commission_rate),

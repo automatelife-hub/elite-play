@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { User, Site, UserSiteSignup } from "@/entities/all";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -109,7 +109,7 @@ export default function Profile() {
   const handleDeleteAccount = async () => {
     try {
       // This will log out the user and redirect to login
-      await base44.auth.logout();
+      await db.auth.logout();
       toast.success("Account deletion requested. Please contact support to complete the process.");
     } catch (error) {
       console.error("Error initiating account deletion:", error);

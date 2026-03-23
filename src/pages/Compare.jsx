@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +26,7 @@ export default function Compare() {
 
   const loadSites = async () => {
     try {
-      const data = await base44.entities.Site.list('-rating');
+      const data = await db.entities.Site.list('-rating');
       setSites(data);
       // Auto-select top 3 sites by default
       if (data.length >= 3) {

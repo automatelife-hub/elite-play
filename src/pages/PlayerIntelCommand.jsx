@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,12 +34,12 @@ export default function PlayerIntelCommand() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me().catch(() => null);
+      const currentUser = await db.auth.me().catch(() => null);
       setUser(currentUser);
 
       const [allSites, signups] = await Promise.all([
-        base44.entities.Site.list('-rating', 20),
-        currentUser ? base44.entities.UserSiteSignup.filter({ user_email: currentUser.email }) : []
+        db.entities.Site.list('-rating', 20),
+        currentUser ? db.entities.UserSiteSignup.filter({ user_email: currentUser.email }) : []
       ]);
 
       setSites(allSites);

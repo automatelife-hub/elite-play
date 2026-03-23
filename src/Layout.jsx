@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { 
   Home, Star, BarChart3, BookOpen, Bot, Building2, 
   Search, Bell, User as UserIcon, LogOut, Settings, 
@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// User entity is accessed via base44.auth.me()
+// User entity is accessed via db.auth.me()
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { GIALogoMark, GIAIcon } from "@/components/intel/GIALogo";
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
@@ -32,7 +33,7 @@ export default function Layout({ children, currentPageName }) {
   const isRootPage = rootPages.includes(currentPageName);
 
   React.useEffect(() => {
-    base44.auth.me().then(currentUser => {
+    db.auth.me().then(currentUser => {
     setUser(currentUser);
     }).catch(() => {
     setUser(null);
@@ -103,7 +104,7 @@ export default function Layout({ children, currentPageName }) {
   // Landing page layout (no sidebar)
   if (isLandingPage) {
     return (
-      <div className="min-h-screen bg-slate-950">
+      <div className="min-h-screen bg-[#080C14]">
         <style>
           {`
             :root {
@@ -147,67 +148,51 @@ export default function Layout({ children, currentPageName }) {
         </style>
         
         {/* Top Navigation Bar for Landing Pages */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50 mobile-header">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#080C14]/80 backdrop-blur-xl border-b border-[#1E2A3F]/60 mobile-header">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
-              <Link to={createPageUrl("Home")} className="flex items-center space-x-2">
-                <div className="relative w-9 h-9">
-                  <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                    <circle cx="60" cy="60" r="58" fill="none" stroke="#00D9FF" strokeWidth="2" />
-                    <circle cx="60" cy="60" r="50" fill="rgba(0, 71, 171, 0.1)" />
-                    <path d="M 60 30 C 55 35 50 40 50 48 C 50 56 54 62 60 62 C 66 62 70 56 70 48 C 70 40 65 35 60 30 Z" fill="#00D9FF" />
-                    <path d="M 55 62 L 52 70 L 68 70 L 65 62" fill="#00D9FF" />
-                    <text x="60" y="90" textAnchor="middle" fontSize="10" fill="#FFD700" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="2">GIA</text>
-                  </svg>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-lg font-bold text-cyan-400 tracking-wider uppercase" style={{ textShadow: '0 0 10px #00D9FF' }}>
-                    Gamble Intel
-                  </span>
-                  <span className="text-[9px] text-yellow-500 tracking-wide uppercase">Intelligence Agency</span>
-                </div>
-              </Link>
+              <Link to={createPageUrl("Home")}><GIALogoMark /></Link>
 
               <div className="hidden md:flex items-center space-x-6">
-                <Link to={createPageUrl("PokerHome")} className="text-gray-300 hover:text-emerald-400 transition-colors">
+                <Link to={createPageUrl("PokerHome")} className="text-gray-300 hover:text-blue-400 transition-colors">
                   Poker
                 </Link>
-                <Link to={createPageUrl("CasinoHome")} className="text-gray-300 hover:text-purple-400 transition-colors">
+                <Link to={createPageUrl("CasinoHome")} className="text-gray-300 hover:text-blue-300 transition-colors">
                   Casino
                 </Link>
-                <Link to={createPageUrl("SportsbettingHome")} className="text-gray-300 hover:text-orange-400 transition-colors">
+                <Link to={createPageUrl("SportsbettingHome")} className="text-gray-300 hover:text-blue-300 transition-colors">
                   Sports
                 </Link>
-                <Link to={createPageUrl("Compare")} className="text-gray-300 hover:text-cyan-400 transition-colors">
+                <Link to={createPageUrl("Compare")} className="text-gray-300 hover:text-blue-400 transition-colors">
                   Compare
                 </Link>
-                <Link to={createPageUrl("BecomeAgent")} className="text-gray-300 hover:text-cyan-400 transition-colors flex items-center gap-1">
+                <Link to={createPageUrl("BecomeAgent")} className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-1">
                   <Building2 className="w-4 h-4" />
                   Become Agent
                 </Link>
                 {user ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="text-gray-300 hover:text-cyan-400">
+                      <Button variant="ghost" size="sm" className="text-gray-300 hover:text-blue-400">
                         <UserIcon className="w-4 h-4 mr-2" />
                         {user.full_name}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-slate-900 border-slate-700">
+                    <DropdownMenuContent className="bg-[#0D1424] border-[#1E2A3F]">
                       <DropdownMenuItem asChild>
-                        <Link to={createPageUrl("Profile")} className="cursor-pointer text-gray-300">
+                        <Link to={createPageUrl("Profile")} className="cursor-pointer text-[#94A3B8]">
                           Profile
                         </Link>
                       </DropdownMenuItem>
                       {user.is_agent && (
                         <DropdownMenuItem asChild>
-                          <Link to={createPageUrl("AgentPortal")} className="cursor-pointer text-gray-300">
+                          <Link to={createPageUrl("AgentPortal")} className="cursor-pointer text-[#94A3B8]">
                             Agent Portal
                           </Link>
                         </DropdownMenuItem>
                       )}
-                      <DropdownMenuSeparator className="bg-slate-700" />
-                      <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-400 cursor-pointer">
+                      <DropdownMenuSeparator className="bg-[#1E2A3F]" />
+                      <DropdownMenuItem onClick={() => db.auth.logout()} className="text-red-400 cursor-pointer">
                         <LogOut className="w-4 h-4 mr-2" />
                         Logout
                       </DropdownMenuItem>
@@ -215,7 +200,7 @@ export default function Layout({ children, currentPageName }) {
                   </DropdownMenu>
                 ) : (
                   <Link to={createPageUrl("Affiliate")}>
-                    <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600">
+                    <Button size="sm" className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
                       Agent Login
                     </Button>
                   </Link>
@@ -237,18 +222,18 @@ export default function Layout({ children, currentPageName }) {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden border-t border-slate-800 bg-slate-950">
+            <div className="md:hidden border-t border-[#1E2A3F] bg-[#080C14]">
               <div className="px-4 py-4 space-y-2">
-                <Link to={createPageUrl("PokerHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-slate-800">
+                <Link to={createPageUrl("PokerHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
                   Poker
                 </Link>
-                <Link to={createPageUrl("CasinoHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-slate-800">
+                <Link to={createPageUrl("CasinoHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
                   Casino
                 </Link>
-                <Link to={createPageUrl("SportsbettingHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-slate-800">
+                <Link to={createPageUrl("SportsbettingHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
                   Sports
                 </Link>
-                <Link to={createPageUrl("BecomeAgent")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-slate-800">
+                <Link to={createPageUrl("BecomeAgent")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
                   Become Agent
                 </Link>
               </div>
@@ -261,9 +246,9 @@ export default function Layout({ children, currentPageName }) {
         </main>
 
         {/* Footer */}
-        <footer className="bg-slate-900/50 backdrop-blur-sm border-t border-slate-800/50 mt-20">
+        <footer className="bg-[#0D1424]/50 backdrop-blur-sm border-t border-[#1E2A3F]/60 mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center text-gray-400 text-sm">
+            <div className="text-center text-[#475569] text-sm">
               © 2026 AceRakeback. All rights reserved. • 18+ Only. Play responsibly.
             </div>
           </div>
@@ -274,7 +259,7 @@ export default function Layout({ children, currentPageName }) {
 
   // App Layout (with sidebar for logged-in areas)
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-[#080C14]">
       <style>
         {`
           :root {
@@ -331,46 +316,22 @@ export default function Layout({ children, currentPageName }) {
       </style>
 
       {/* Left Sidebar */}
-      <aside className={`fixed top-0 left-0 h-full bg-slate-900/95 backdrop-blur-xl border-r border-slate-800/50 z-50 transition-all duration-300 ${
+      <aside className={`fixed top-0 left-0 h-full bg-[#0D1424]/95 backdrop-blur-xl border-r border-[#1E2A3F]/60 z-50 transition-all duration-300 ${
         sidebarOpen ? 'w-64' : 'w-20'
       } hidden md:block`}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800/50">
+          <div className="h-16 flex items-center justify-between px-4 border-b border-[#1E2A3F]/60">
             {sidebarOpen ? (
-              <Link to={createPageUrl("Home")} className="flex items-center space-x-2">
-                <div className="relative w-8 h-8">
-                  <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                    <circle cx="60" cy="60" r="58" fill="none" stroke="#00D9FF" strokeWidth="2" />
-                    <circle cx="60" cy="60" r="50" fill="rgba(0, 71, 171, 0.1)" />
-                    <path d="M 60 30 C 55 35 50 40 50 48 C 50 56 54 62 60 62 C 66 62 70 56 70 48 C 70 40 65 35 60 30 Z" fill="#00D9FF" />
-                    <path d="M 55 62 L 52 70 L 68 70 L 65 62" fill="#00D9FF" />
-                    <text x="60" y="90" textAnchor="middle" fontSize="10" fill="#FFD700" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="2">GIA</text>
-                  </svg>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-bold text-cyan-400 text-sm tracking-wider uppercase" style={{ textShadow: '0 0 10px #00D9FF' }}>
-                    Gamble Intel
-                  </span>
-                  <span className="text-[8px] text-yellow-500 tracking-wide uppercase">Intelligence Agency</span>
-                </div>
-              </Link>
+              <Link to={createPageUrl("Home")}><GIALogoMark /></Link>
             ) : (
-              <div className="w-8 h-8 mx-auto">
-                <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                  <circle cx="60" cy="60" r="58" fill="none" stroke="#00D9FF" strokeWidth="2" />
-                  <circle cx="60" cy="60" r="50" fill="rgba(0, 71, 171, 0.1)" />
-                  <path d="M 60 30 C 55 35 50 40 50 48 C 50 56 54 62 60 62 C 66 62 70 56 70 48 C 70 40 65 35 60 30 Z" fill="#00D9FF" />
-                  <path d="M 55 62 L 52 70 L 68 70 L 65 62" fill="#00D9FF" />
-                  <text x="60" y="90" textAnchor="middle" fontSize="10" fill="#FFD700" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="2">GIA</text>
-                </svg>
-              </div>
+              <GIAIcon size={32} className="mx-auto" />
             )}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="text-gray-400 hover:text-cyan-400"
+              className="text-gray-400 hover:text-blue-400"
             >
               <Menu className="w-4 h-4" />
             </Button>
@@ -381,7 +342,7 @@ export default function Layout({ children, currentPageName }) {
             {currentNavItems.map((section, idx) => (
               <div key={idx} className="mb-6">
                 {sidebarOpen && (
-                  <div className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <div className="px-3 mb-2 text-xs font-semibold text-[#475569] uppercase tracking-wider">
                     {section.section}
                   </div>
                 )}
@@ -394,8 +355,8 @@ export default function Layout({ children, currentPageName }) {
                         to={item.url}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
                           isActive
-                            ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 text-emerald-400 shadow-lg shadow-emerald-500/10'
-                            : 'text-gray-400 hover:text-cyan-400 hover:bg-slate-800/50'
+                            ? 'bg-gradient-to-r from-blue-600/20 to-blue-500/10 text-blue-400 shadow-lg shadow-blue-600/10'
+                            : 'text-gray-400 hover:text-blue-400 hover:bg-[#141E35]/50'
                         }`}
                         title={!sidebarOpen ? item.title : ''}
                       >
@@ -411,10 +372,10 @@ export default function Layout({ children, currentPageName }) {
 
           {/* Become Agent CTA */}
           {!user?.is_agent && user?.role !== 'admin' && sidebarOpen && (
-            <div className="p-4 border-t border-slate-800/50">
+            <div className="p-4 border-t border-[#1E2A3F]/60">
               <Link to={createPageUrl("BecomeAgent")}>
-                <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 hover:border-emerald-500/40 transition-all cursor-pointer">
-                  <Building2 className="w-6 h-6 text-emerald-400 mb-2" />
+                <div className="p-4 rounded-xl bg-gradient-to-br from-blue-600/10 to-blue-500/5 border border-blue-600/20 hover:border-blue-600/40 transition-all cursor-pointer">
+                  <Building2 className="w-6 h-6 text-blue-400 mb-2" />
                   <div className="text-sm font-semibold text-white mb-1">Become an Agent</div>
                   <div className="text-xs text-gray-400">Earn 40% commissions</div>
                 </div>
@@ -427,7 +388,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Main Content Area */}
       <div className={`transition-all duration-300 ${sidebarOpen ? 'md:pl-64' : 'md:pl-20'}`}>
         {/* Top Bar */}
-        <header className="sticky top-0 z-40 h-16 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50 mobile-header">
+        <header className="sticky top-0 z-40 h-16 bg-[#0D1424]/80 backdrop-blur-xl border-b border-[#1E2A3F]/60 mobile-header">
           <div className="h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             {/* Mobile Back Button or Menu */}
             {!isRootPage ? (
@@ -458,7 +419,7 @@ export default function Layout({ children, currentPageName }) {
                   placeholder="Search sites, guides, or deals..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-slate-800/50 border-slate-700/50 text-white placeholder:text-gray-500 focus:border-cyan-500/50 focus:ring-cyan-500/20"
+                  className="pl-10 bg-[#141E35]/50 border-[#1E2A3F]/60 text-white placeholder:text-gray-500 focus:border-blue-500/50 focus:ring-blue-500/20"
                 />
               </div>
             </div>
@@ -467,14 +428,14 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center gap-2">
               {user?.is_agent && (
                 <Link to={createPageUrl("AgentPortal")}>
-                  <Button variant="ghost" size="sm" className="text-gray-300 hover:text-emerald-400 hidden sm:flex">
+                  <Button variant="ghost" size="sm" className="text-gray-300 hover:text-blue-400 hidden sm:flex">
                     <Crown className="w-4 h-4 mr-2" />
                     Agent Portal
                   </Button>
                 </Link>
               )}
 
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-cyan-400 relative">
+              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-blue-400 relative">
                 <Bell className="w-5 h-5" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
               </Button>
@@ -482,46 +443,46 @@ export default function Layout({ children, currentPageName }) {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="text-gray-300 hover:text-cyan-400 gap-2">
-                      <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    <Button variant="ghost" className="text-gray-300 hover:text-blue-400 gap-2">
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-400 rounded-full flex items-center justify-center text-white text-sm font-bold">
                         {user.full_name?.charAt(0) || 'U'}
                       </div>
                       <span className="hidden sm:inline">{user.full_name}</span>
                       <ChevronDown className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-slate-900 border-slate-700 w-56">
-                    <div className="px-3 py-2 border-b border-slate-700">
+                  <DropdownMenuContent align="end" className="bg-[#0D1424] border-[#1E2A3F] w-56">
+                    <div className="px-3 py-2 border-b border-[#1E2A3F]">
                       <div className="text-sm font-medium text-white">{user.full_name}</div>
                       <div className="text-xs text-gray-400">{user.email}</div>
                       {user.role === 'admin' && (
-                        <Badge className="mt-1 bg-red-500/20 text-red-400 border-red-500/30 text-xs">
+                        <Badge className="mt-1 bg-[#F43F5E]/15 text-[#FB7185] border-[#F43F5E]/20 text-xs">
                           Admin
                         </Badge>
                       )}
                     </div>
                     <DropdownMenuItem asChild>
-                      <Link to={createPageUrl("Profile")} className="cursor-pointer text-gray-300">
+                      <Link to={createPageUrl("Profile")} className="cursor-pointer text-[#94A3B8]">
                         <UserIcon className="w-4 h-4 mr-2" />
                         Profile
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to={createPageUrl("Stats")} className="cursor-pointer text-gray-300">
+                      <Link to={createPageUrl("Stats")} className="cursor-pointer text-[#94A3B8]">
                         <BarChart3 className="w-4 h-4 mr-2" />
                         My Stats
                       </Link>
                     </DropdownMenuItem>
                     {user.is_agent && (
                       <DropdownMenuItem asChild>
-                        <Link to={createPageUrl("AgentPortal")} className="cursor-pointer text-gray-300">
+                        <Link to={createPageUrl("AgentPortal")} className="cursor-pointer text-[#94A3B8]">
                           <Crown className="w-4 h-4 mr-2" />
                           Agent Portal
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuSeparator className="bg-slate-700" />
-                    <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-400 cursor-pointer">
+                    <DropdownMenuSeparator className="bg-[#1E2A3F]" />
+                    <DropdownMenuItem onClick={() => db.auth.logout()} className="text-red-400 cursor-pointer">
                       <LogOut className="w-4 h-4 mr-2" />
                       Logout
                     </DropdownMenuItem>
@@ -529,7 +490,7 @@ export default function Layout({ children, currentPageName }) {
                 </DropdownMenu>
               ) : (
                 <Link to={createPageUrl("Affiliate")}>
-                  <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600">
+                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
                     Sign In
                   </Button>
                 </Link>
@@ -542,8 +503,8 @@ export default function Layout({ children, currentPageName }) {
         {mobileMenuOpen && (
           <div className="fixed inset-0 z-40 md:hidden">
             <div className="absolute inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
-            <div className="absolute left-0 top-0 bottom-0 w-64 bg-slate-900 border-r border-slate-800">
-              <div className="p-4 border-b border-slate-800">
+            <div className="absolute left-0 top-0 bottom-0 w-64 bg-[#0D1424] border-r border-[#1E2A3F]">
+              <div className="p-4 border-b border-[#1E2A3F]">
                   <Link to={createPageUrl("Home")} className="flex items-center space-x-2">
                     <div className="w-8 h-8">
                       <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
@@ -563,7 +524,7 @@ export default function Layout({ children, currentPageName }) {
               <nav className="py-4 px-3">
                 {currentNavItems.map((section, idx) => (
                   <div key={idx} className="mb-4">
-                    <div className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase">
+                    <div className="px-3 mb-2 text-xs font-semibold text-[#475569] uppercase">
                       {section.section}
                     </div>
                     <div className="space-y-1">
@@ -572,7 +533,7 @@ export default function Layout({ children, currentPageName }) {
                           key={item.title}
                           to={item.url}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-slate-800"
+                          className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]"
                         >
                           <item.icon className="w-5 h-5" />
                           <span>{item.title}</span>
@@ -592,7 +553,7 @@ export default function Layout({ children, currentPageName }) {
         </main>
 
         {/* Mobile Bottom Navigation */}
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800/50 md:hidden mobile-bottom-nav">
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#0D1424]/95 backdrop-blur-xl border-t border-[#1E2A3F]/60 md:hidden mobile-bottom-nav">
           <div className="flex items-center justify-around h-16 px-2">
             <Link
               to={createPageUrl("Home")}

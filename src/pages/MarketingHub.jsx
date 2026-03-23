@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ export default function MarketingHub() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (!currentUser.is_agent && currentUser.role !== 'admin') {
@@ -39,15 +39,15 @@ export default function MarketingHub() {
       }
 
       const [agentData, allAssets, agentCampaigns, agentRequests, allSites, agentPlayers] = await Promise.all([
-        base44.entities.Agent.filter({ agent_email: currentUser.email }),
-        base44.entities.MarketingAsset.list('-created_date'),
+        db.entities.Agent.filter({ agent_email: currentUser.email }),
+        db.entities.MarketingAsset.list('-created_date'),
         currentUser.agent_id ? 
-          base44.entities.MarketingCampaign.filter({ agent_id: currentUser.agent_id }) : [],
+          db.entities.MarketingCampaign.filter({ agent_id: currentUser.agent_id }) : [],
         currentUser.agent_id ?
-          base44.entities.MarketingRequest.filter({ agent_id: currentUser.agent_id }) : [],
-        base44.entities.Site.list(),
+          db.entities.MarketingRequest.filter({ agent_id: currentUser.agent_id }) : [],
+        db.entities.Site.list(),
         currentUser.agent_id ?
-          base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : []
+          db.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : []
       ]);
 
       if (agentData.length > 0) {

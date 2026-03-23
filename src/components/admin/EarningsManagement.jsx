@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,8 +41,8 @@ export default function EarningsManagement({ user, sites }) {
   const loadData = async () => {
     try {
       const [earningsData, linksData] = await Promise.all([
-        base44.entities.AffiliateEarnings.list('-conversion_date'),
-        base44.entities.AffiliateLink.list()
+        db.entities.AffiliateEarnings.list('-conversion_date'),
+        db.entities.AffiliateLink.list()
       ]);
       setEarnings(earningsData);
       setAffiliateLinks(linksData);
@@ -64,10 +64,10 @@ export default function EarningsManagement({ user, sites }) {
     
     try {
       if (editingEarning) {
-        await base44.entities.AffiliateEarnings.update(editingEarning.id, formData);
+        await db.entities.AffiliateEarnings.update(editingEarning.id, formData);
         toast.success("Earning updated successfully");
       } else {
-        await base44.entities.AffiliateEarnings.create(formData);
+        await db.entities.AffiliateEarnings.create(formData);
         toast.success("Earning added successfully");
       }
 
@@ -92,7 +92,7 @@ export default function EarningsManagement({ user, sites }) {
         updateData.payment_date = new Date().toISOString().split('T')[0];
       }
       
-      await base44.entities.AffiliateEarnings.update(earningId, updateData);
+      await db.entities.AffiliateEarnings.update(earningId, updateData);
       toast.success(`Status changed to ${newStatus}`);
       await loadData();
     } catch (error) {

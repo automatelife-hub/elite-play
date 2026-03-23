@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -63,7 +63,7 @@ ${copyType === 'ad' ? 'Create 3 short ad copy variations (50 words max each) for
 
 Make it persuasive, clear, and focused on converting players.`;
 
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await db.integrations.Core.InvokeLLM({
         prompt,
         add_context_from_internet: false
       });
@@ -118,7 +118,7 @@ Provide:
 
 Be specific, data-driven, and actionable.`;
 
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await db.integrations.Core.InvokeLLM({
         prompt,
         add_context_from_internet: false
       });
@@ -168,7 +168,7 @@ Provide a detailed design brief including:
 
 Format this as a clear design specification that a graphic designer can implement.`;
 
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await db.integrations.Core.InvokeLLM({
         prompt,
         add_context_from_internet: false
       });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Circle, ArrowRight, Trophy } from "lucide-react";
@@ -15,7 +15,7 @@ export default function AgentOnboardingChecklist({ agentId, onComplete }) {
 
   const loadOnboarding = async () => {
     try {
-      const records = await base44.entities.AgentOnboarding.filter({ agent_id: agentId });
+      const records = await db.entities.AgentOnboarding.filter({ agent_id: agentId });
       if (records.length > 0) {
         setOnboarding(records[0]);
       }
@@ -76,7 +76,7 @@ export default function AgentOnboardingChecklist({ agentId, onComplete }) {
 
   const completeOnboarding = async () => {
     try {
-      await base44.entities.AgentOnboarding.update(onboarding.id, {
+      await db.entities.AgentOnboarding.update(onboarding.id, {
         onboarding_completed: true,
         completed_date: new Date().toISOString().split('T')[0]
       });

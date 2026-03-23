@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,8 +23,8 @@ export default function ReferralSystem({ agent, agentId }) {
     setLoading(true);
     try {
       const [referrals, players] = await Promise.all([
-        base44.entities.AgentReferral.filter({ referrer_agent_id: agentId }),
-        base44.entities.AgentPlayer.filter({ agent_id: agentId })
+        db.entities.AgentReferral.filter({ referrer_agent_id: agentId }),
+        db.entities.AgentPlayer.filter({ agent_id: agentId })
       ]);
 
       setAgentReferrals(referrals);
@@ -32,7 +32,7 @@ export default function ReferralSystem({ agent, agentId }) {
       // Get referred agent details
       if (referrals.length > 0) {
         const referredAgentIds = referrals.map(r => r.referred_agent_id);
-        const allAgents = await base44.entities.Agent.list();
+        const allAgents = await db.entities.Agent.list();
         const referred = allAgents.filter(a => referredAgentIds.includes(a.id));
         setReferredAgents(referred);
       }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -136,7 +136,7 @@ export default function PokerNetworkDetail() {
       setNetwork(networkInfo);
 
       // Load all sites
-      const allSites = await base44.entities.Site.list();
+      const allSites = await db.entities.Site.list();
       
       // Filter sites that belong to this network
       const networkSites = allSites.filter(site => {

@@ -2,294 +2,252 @@
 @tailwind components;
 @tailwind utilities;
 
-
-/* :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-} */
-
-
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-
-    /* Gamble Intel Mission Control Variables */
-    --intel-blue: #0047AB;
-    --intel-cyan: #00D9FF;
-    --intel-electric: #00F0FF;
-    --intel-dark: #0A0E27;
-    --intel-navy: #0F1629;
-    --mission-gold: #FFD700;
-    --alert-red: #FF0033;
-    --secure-green: #00FF41;
-    --radar-green: #39FF14;
-    --grid-cyan: rgba(0, 217, 255, 0.1);
-    --grid-line: rgba(0, 217, 255, 0.2);
-    --hud-overlay: rgba(10, 14, 39, 0.85);
-  }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
+    --background: 220 30% 5%;
+    --foreground: 210 40% 96%;
+    --card: 222 35% 8%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 35% 8%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 217 91% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 30% 12%;
+    --secondary-foreground: 210 40% 90%;
+    --muted: 222 30% 12%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 222 30% 15%;
+    --accent-foreground: 210 40% 96%;
+    --destructive: 350 80% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 222 30% 14%;
+    --input: 222 30% 14%;
+    --ring: 217 91% 54%;
+    --chart-1: 217 91% 60%;
     --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
+    --chart-3: 43 74% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --radius: 0.5rem;
+    --sidebar-background: 222 35% 6%;
+    --sidebar-foreground: 210 40% 85%;
+    --sidebar-primary: 217 91% 54%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 222 30% 12%;
+    --sidebar-accent-foreground: 210 40% 90%;
+    --sidebar-border: 222 30% 11%;
+    --sidebar-ring: 217 91% 54%;
+
+    /* Gamble Intel Design System */
+    --gi-base: #080C14;
+    --gi-surface: #0D1424;
+    --gi-elevated: #141E35;
+    --gi-blue: #2563EB;
+    --gi-blue-hover: #3B82F6;
+    --gi-blue-subtle: #60A5FA;
+    --gi-blue-glow: rgba(37, 99, 235, 0.25);
+    --gi-border: rgba(255, 255, 255, 0.06);
+    --gi-border-accent: rgba(37, 99, 235, 0.2);
+    --gi-gold: #C8A951;
+    --gi-gold-light: #E8C878;
+
+    /* Legacy intel vars mapped to new palette */
+    --intel-blue: #2563EB;
+    --intel-cyan: #60A5FA;
+    --intel-electric: #93C5FD;
+    --intel-dark: #080C14;
+    --intel-navy: #0D1424;
+    --mission-gold: #C8A951;
+    --alert-red: #F43F5E;
+    --secure-green: #10B981;
+    --radar-green: #34D399;
+    --grid-cyan: rgba(37, 99, 235, 0.05);
+    --grid-line: rgba(37, 99, 235, 0.08);
+    --hud-overlay: rgba(8, 12, 20, 0.9);
+  }
+
+  .dark {
+    --background: 220 30% 5%;
+    --foreground: 210 40% 96%;
+    --card: 222 35% 8%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 35% 8%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 217 91% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 30% 12%;
+    --secondary-foreground: 210 40% 90%;
+    --muted: 222 30% 12%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 222 30% 15%;
+    --accent-foreground: 210 40% 96%;
+    --destructive: 350 80% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 222 30% 14%;
+    --input: 222 30% 14%;
+    --ring: 217 91% 54%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 43 74% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 222 35% 6%;
+    --sidebar-foreground: 210 40% 85%;
+    --sidebar-primary: 217 91% 54%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 30% 12%;
+    --sidebar-accent-foreground: 210 40% 90%;
+    --sidebar-border: 222 30% 11%;
+    --sidebar-ring: 217 91% 54%;
   }
 }
-
-
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    font-family: 'DM Sans', sans-serif;
+    color-scheme: dark;
+  }
   body {
     @apply bg-background text-foreground;
+    background-color: #080C14;
+    font-family: 'DM Sans', sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', sans-serif;
   }
 }
 
-/* Gamble Intel Mission Control Styles */
+/* Gamble Intel Component Styles */
 @layer components {
+
+  /* Panel — clean surface card with subtle blue accent border */
+  .intel-panel {
+    background: var(--gi-surface);
+    border: 1px solid var(--gi-border-accent);
+    border-radius: 8px;
+    padding: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  }
+
+  /* GI Card — standard data surface */
+  .gi-card {
+    background: var(--gi-surface);
+    border: 1px solid var(--gi-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .gi-card:hover {
+    border-color: var(--gi-border-accent);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(37, 99, 235, 0.15);
+  }
+
+  /* Dot grid background for sections */
   .tactical-grid {
-    background-image: 
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
-      linear-gradient(var(--grid-line) 1px, transparent 1px);
-    background-size: 50px 50px;
+    background-image: radial-gradient(circle, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
+    background-size: 28px 28px;
     position: relative;
   }
 
+  /* Subtle scan line for data feel (restrained) */
   .grid-scan-line {
     position: absolute;
     width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--intel-cyan), transparent);
-    box-shadow: 0 0 10px var(--intel-cyan), 0 0 20px var(--intel-cyan);
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(37, 99, 235, 0.3) 50%, transparent 100%);
   }
 
+  /* Text styles */
+  .glowing-text {
+    text-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+    color: #93C5FD;
+  }
+
+  .gi-heading {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* Neon border — restrained version */
+  .neon-border {
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.4), 0 0 16px rgba(37, 99, 235, 0.15);
+  }
+
+  /* Button variants */
+  .btn-gi-primary {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  }
+  .btn-gi-primary:hover {
+    background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.45);
+    transform: translateY(-1px);
+  }
+
+  .btn-gi-outline {
+    background: transparent;
+    color: #60A5FA;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    border: 1px solid rgba(37, 99, 235, 0.4);
+    border-radius: 6px;
+    padding: 10px 20px;
+    transition: all 0.2s ease;
+  }
+  .btn-gi-outline:hover {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.6);
+  }
+
+  /* Input style */
+  .intel-input {
+    background: rgba(13, 20, 36, 0.9);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: 6px;
+    color: #F1F5F9;
+    font-family: 'DM Sans', sans-serif;
+    padding: 10px 14px;
+    transition: border-color 0.2s;
+  }
+  .intel-input:focus {
+    border-color: rgba(37, 99, 235, 0.5);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+  }
+  .intel-input::placeholder {
+    color: rgba(148, 163, 184, 0.5);
+  }
+
+  /* Status badge styles */
+  .badge-success { background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.2); }
+  .badge-danger  { background: rgba(244, 63, 94, 0.15); color: #FB7185; border: 1px solid rgba(244, 63, 94, 0.2); }
+  .badge-gold    { background: rgba(200, 169, 81, 0.15); color: #E8C878; border: 1px solid rgba(200, 169, 81, 0.2); }
+  .badge-blue    { background: rgba(37, 99, 235, 0.15); color: #93C5FD; border: 1px solid rgba(37, 99, 235, 0.2); }
+
+  /* Data particle - kept but restrained */
   .data-particle {
     position: absolute;
     width: 2px;
-    height: 10px;
-    background: var(--intel-cyan);
-    box-shadow: 0 0 10px var(--intel-cyan), 0 0 20px var(--intel-cyan);
+    height: 8px;
+    background: #3B82F6;
+    opacity: 0.4;
+    border-radius: 2px;
   }
 
-  .intel-panel {
-    background: var(--hud-overlay);
-    border: 1px solid var(--intel-cyan);
-    border-radius: 0;
-    position: relative;
-    padding: 20px;
-    backdrop-filter: blur(10px);
-  }
-
-  /* Tactical corner brackets */
-  .intel-panel::before,
-  .intel-panel::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--intel-cyan);
-  }
-
-  .intel-panel::before {
-    top: 0;
-    left: 0;
-    border-right: none;
-    border-bottom: none;
-  }
-
-  .intel-panel::after {
-    top: 0;
-    right: 0;
-    border-left: none;
-    border-bottom: none;
-  }
-
+  /* Legacy holographic — removed flicker, now just subtle */
   .holographic {
     position: relative;
-    animation: hologram-flicker 0.1s infinite;
-  }
-
-  .holographic::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: rgba(0, 217, 255, 0.5);
-    animation: hologram-scan 2s linear infinite;
-  }
-
-  @keyframes hologram-scan {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100%); }
-  }
-
-  .glowing-text {
-    text-shadow: 0 0 10px var(--intel-cyan), 0 0 20px var(--intel-cyan), 0 0 30px var(--intel-blue);
-  }
-
-  .neon-border {
-    box-shadow: 0 0 10px var(--intel-cyan), 0 0 20px var(--intel-cyan), 0 0 30px var(--intel-blue);
-  }
-
-  .intel-input {
-    background: rgba(10, 14, 39, 0.9);
-    border: 1px solid var(--intel-cyan);
-    border-radius: 0;
-    color: var(--intel-cyan);
-    font-family: 'Share Tech Mono', monospace;
-    letter-spacing: 1px;
-    padding: 12px 16px;
-    text-transform: uppercase;
-  }
-
-  .intel-input:focus {
-    border-color: var(--intel-electric);
-    box-shadow: 
-      0 0 10px var(--intel-cyan),
-      inset 0 0 10px rgba(0, 217, 255, 0.1);
-    outline: none;
-  }
-
-  .intel-input::placeholder {
-    color: rgba(0, 217, 255, 0.5);
-  }
-}
-
-
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }

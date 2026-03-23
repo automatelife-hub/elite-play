@@ -10,67 +10,66 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
-const MainPage = mainPageKey ? Pages[mainPageKey] : <></>>;
+const MainPage = mainPageKey ? Pages[mainPageKey] : () => null;
 
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
-    <Layout currentPageName={currentPageName}>{children}</Layout>Layout>
-    : <>{children}</>>;
+    <Layout currentPageName={currentPageName}>{children}</Layout>
+    : <>{children}</>;
 
 const AuthenticatedApp = () => {
     const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated, navigateToLogin } = useAuth();
   
     if (isLoadingPublicSettings || isLoadingAuth) {
-          return (
-                  <div className="fixed inset-0 flex items-center justify-center">
-                          <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>div>
-                  </div>div>
-                );
+        return (
+            <div className="fixed inset-0 flex items-center justify-center">
+                <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+            </div>
+        );
     }
   
     if (authError) {
-          if (authError.type === 'user_not_registered') {
-                  return <UserNotRegisteredError />;
-          } else if (authError.type === 'auth_required') {
-                  navigateToLogin();
-                  return null;
-          }
+        if (authError.type === 'user_not_registered') {
+            return <UserNotRegisteredError />;
+        } else if (authError.type === 'auth_required') {
+            navigateToLogin();
+            return null;
+        }
     }
   
     return (
-          <Routes>
-                <Route path="/" element={
-                          <LayoutWrapper currentPageName={mainPageKey}>
-                                    <MainPage />
-                          </LayoutWrapper>LayoutWrapper>
-                  } />
-                  {Object.entries(Pages).map(([path, Page]) => (
-                    <Route
-                                key={path}
-                                path={`/${path}`}
-                                element={
-                                              <LayoutWrapper currentPageName={path}>
-                                                            <Page />
-                                              </LayoutWrapper>LayoutWrapper>
-                      }
-                            />
-                          ))}
-                          <Route path="*" element={<PageNotFound />} />
-                    </Route>Routes>
-              );
-                  };
-                
-                
-                function App() {
-                    return (
-                    <AuthProvider>
-                          <QueryClientProvider client={queryClientInstance}>
-                                  <Router>
-                                            <AuthenticatedApp />
-                                  </Router>Router>
-                                  <Toaster />
-                          </QueryClientProvider>QueryClientProvider>
-                    </AuthProvider>AuthProvider>
-                  )
-                  }
-                
-                export default App</></>
+        <Routes>
+            <Route path="/" element={
+                <LayoutWrapper currentPageName={mainPageKey}>
+                    <MainPage />
+                </LayoutWrapper>
+            } />
+            {Object.entries(Pages).map(([path, Page]) => (
+                <Route
+                    key={path}
+                    path={`/${path}`}
+                    element={
+                        <LayoutWrapper currentPageName={path}>
+                            <Page />
+                        </LayoutWrapper>
+                    }
+                />
+            ))}
+            <Route path="*" element={<PageNotFound />} />
+        </Routes>
+    );
+};
+
+function App() {
+    return (
+        <AuthProvider>
+            <QueryClientProvider client={queryClientInstance}>
+                <Router>
+                    <AuthenticatedApp />
+                </Router>
+                <Toaster />
+            </QueryClientProvider>
+        </AuthProvider>
+    );
+}
+
+export default App;

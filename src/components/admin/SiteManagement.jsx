@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +39,7 @@ export default function SiteManagement({ user }) {
 
   const loadSites = async () => {
     try {
-      const allSites = await base44.entities.Site.list('-created_date');
+      const allSites = await db.entities.Site.list('-created_date');
       setSites(allSites);
     } catch (error) {
       console.error("Error loading sites:", error);
@@ -64,10 +64,10 @@ export default function SiteManagement({ user }) {
       };
 
       if (editingSite) {
-        await base44.entities.Site.update(editingSite.id, siteData);
+        await db.entities.Site.update(editingSite.id, siteData);
         toast.success("Site updated successfully");
       } else {
-        await base44.entities.Site.create(siteData);
+        await db.entities.Site.create(siteData);
         toast.success("Site created successfully");
       }
 
@@ -107,7 +107,7 @@ export default function SiteManagement({ user }) {
     if (!confirm("Are you sure you want to delete this site?")) return;
 
     try {
-      await base44.entities.Site.delete(siteId);
+      await db.entities.Site.delete(siteId);
       toast.success("Site deleted successfully");
       await loadSites();
     } catch (error) {

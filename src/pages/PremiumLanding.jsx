@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
@@ -23,10 +23,10 @@ export default function PremiumLanding() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
-      const sites = await base44.entities.Site.filter({ featured: true }, '-rating', 6);
+      const sites = await db.entities.Site.filter({ featured: true }, '-rating', 6);
       setFeaturedSites(sites);
     } catch (error) {
       console.error("Error loading data:", error);

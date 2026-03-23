@@ -1,9 +1,4 @@
-import { base44 } from './base44Client';
+import { db } from './supabaseClient';
 
-
-export const Query = base44.entities.Query;
-
-
-
-// auth sdk:
-export const User = base44.auth;
+// Re-export auth as User for backward compat
+export const User = db.auth;

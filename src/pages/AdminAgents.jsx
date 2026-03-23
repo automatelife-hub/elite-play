@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +45,7 @@ export default function AdminAgents() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (currentUser.role !== 'admin') {
@@ -54,8 +54,8 @@ export default function AdminAgents() {
       }
 
       const [agentsList, sitesList] = await Promise.all([
-        base44.entities.Agent.list('-created_date'),
-        base44.entities.Site.list()
+        db.entities.Agent.list('-created_date'),
+        db.entities.Site.list()
       ]);
       setAgents(agentsList);
       setSites(sitesList);
@@ -69,13 +69,13 @@ export default function AdminAgents() {
 
   const approveAgent = async (agentId) => {
     try {
-      await base44.entities.Agent.update(agentId, {
+      await db.entities.Agent.update(agentId, {
         status: 'approved'
       });
       
       // Trigger onboarding emails
       try {
-        await base44.functions.invoke('sendOnboardingEmails', { agent_id: agentId });
+        await db.functions.invoke('sendOnboardingEmails', { agent_id: agentId });
       } catch (emailError) {
         console.error("Failed to send onboarding emails:", emailError);
       }
@@ -90,7 +90,7 @@ export default function AdminAgents() {
 
   const denyAgent = async (agentId) => {
     try {
-      await base44.entities.Agent.update(agentId, {
+      await db.entities.Agent.update(agentId, {
         status: 'denied'
       });
       toast.success("Agent denied");
@@ -120,7 +120,7 @@ export default function AdminAgents() {
     if (!selectedAgent) return;
 
     try {
-      await base44.entities.Agent.update(selectedAgent.id, editForm);
+      await db.entities.Agent.update(selectedAgent.id, editForm);
       toast.success("Agent updated successfully");
       setShowEditDialog(false);
       setSelectedAgent(null);
@@ -149,7 +149,7 @@ export default function AdminAgents() {
   const openDealsDialog = async (agent) => {
     setSelectedAgent(agent);
     try {
-      const allDeals = await base44.entities.AgentDeal.list();
+      const allDeals = await db.entities.AgentDeal.list();
       const deals = allDeals.filter(d => d.agent_id === agent.id);
       setAgentDeals(deals);
       setShowDealsDialog(true);
@@ -162,7 +162,7 @@ export default function AdminAgents() {
   const createDeal = async (siteId, commissionRate) => {
     if (!selectedAgent) return;
     try {
-      await base44.entities.AgentDeal.create({
+      await db.entities.AgentDeal.create({
         agent_id: selectedAgent.id,
         site_id: siteId,
         commission_rate: commissionRate,
@@ -179,7 +179,7 @@ export default function AdminAgents() {
 
   const updateDealStatus = async (dealId, status) => {
     try {
-      await base44.entities.AgentDeal.update(dealId, { 
+      await db.entities.AgentDeal.update(dealId, { 
         status,
         approved_date: status === 'approved' ? new Date().toISOString().split('T')[0] : null
       });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ export default function AgentMissionControl() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (!currentUser.is_agent && currentUser.role !== 'admin') {
@@ -45,10 +45,10 @@ export default function AgentMissionControl() {
       }
 
       const [agentData, agentPlayers, agentCommissions, agentDeals] = await Promise.all([
-        base44.entities.Agent.filter({ agent_email: currentUser.email }),
-        currentUser.agent_id ? base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : [],
-        currentUser.agent_id ? base44.entities.AgentCommission.filter({ agent_id: currentUser.agent_id }) : [],
-        currentUser.agent_id ? base44.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) : []
+        db.entities.Agent.filter({ agent_email: currentUser.email }),
+        currentUser.agent_id ? db.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : [],
+        currentUser.agent_id ? db.entities.AgentCommission.filter({ agent_id: currentUser.agent_id }) : [],
+        currentUser.agent_id ? db.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) : []
       ]);
 
       if (agentData.length > 0) setAgent(agentData[0]);

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +22,7 @@ export default function MarketingAssetLibrary({ assets, agent, onDownload }) {
   const handleDownload = async (asset) => {
     try {
       // Update download count
-      await base44.entities.MarketingAsset.update(asset.id, {
+      await db.entities.MarketingAsset.update(asset.id, {
         download_count: (asset.download_count || 0) + 1
       });
 

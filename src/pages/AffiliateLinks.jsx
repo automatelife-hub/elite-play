@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -57,7 +57,7 @@ export default function AffiliateLinks() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (currentUser.role !== 'admin') {
@@ -66,8 +66,8 @@ export default function AffiliateLinks() {
       }
 
       const [affiliateLinks, allSites] = await Promise.all([
-        base44.entities.AffiliateLink.list('-created_date'),
-        base44.entities.Site.list('name'),
+        db.entities.AffiliateLink.list('-created_date'),
+        db.entities.Site.list('name'),
       ]);
 
       setLinks(affiliateLinks);
@@ -84,10 +84,10 @@ export default function AffiliateLinks() {
     e.preventDefault();
     try {
       if (editingLink) {
-        await base44.entities.AffiliateLink.update(editingLink.id, formData);
+        await db.entities.AffiliateLink.update(editingLink.id, formData);
         toast.success("Affiliate link updated");
       } else {
-        await base44.entities.AffiliateLink.create(formData);
+        await db.entities.AffiliateLink.create(formData);
         toast.success("Affiliate link created");
       }
       
@@ -118,7 +118,7 @@ export default function AffiliateLinks() {
     if (!confirm("Are you sure you want to delete this affiliate link?")) return;
     
     try {
-      await base44.entities.AffiliateLink.delete(linkId);
+      await db.entities.AffiliateLink.delete(linkId);
       toast.success("Affiliate link deleted");
       await loadData();
     } catch (error) {
@@ -129,7 +129,7 @@ export default function AffiliateLinks() {
 
   const handleToggleActive = async (link) => {
     try {
-      await base44.entities.AffiliateLink.update(link.id, {
+      await db.entities.AffiliateLink.update(link.id, {
         active: !link.active,
       });
       toast.success(`Link ${link.active ? 'deactivated' : 'activated'}`);
@@ -146,12 +146,12 @@ export default function AffiliateLinks() {
       const siteLinks = links.filter(l => l.site_id === link.site_id);
       await Promise.all(
         siteLinks.map(l => 
-          base44.entities.AffiliateLink.update(l.id, { is_default: false })
+          db.entities.AffiliateLink.update(l.id, { is_default: false })
         )
       );
       
       // Then set this one as default
-      await base44.entities.AffiliateLink.update(link.id, { is_default: true });
+      await db.entities.AffiliateLink.update(link.id, { is_default: true });
       toast.success("Default link updated");
       await loadData();
     } catch (error) {

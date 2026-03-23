@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ export default function AchievementBadges({ agentId }) {
     
     setLoading(true);
     try {
-      const earned = await base44.entities.AgentAchievement.filter({ agent_id: agentId });
+      const earned = await db.entities.AgentAchievement.filter({ agent_id: agentId });
       setAchievements(earned);
       
       const points = earned.reduce((sum, a) => sum + (a.points || 0), 0);
@@ -34,7 +34,7 @@ export default function AchievementBadges({ agentId }) {
 
   const checkNewAchievements = async () => {
     try {
-      const response = await base44.functions.invoke('checkAgentAchievements', {
+      const response = await db.functions.invoke('checkAgentAchievements', {
         agent_id: agentId
       });
 

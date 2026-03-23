@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +23,7 @@ export default function AgentContests() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (!currentUser.is_agent && currentUser.role !== 'admin') {
@@ -33,9 +33,9 @@ export default function AgentContests() {
 
       const [agentContests, allSites] = await Promise.all([
         currentUser.agent_id 
-          ? base44.entities.AgentContest.filter({ agent_id: currentUser.agent_id })
+          ? db.entities.AgentContest.filter({ agent_id: currentUser.agent_id })
           : [],
-        base44.entities.Site.list()
+        db.entities.Site.list()
       ]);
 
       setContests(agentContests);

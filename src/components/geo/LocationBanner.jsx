@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, X, Check } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { toast } from "sonner";
 
 export default function LocationBanner({ user, onLocationConfirmed }) {
@@ -17,7 +17,7 @@ export default function LocationBanner({ user, onLocationConfirmed }) {
   const detectLocation = async () => {
     try {
       // Use LLM with web search to detect country from IP
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await db.integrations.Core.InvokeLLM({
         prompt: "Based on my IP address, what country am I in? Respond with only the 2-letter country code (e.g., US, UK, CA, AU) and nothing else. If you can't determine, respond with 'UNKNOWN'.",
         add_context_from_internet: false
       });
@@ -41,7 +41,7 @@ export default function LocationBanner({ user, onLocationConfirmed }) {
 
   const handleConfirm = async () => {
     try {
-      await base44.auth.updateMe({
+      await db.auth.updateMe({
         country_code: detectedCountry,
         detected_country: detectedCountry,
         location_confirmed: true

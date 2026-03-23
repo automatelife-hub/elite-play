@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,18 +31,18 @@ export default function PokerAdvisor() {
 
   const initializeChat = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
-      const conversations = await base44.agents.listConversations({
+      const conversations = await db.agents.listConversations({
         agent_name: "poker_advisor"
       });
 
       let conv;
       if (conversations.length > 0) {
-        conv = await base44.agents.getConversation(conversations[0].id);
+        conv = await db.agents.getConversation(conversations[0].id);
       } else {
-        conv = await base44.agents.createConversation({
+        conv = await db.agents.createConversation({
           agent_name: "poker_advisor",
           metadata: {
             name: "Poker Advisor Chat",
@@ -54,7 +54,7 @@ export default function PokerAdvisor() {
       setConversation(conv);
       setMessages(conv.messages || []);
 
-      const unsubscribe = base44.agents.subscribeToConversation(conv.id, (data) => {
+      const unsubscribe = db.agents.subscribeToConversation(conv.id, (data) => {
         setMessages(data.messages);
       });
 
@@ -76,7 +76,7 @@ export default function PokerAdvisor() {
     setInputMessage("");
 
     try {
-      await base44.agents.addMessage(conversation, {
+      await db.agents.addMessage(conversation, {
         role: "user",
         content: messageContent
       });
@@ -89,7 +89,7 @@ export default function PokerAdvisor() {
     }
   };
 
-  const whatsappURL = base44.agents.getWhatsAppConnectURL('poker_advisor');
+  const whatsappURL = db.agents.getWhatsAppConnectURL('poker_advisor');
 
   if (loading) {
     return (

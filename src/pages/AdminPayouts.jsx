@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -42,7 +42,7 @@ export default function AdminPayouts() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (currentUser.role !== 'admin') {
@@ -51,8 +51,8 @@ export default function AdminPayouts() {
       }
 
       const [batches, agentsList] = await Promise.all([
-        base44.entities.PayoutBatch.list('-created_date'),
-        base44.entities.Agent.list()
+        db.entities.PayoutBatch.list('-created_date'),
+        db.entities.Agent.list()
       ]);
 
       setPayoutBatches(batches);
@@ -68,7 +68,7 @@ export default function AdminPayouts() {
   const processAutomatedPayouts = async () => {
     setProcessing(true);
     try {
-      const response = await base44.functions.invoke('processPayouts', {});
+      const response = await db.functions.invoke('processPayouts', {});
       
       if (response.success) {
         toast.success(response.message);
@@ -86,7 +86,7 @@ export default function AdminPayouts() {
 
   const approveBatch = async (batchId) => {
     try {
-      await base44.entities.PayoutBatch.update(batchId, {
+      await db.entities.PayoutBatch.update(batchId, {
         status: 'approved',
         approved_by: user.email
       });
@@ -102,7 +102,7 @@ export default function AdminPayouts() {
   const executePayout = async (batchId) => {
     setProcessing(true);
     try {
-      const response = await base44.functions.invoke('executePayout', {
+      const response = await db.functions.invoke('executePayout', {
         batch_id: batchId
       });
 
@@ -127,14 +127,14 @@ export default function AdminPayouts() {
     }
 
     try {
-      await base44.entities.PayoutBatch.update(selectedBatch.id, {
+      await db.entities.PayoutBatch.update(selectedBatch.id, {
         status: 'rejected',
         rejection_reason: rejectionReason
       });
 
       // Update commissions back to pending
       for (const commissionId of selectedBatch.commission_ids) {
-        await base44.entities.AgentCommission.update(commissionId, {
+        await db.entities.AgentCommission.update(commissionId, {
           payout_status: 'pending'
         });
       }

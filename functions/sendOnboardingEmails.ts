@@ -1,110 +1,61 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createServiceClient, getAuthUser } from "./_shared/supabase.ts";
 
-/**
- * Send Onboarding Emails - Triggers welcome series after agent approval
- */
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const db = createServiceClient();
+    const user = await getAuthUser(req, db);
 
-    if (user?.role !== 'admin') {
-      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+    if (user?.role !== "admin") {
+      return Response.json({ error: "Forbidden: Admin access required" }, { status: 403 });
     }
 
     const { agent_id } = await req.json();
-
     if (!agent_id) {
-      return Response.json({ error: 'Missing agent_id' }, { status: 400 });
+      return Response.json({ error: "Missing agent_id" }, { status: 400 });
     }
 
-    // Get agent details
-    const agents = await base44.asServiceRole.entities.Agent.filter({ id: agent_id });
-    if (agents.length === 0) {
-      return Response.json({ error: 'Agent not found' }, { status: 404 });
+    const { data: agent } = await db.from("agents").select("*").eq("id", agent_id).single();
+    if (!agent) {
+      return Response.json({ error: "Agent not found" }, { status: 404 });
     }
 
-    const agent = agents[0];
-
-    // Generate tracking code and agent referral code if not exists
-    const trackingCode = agent.tracking_code || `${agent.agent_name.substring(0, 3).toUpperCase()}${Date.now().toString().slice(-6)}`;
+    const trackingCode = agent.tracking_code ||
+      `${agent.agent_name.substring(0, 3).toUpperCase()}${Date.now().toString().slice(-6)}`;
     const agentReferralCode = agent.agent_referral_code || `AGT${Date.now().toString().slice(-8)}`;
-    
-    await base44.asServiceRole.entities.Agent.update(agent_id, {
-      tracking_code: trackingCode,
-      agent_referral_code: agentReferralCode
-    });
 
-    // If agent was referred, activate the referral
+    await db.from("agents").update({
+      tracking_code: trackingCode,
+      agent_referral_code: agentReferralCode,
+    }).eq("id", agent_id);
+
     if (agent.referrer_agent_id) {
-      const referrals = await base44.asServiceRole.entities.AgentReferral.filter({
-        referred_agent_id: agent_id,
-        status: 'pending'
-      });
-      
-      if (referrals.length > 0) {
-        await base44.asServiceRole.entities.AgentReferral.update(referrals[0].id, {
-          status: 'active'
-        });
+      const { data: referrals } = await db
+        .from("agent_referrals")
+        .select("id")
+        .eq("referred_agent_id", agent_id)
+        .eq("status", "pending");
+
+      if (referrals?.length) {
+        await db.from("agent_referrals").update({ status: "active" }).eq("id", referrals[0].id);
       }
     }
 
-    // Create onboarding record
-    await base44.asServiceRole.entities.AgentOnboarding.create({
-      agent_id: agent_id,
-      welcome_email_sent: true
+    await db.from("agent_onboarding").insert({
+      agent_id,
+      welcome_email_sent: true,
     });
 
-    // Send welcome email
-    await base44.asServiceRole.integrations.Core.SendEmail({
-      to: agent.agent_email,
-      subject: 'Welcome to AceRakeback Agency Program! 🎉',
-      body: `
-Dear ${agent.agent_name},
+    // TODO: Integrate email service (Resend, SendGrid, etc.)
+    // Email content: Welcome to Gamble Intel Agency Program
+    // Include: trackingCode, agentReferralCode, commission_rate, tier, next steps
+    console.log(`[sendOnboardingEmails] Would send welcome email to ${agent.agent_email}`);
 
-Congratulations! Your agency application has been approved. Welcome to the AceRakeback family!
-
-🎯 Your Account Details:
-- Tracking Code: ${trackingCode}
-- Agent Referral Code: ${agentReferralCode}
-- Commission Rate: ${agent.commission_rate || 25}%
-- Tier: ${agent.tier || 'bronze'} (upgradable based on performance)
-
-📋 Next Steps - Complete Your Setup:
-1. Configure your payment information
-2. Review your tracking links for each site
-3. Submit your first player
-4. Download marketing materials
-
-🚀 Getting Started:
-Visit your Agent Portal to complete the setup wizard and start referring players.
-
-Portal Login: https://acerakeback.com/agent-portal
-
-Need help? Reply to this email or contact your account manager.
-
-Best regards,
-The AceRakeback Team
-
----
-P.S. Check out our getting started guide to maximize your earnings from day one!
-      `
-    });
-
-    // Schedule follow-up email (Day 3)
-    // Note: In production, this would use a job queue or cron
-    // For now, we just mark it for future implementation
-    
     return Response.json({
       success: true,
-      message: 'Onboarding emails sent successfully',
-      agent_email: agent.agent_email
+      message: "Onboarding processed successfully",
+      agent_email: agent.agent_email,
     });
-
   } catch (error) {
-    return Response.json({ 
-      success: false,
-      error: error.message 
-    }, { status: 500 });
+    return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 });

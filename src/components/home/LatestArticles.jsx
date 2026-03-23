@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 
 const categoryColors = {
   "poker-strategy": "bg-blue-500/10 text-blue-400 border-blue-500/20",
@@ -18,11 +18,11 @@ const categoryColors = {
 };
 
 export default function LatestArticles({ articles, loading }) {
-  const whatsappURL = base44.agents.getWhatsAppConnectURL('poker_advisor');
+  const whatsappURL = db.agents.getWhatsAppConnectURL('poker_advisor');
 
   if (loading) {
     return (
-      <section className="py-20 bg-slate-900/30">
+      <section className="py-20 bg-[#0D1424]/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Skeleton className="h-8 w-64 mx-auto mb-12 bg-slate-800" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -36,7 +36,7 @@ export default function LatestArticles({ articles, loading }) {
   }
 
   return (
-    <section className="py-24 bg-slate-900/30">
+    <section className="py-24 bg-[#0D1424]/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Latest Insights</h2>
@@ -47,7 +47,7 @@ export default function LatestArticles({ articles, loading }) {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {articles.map((article) =>
-          <Card key={article.id} className="bg-slate-900 text-card-foreground rounded-lg group border shadow-sm from-slate-800/50 to-slate-900/50 border-slate-700 hover:border-cyan-500/50 transition-all duration-300 overflow-hidden">
+          <Card key={article.id} className="bg-[#0D1424] text-card-foreground rounded-lg group border shadow-sm from-slate-800/50 to-slate-900/50 border-[#1E2A3F] hover:border-blue-500/50 transition-all duration-300 overflow-hidden">
               {article.featured_image &&
             <div className="h-48 overflow-hidden">
                   <img
@@ -73,7 +73,7 @@ export default function LatestArticles({ articles, loading }) {
                     </div>
                 }
                 </div>
-                <h3 className="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors line-clamp-2">
+                <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors line-clamp-2">
                   {article.title}
                 </h3>
               </CardHeader>
@@ -87,7 +87,7 @@ export default function LatestArticles({ articles, loading }) {
                   <span className="text-xs text-gray-500">
                     {format(new Date(article.created_date), 'MMM d, yyyy')}
                   </span>
-                  <Button variant="ghost" size="sm" className="text-cyan-400 hover:text-cyan-300 p-0">
+                  <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 p-0">
                     Read More <ArrowRight className="w-3 h-3 ml-1" />
                   </Button>
                 </div>
@@ -98,7 +98,7 @@ export default function LatestArticles({ articles, loading }) {
 
         <div className="text-center mt-16 flex flex-col sm:flex-row items-center justify-center gap-6">
           <Link to={createPageUrl("Guides")}>
-            <Button variant="outline" className="border-2 border-emerald-500/70 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400 px-10 py-6 text-lg font-bold transition-all duration-300">
+            <Button variant="outline" className="border-2 border-blue-500/70 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400 px-10 py-6 text-lg font-bold transition-all duration-300">
               Read All Guides
             </Button>
           </Link>
@@ -106,7 +106,7 @@ export default function LatestArticles({ articles, loading }) {
             href={whatsappURL}
             target="_blank"
             rel="noopener noreferrer">
-            <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-10 py-6 text-lg font-bold shadow-2xl shadow-emerald-500/50 hover:shadow-emerald-500/70 transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
+            <Button className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white px-10 py-6 text-lg font-bold shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
               <MessageSquare className="w-5 h-5" /> Chat with Advisor
             </Button>
           </a>

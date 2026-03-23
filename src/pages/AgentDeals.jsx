@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,7 @@ export default function AgentDeals() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (!currentUser.is_agent && currentUser.role !== 'admin') {
@@ -42,8 +42,8 @@ export default function AgentDeals() {
       }
 
       const [allSites, userDeals] = await Promise.all([
-        base44.entities.Site.list(),
-        currentUser.agent_id ? base44.entities.AgentDeal.list() : []
+        db.entities.Site.list(),
+        currentUser.agent_id ? db.entities.AgentDeal.list() : []
       ]);
 
       setSites(allSites);
@@ -60,7 +60,7 @@ export default function AgentDeals() {
   const handleApplyForDeal = async (e) => {
     e.preventDefault();
     try {
-      await base44.entities.AgentDeal.create({
+      await db.entities.AgentDeal.create({
         agent_id: user.agent_id,
         site_id: selectedSite.id,
         commission_rate: 30, // Default rate, will be adjusted by admin
@@ -80,7 +80,7 @@ export default function AgentDeals() {
 
   const handleArchiveDeal = async (dealId) => {
     try {
-      await base44.entities.AgentDeal.update(dealId, {
+      await db.entities.AgentDeal.update(dealId, {
         status: 'paused'
       });
       toast.success("Deal archived successfully");
@@ -93,7 +93,7 @@ export default function AgentDeals() {
 
   const handleActivateDeal = async (dealId) => {
     try {
-      await base44.entities.AgentDeal.update(dealId, {
+      await db.entities.AgentDeal.update(dealId, {
         status: 'approved'
       });
       toast.success("Deal reactivated successfully");

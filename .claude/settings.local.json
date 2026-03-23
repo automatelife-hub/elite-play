@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/PokerConnect/Desktop/**)",
+      "Read(//c/Users/PokerConnect/Downloads/**)",
+      "Bash(python3 -:*)",
+      "Bash(python3 migrate_colors.py)",
+      "Bash(node -e \":*)",
+      "Bash(grep -r firebase 'C:\\\\Users\\\\PokerConnect\\\\OneDrive\\\\Desktop\\\\Coding Projects\\\\Affiliate Software\\\\elite-play\\\\src' --include=*.jsx --include=*.js)",
+      "Bash(grep -r VITE_ 'C:\\\\Users\\\\PokerConnect\\\\OneDrive\\\\Desktop\\\\Coding Projects\\\\Affiliate Software\\\\elite-play/src' --include=*.jsx --include=*.js)",
+      "mcp__73d84d8d-9572-4e64-84ba-325e519a53ad__get_cost",
+      "mcp__73d84d8d-9572-4e64-84ba-325e519a53ad__create_project",
+      "mcp__73d84d8d-9572-4e64-84ba-325e519a53ad__list_tables",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(python3 -c \":*)",
+      "Bash(grep -oP '\\\\.\\\\w+$')",
+      "Bash(npm run:*)"
+    ]
+  }
+}

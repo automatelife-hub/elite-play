@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,7 +50,7 @@ export default function MarketingRequestForm({ open, onOpenChange, agentId, onRe
     }
 
     try {
-      await base44.entities.MarketingRequest.create({
+      await db.entities.MarketingRequest.create({
         agent_id: agentId,
         ...formData
       });

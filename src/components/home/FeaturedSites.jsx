@@ -24,7 +24,7 @@ const formatSiteType = (type) => {
 export default function FeaturedSites({ sites, loading, userCountry }) {
   if (loading) {
     return (
-      <section className="py-20 bg-slate-900/30">
+      <section className="py-20 bg-[#0D1424]/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Skeleton className="h-8 w-64 mx-auto mb-4 bg-slate-800" />
@@ -41,7 +41,7 @@ export default function FeaturedSites({ sites, loading, userCountry }) {
   }
 
   return (
-    <section className="py-24 bg-slate-900/30">
+    <section className="py-24 bg-[#0D1424]/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Top Available Poker Sites</h2>
@@ -61,7 +61,7 @@ export default function FeaturedSites({ sites, loading, userCountry }) {
                 className="block"
               >
                 <Card className="bg-gradient-to-r text-card-foreground rounded-lg group border shadow-sm from-gray-800/50 to-gray-900/50 border-gray-700 hover:border-yellow-500/50 transition-all duration-300">
-                  <CardContent className="bg-slate-900 p-6 rounded-lg">
+                  <CardContent className="bg-[#0D1424] p-6 rounded-lg">
                     <div className="grid md:grid-cols-4 gap-6 items-center">
                       <div className="flex items-center space-x-4">
                         {site.logo_url && (
@@ -99,7 +99,7 @@ export default function FeaturedSites({ sites, loading, userCountry }) {
                               </p>
                             )}
                             {site.rakeback && (
-                              <p className="text-emerald-400 text-sm font-medium">
+                              <p className="text-blue-400 text-sm font-medium">
                                 💰 {site.rakeback}% Rakeback
                               </p>
                             )}

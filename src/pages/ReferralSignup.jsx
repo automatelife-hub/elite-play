@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -34,7 +34,7 @@ export default function ReferralSignup() {
 
   const loadSites = async () => {
     try {
-      const allSites = await base44.entities.Site.list();
+      const allSites = await db.entities.Site.list();
       setSites(allSites);
     } catch (error) {
       console.error("Error loading sites:", error);
@@ -51,7 +51,7 @@ export default function ReferralSignup() {
 
     setLoading(true);
     try {
-      const response = await base44.functions.invoke('processReferralSignup', {
+      const response = await db.functions.invoke('processReferralSignup', {
         referral_code: referralCode,
         ...formData
       });

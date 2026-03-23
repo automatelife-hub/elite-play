@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -45,7 +45,7 @@ export default function AgentPortal() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await db.auth.me();
       setUser(currentUser);
 
       if (!currentUser.is_agent && currentUser.role !== 'admin') {
@@ -54,12 +54,12 @@ export default function AgentPortal() {
       }
 
       const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, deals] = await Promise.all([
-        base44.entities.Agent.filter({ agent_email: currentUser.email }),
-        currentUser.agent_id ? base44.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : [],
-        base44.entities.Site.list(),
-        currentUser.agent_id ? base44.entities.AgentCommission.filter({ agent_id: currentUser.agent_id }) : [],
-        currentUser.agent_id ? base44.entities.AgentReferralLink.filter({ agent_id: currentUser.agent_id }) : [],
-        currentUser.agent_id ? base44.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) : []
+        db.entities.Agent.filter({ agent_email: currentUser.email }),
+        currentUser.agent_id ? db.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : [],
+        db.entities.Site.list(),
+        currentUser.agent_id ? db.entities.AgentCommission.filter({ agent_id: currentUser.agent_id }) : [],
+        currentUser.agent_id ? db.entities.AgentReferralLink.filter({ agent_id: currentUser.agent_id }) : [],
+        currentUser.agent_id ? db.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) : []
       ]);
 
       if (agentData.length > 0) {
@@ -81,7 +81,7 @@ export default function AgentPortal() {
   const handleAddPlayer = async (e) => {
     e.preventDefault();
     try {
-      await base44.entities.AgentPlayer.create({
+      await db.entities.AgentPlayer.create({
         ...newPlayer,
         agent_id: user.agent_id,
         signup_date: new Date().toISOString().split('T')[0],

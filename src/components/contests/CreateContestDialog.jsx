@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,7 +34,7 @@ export default function CreateContestDialog({ open, onOpenChange, sites, agentId
 
     setLoading(true);
     try {
-      await base44.entities.AgentContest.create({
+      await db.entities.AgentContest.create({
         ...formData,
         agent_id: agentId,
         status: new Date(formData.start_date) > new Date() ? 'upcoming' : 'active'

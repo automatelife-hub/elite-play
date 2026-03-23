@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ export default function OrderServiceDialog({ open, onClose, service, agentId, on
 
     for (const file of files) {
       try {
-        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        const { file_url } = await db.integrations.Core.UploadFile({ file });
         uploadedUrls.push(file_url);
       } catch (error) {
         console.error("Upload failed:", error);
@@ -47,7 +47,7 @@ export default function OrderServiceDialog({ open, onClose, service, agentId, on
       const dueDate = new Date();
       dueDate.setDate(dueDate.getDate() + 7); // Default 7 days
 
-      await base44.entities.ServiceOrder.create({
+      await db.entities.ServiceOrder.create({
         agent_id: agentId,
         service_package_id: service.id,
         total_price: service.price,

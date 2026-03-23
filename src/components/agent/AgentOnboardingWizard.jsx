@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -36,12 +36,12 @@ export default function AgentOnboardingWizard({ agent, onComplete }) {
 
   const savePaymentInfo = async () => {
     try {
-      await base44.entities.Agent.update(agent.id, paymentInfo);
+      await db.entities.Agent.update(agent.id, paymentInfo);
       
       // Update onboarding progress
-      const onboardingRecords = await base44.entities.AgentOnboarding.filter({ agent_id: agent.id });
+      const onboardingRecords = await db.entities.AgentOnboarding.filter({ agent_id: agent.id });
       if (onboardingRecords.length > 0) {
-        await base44.entities.AgentOnboarding.update(onboardingRecords[0].id, {
+        await db.entities.AgentOnboarding.update(onboardingRecords[0].id, {
           payment_info_completed: true
         });
       }
@@ -56,9 +56,9 @@ export default function AgentOnboardingWizard({ agent, onComplete }) {
 
   const completeOnboarding = async () => {
     try {
-      const onboardingRecords = await base44.entities.AgentOnboarding.filter({ agent_id: agent.id });
+      const onboardingRecords = await db.entities.AgentOnboarding.filter({ agent_id: agent.id });
       if (onboardingRecords.length > 0) {
-        await base44.entities.AgentOnboarding.update(onboardingRecords[0].id, {
+        await db.entities.AgentOnboarding.update(onboardingRecords[0].id, {
           setup_guide_viewed: true
         });
       }
