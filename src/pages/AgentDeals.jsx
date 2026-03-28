@@ -43,12 +43,11 @@ export default function AgentDeals() {
 
       const [allSites, userDeals] = await Promise.all([
         base44.entities.Site.list(),
-        currentUser.agent_id ? base44.entities.AgentDeal.list() : []
+        currentUser.agent_id ? base44.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) : []
       ]);
 
       setSites(allSites);
-      const filteredDeals = userDeals.filter(d => d.agent_id === currentUser.agent_id);
-      setMyDeals(filteredDeals);
+      setMyDeals(userDeals);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load deals data");

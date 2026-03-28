@@ -149,8 +149,7 @@ export default function AdminAgents() {
   const openDealsDialog = async (agent) => {
     setSelectedAgent(agent);
     try {
-      const allDeals = await base44.entities.AgentDeal.list();
-      const deals = allDeals.filter(d => d.agent_id === agent.id);
+      const deals = await base44.entities.AgentDeal.filter({ agent_id: agent.id });
       setAgentDeals(deals);
       setShowDealsDialog(true);
     } catch (error) {

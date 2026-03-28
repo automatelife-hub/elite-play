@@ -32,8 +32,9 @@ export default function ReferralSystem({ agent, agentId }) {
       // Get referred agent details
       if (referrals.length > 0) {
         const referredAgentIds = referrals.map(r => r.referred_agent_id);
-        const allAgents = await base44.entities.Agent.list();
-        const referred = allAgents.filter(a => referredAgentIds.includes(a.id));
+        const agentPromises = referredAgentIds.map(id => base44.entities.Agent.filter({ id }));
+        const agentResults = await Promise.all(agentPromises);
+        const referred = agentResults.flat();
         setReferredAgents(referred);
       }
     } catch (error) {
