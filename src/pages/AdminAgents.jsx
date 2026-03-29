@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +37,13 @@ export default function AdminAgents() {
   const [editForm, setEditForm] = useState({});
   const [agentDeals, setAgentDeals] = useState([]);
   const [sites, setSites] = useState([]);
+
+  const sitesById = useMemo(() => {
+    return sites.reduce((acc, site) => {
+      acc[site.id] = site;
+      return acc;
+    }, {});
+  }, [sites]);
 
   useEffect(() => {
     loadData();
@@ -713,7 +720,7 @@ export default function AdminAgents() {
                 <CardContent>
                   <div className="space-y-3">
                     {agentDeals.map(deal => {
-                      const site = sites.find(s => s.id === deal.site_id);
+                      const site = sitesById[deal.site_id];
                       return (
                         <div key={deal.id} className="flex items-center justify-between p-3 bg-gray-900 rounded-lg">
                           <div className="flex items-center gap-3">
