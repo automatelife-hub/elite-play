@@ -210,7 +210,6 @@ Applied: ${new Date().toLocaleString()}
       }
       
       toast.error(`Failed to submit application: ${errorMessage}`);
-      alert(`Error details:\n${JSON.stringify(error, null, 2)}`);
     } finally {
       setSubmitting(false);
     }
