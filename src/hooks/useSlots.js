@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
+import { supabase } from '@/api/supabaseClient';
 
-// Simulated slot data — replace with real Supabase/Firebase query when slots table is ready
+// Fallback mock data used when Supabase slots table is not yet seeded
 const MOCK_SLOTS = [
   { id: '1', name: 'Gates of Olympus', provider: 'Pragmatic Play', providerLogo: null, rtp: 96.5, liveRtp: 97.8, volatility: 'High', maxWin: 5000, features: ['Free Spins', 'Buy Bonus', 'Multiplier'], thumbnail: null, status: 'Hot', rtpHistory: [95.2, 96.1, 97.0, 96.8, 97.5, 97.8, 97.8] },
   { id: '2', name: 'Sweet Bonanza', provider: 'Pragmatic Play', providerLogo: null, rtp: 96.48, liveRtp: 96.9, volatility: 'High', maxWin: 21100, features: ['Free Spins', 'Buy Bonus', 'Tumble'], thumbnail: null, status: 'Hot', rtpHistory: [94.5, 95.3, 96.1, 96.3, 96.7, 96.9, 96.9] },
@@ -78,18 +79,55 @@ const DEFAULT_FILTERS = {
   rtpRange: [80, 99],
 };
 
+// Normalize Supabase row (snake_case) to the shape the UI expects (camelCase)
+function normalizeSlot(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    provider: row.provider,
+    providerLogo: row.provider_logo_url || null,
+    thumbnail: row.thumbnail_url || null,
+    rtp: Number(row.rtp),
+    liveRtp: Number(row.live_rtp ?? row.rtp),
+    volatility: row.volatility,
+    maxWin: row.max_win,
+    features: row.features || [],
+    status: row.status || 'Normal',
+    rtpHistory: row.rtp_history || [],
+    demoUrl: row.demo_url || null,
+    affiliateUrl: row.affiliate_url || null,
+  };
+}
+
 export function useSlots({ pageSize = 10 } = {}) {
-  const [allSlots] = useState(MOCK_SLOTS);
+  const [allSlots, setAllSlots] = useState(MOCK_SLOTS);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [sortKey, setSortKey] = useState('liveRtp');
   const [sortDir, setSortDir] = useState('desc');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  // Simulate async load
+  // Load from Supabase; fall back to mock data if table not seeded yet
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 600);
-    return () => clearTimeout(t);
+    let cancelled = false;
+    async function load() {
+      try {
+        const { data, error } = await supabase
+          .from('slots')
+          .select('*')
+          .order('live_rtp', { ascending: false });
+        if (!cancelled) {
+          if (!error && data && data.length > 0) {
+            setAllSlots(data.map(normalizeSlot));
+          }
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
   }, []);
 
   const filtered = useMemo(() => applyFilters(allSlots, filters), [allSlots, filters]);

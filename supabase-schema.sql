@@ -786,3 +786,62 @@ INSERT INTO public.service_packages (name, description, category, price, feature
 ('Custom Banner Design', 'Professional banner designs for your affiliate marketing campaigns.', 'creative_design', 49.99, ARRAY['3 banner sizes', '2 revision rounds', 'Source files included', '48h delivery'], true, false),
 ('Landing Page Setup', 'Custom landing page optimized for poker/casino affiliate conversions.', 'creative_design', 199.99, ARRAY['Responsive design', 'SEO optimized', 'Analytics setup', 'A/B testing ready'], true, true),
 ('Social Media Package', 'Monthly social media content creation and scheduling for iGaming promotion.', 'creative_design', 149.99, ARRAY['20 posts per month', 'Platform optimization', 'Hashtag strategy', 'Performance report'], true, false);
+
+-- =====================
+-- SLOTS (Slot RTP Intelligence Hub)
+-- =====================
+CREATE TABLE public.slots (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  provider TEXT NOT NULL,
+  provider_logo_url TEXT,
+  thumbnail_url TEXT,
+  rtp NUMERIC(5,2) NOT NULL,
+  live_rtp NUMERIC(5,2),
+  volatility TEXT CHECK (volatility IN ('Low', 'Med', 'High')),
+  max_win INTEGER,
+  features TEXT[],
+  theme TEXT,
+  status TEXT DEFAULT 'Normal' CHECK (status IN ('Hot', 'Normal', 'Cold')),
+  rtp_history NUMERIC(5,2)[],
+  demo_url TEXT,
+  affiliate_url TEXT,
+  is_featured BOOLEAN DEFAULT FALSE,
+  release_date DATE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_slots_provider ON public.slots (provider);
+CREATE INDEX idx_slots_status ON public.slots (status);
+CREATE INDEX idx_slots_rtp ON public.slots (live_rtp DESC);
+
+-- RLS: anyone can read slots
+ALTER TABLE public.slots ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "slots_public_read" ON public.slots FOR SELECT USING (TRUE);
+CREATE POLICY "slots_admin_write" ON public.slots FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+
+-- =====================
+-- SEED DATA: Initial 20 slots (Backend Lead to expand to 500+)
+-- =====================
+INSERT INTO public.slots (name, provider, rtp, live_rtp, volatility, max_win, features, status, rtp_history) VALUES
+('Gates of Olympus', 'Pragmatic Play', 96.50, 97.80, 'High', 5000, ARRAY['Free Spins', 'Buy Bonus', 'Multiplier'], 'Hot', ARRAY[95.2, 96.1, 97.0, 96.8, 97.5, 97.8, 97.8]),
+('Sweet Bonanza', 'Pragmatic Play', 96.48, 96.90, 'High', 21100, ARRAY['Free Spins', 'Buy Bonus', 'Tumble'], 'Hot', ARRAY[94.5, 95.3, 96.1, 96.3, 96.7, 96.9, 96.9]),
+('Big Bass Bonanza', 'Pragmatic Play', 96.71, 95.20, 'High', 2100, ARRAY['Free Spins', 'Money Collect'], 'Normal', ARRAY[96.9, 96.4, 95.8, 95.5, 95.3, 95.2, 95.2]),
+('Book of Dead', 'Play''n GO', 96.21, 94.10, 'High', 5000, ARRAY['Free Spins', 'Expanding Symbols'], 'Cold', ARRAY[96.0, 95.4, 94.8, 94.5, 94.2, 94.1, 94.1]),
+('Starburst', 'NetEnt', 96.09, 96.30, 'Low', 500, ARRAY['Expanding Wilds', 'Respin'], 'Normal', ARRAY[95.8, 96.0, 96.1, 96.2, 96.3, 96.3, 96.3]),
+('Reactoonz', 'Play''n GO', 96.51, 98.10, 'High', 4570, ARRAY['Tumble', 'Multiplier', 'Quantum Leap'], 'Hot', ARRAY[95.0, 96.0, 97.0, 97.5, 97.9, 98.0, 98.1]),
+('Gonzo''s Quest Megaways', 'NetEnt', 96.00, 95.70, 'Med', 20000, ARRAY['Megaways', 'Avalanche', 'Free Spins'], 'Normal', ARRAY[96.2, 96.0, 95.9, 95.8, 95.7, 95.7, 95.7]),
+('Dead or Alive 2', 'NetEnt', 96.82, 93.50, 'High', 111111, ARRAY['Free Spins', 'Sticky Wilds'], 'Cold', ARRAY[97.0, 96.5, 95.8, 95.0, 94.2, 93.8, 93.5]),
+('Bonanza Megaways', 'Big Time Gaming', 96.00, 96.60, 'High', 10000, ARRAY['Megaways', 'Free Spins', 'Unlimited Multiplier'], 'Normal', ARRAY[95.9, 96.0, 96.2, 96.4, 96.5, 96.6, 96.6]),
+('Wolf Gold', 'Pragmatic Play', 96.01, 97.50, 'Med', 5000, ARRAY['Free Spins', 'Money Respin', 'Jackpot'], 'Hot', ARRAY[95.0, 95.8, 96.4, 96.8, 97.1, 97.3, 97.5]),
+('Jammin Jars', 'Push Gaming', 96.83, 98.40, 'High', 20000, ARRAY['Free Spins', 'Rainbow Feature', 'Expanding Symbols'], 'Hot', ARRAY[96.0, 96.8, 97.2, 97.6, 98.0, 98.2, 98.4]),
+('Immortal Romance', 'Microgaming', 96.86, 96.10, 'Med', 3645, ARRAY['Free Spins', 'Wild Desire', 'Chamber of Spins'], 'Normal', ARRAY[96.8, 96.7, 96.5, 96.3, 96.2, 96.1, 96.1]),
+('Razor Shark', 'Push Gaming', 96.70, 94.80, 'High', 50000, ARRAY['Free Spins', 'Buy Bonus', 'Nudge'], 'Cold', ARRAY[96.5, 96.0, 95.5, 95.2, 95.0, 94.9, 94.8]),
+('Fire Joker', 'Play''n GO', 96.15, 96.80, 'Med', 800, ARRAY['Free Spins', 'Wheel of Multiplier', 'Sticky Respin'], 'Normal', ARRAY[95.8, 96.0, 96.3, 96.5, 96.6, 96.7, 96.8]),
+('Thunderstruck II', 'Microgaming', 96.65, 95.90, 'Med', 2400, ARRAY['Free Spins', 'Great Hall of Spins', 'Wildstorm'], 'Normal', ARRAY[96.5, 96.3, 96.1, 96.0, 95.9, 95.9, 95.9]),
+('Legacy of Dead', 'Play''n GO', 96.58, 93.00, 'High', 5000, ARRAY['Free Spins', 'Expanding Symbols', 'Buy Bonus'], 'Cold', ARRAY[96.4, 95.8, 95.0, 94.2, 93.6, 93.2, 93.0]),
+('Pirate Gold Deluxe', 'Pragmatic Play', 96.48, 97.10, 'High', 1800, ARRAY['Free Spins', 'Treasure Chest', 'Multiplier Trail'], 'Hot', ARRAY[95.2, 95.8, 96.3, 96.7, 97.0, 97.1, 97.1]),
+('Fruit Party', 'Pragmatic Play', 96.50, 96.20, 'High', 5000, ARRAY['Tumble', 'Free Spins', 'Buy Bonus'], 'Normal', ARRAY[96.4, 96.3, 96.2, 96.2, 96.2, 96.2, 96.2]),
+('Dog House Megaways', 'Pragmatic Play', 96.55, 97.30, 'High', 9999, ARRAY['Megaways', 'Free Spins', 'Sticky Wilds', 'Multiplier'], 'Hot', ARRAY[95.8, 96.2, 96.7, 97.0, 97.2, 97.3, 97.3]),
+('Wanted Dead or a Wild', 'Hacksaw Gaming', 96.38, 98.50, 'High', 12500, ARRAY['Free Spins', 'Buy Bonus', 'Wild Multiplier', 'Retrigger'], 'Hot', ARRAY[95.5, 96.0, 96.8, 97.4, 98.0, 98.3, 98.5]);
