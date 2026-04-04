@@ -412,8 +412,8 @@ export default function Layout({ children, currentPageName }) {
               </Button>
             )}
 
-            {/* Search Bar */}
-            <div className="flex-1 max-w-xl mx-4">
+            {/* Search Bar — hidden on mobile to prevent overflow at 375px */}
+            <div className="hidden sm:block flex-1 max-w-xl mx-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
                 <Input

@@ -85,14 +85,14 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
               </li>
             </ul>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               <Link to={createPageUrl("Reviews")}>
-                <Button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold px-10 py-7 text-lg shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 transform hover:scale-105">
+                <Button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold px-6 sm:px-10 py-5 sm:py-7 text-base sm:text-lg shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 transform hover:scale-105 min-h-[44px]">
                   Explore Sites
                 </Button>
               </Link>
               <Link to={createPageUrl("BecomeAgent")}>
-                <Button variant="outline" className="border-2 border-blue-600/70 text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 px-10 py-7 text-lg font-bold transition-all duration-300">
+                <Button variant="outline" className="border-2 border-blue-600/70 text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 px-6 sm:px-10 py-5 sm:py-7 text-base sm:text-lg font-bold transition-all duration-300 min-h-[44px]">
                   Start an Agency
                 </Button>
               </Link>
@@ -153,11 +153,11 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
                 ))
               ) : displaySites.length > 0 ? (
                 displaySites.map((site, index) => (
-                  <div key={site.id} className="px-6 py-4 hover:bg-[#141E35]/50 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
+                  <div key={site.id} className="px-3 sm:px-6 py-3 sm:py-4 hover:bg-[#141E35]/50 transition-colors">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 sm:gap-4 min-w-0">
                         {site.logo_url ? (
-                          <div className="w-16 h-16 bg-white rounded-lg p-2 flex items-center justify-center shadow-md">
+                          <div className="w-10 h-10 sm:w-16 sm:h-16 bg-white rounded-lg p-1 sm:p-2 flex items-center justify-center shadow-md flex-shrink-0">
                             <img
                               src={site.logo_url}
                               alt={site.name}
@@ -165,32 +165,32 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
                             />
                           </div>
                         ) : (
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-white font-bold">
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-white font-bold flex-shrink-0">
                             {site.name.charAt(0)}
                           </div>
                         )}
-                        <div>
-                          <div className="text-white font-semibold">{site.name}</div>
-                          <div className="text-green-400 text-sm flex items-center">
-                            <Gift className="w-3 h-3 mr-1" />
-                            {site.bonus_offer || `Up to $${1000 + index * 500}`}
+                        <div className="min-w-0">
+                          <div className="text-white font-semibold text-sm sm:text-base truncate">{site.name}</div>
+                          <div className="text-green-400 text-xs flex items-center">
+                            <Gift className="w-3 h-3 mr-1 flex-shrink-0" />
+                            <span className="truncate">{site.bonus_offer || `Up to $${1000 + index * 500}`}</span>
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center gap-1 flex-shrink-0">
                         <a href={site.affiliate_url} target="_blank" rel="noopener noreferrer">
-                          <Button 
-                            size="sm" 
-                            className="bg-[#141E35] hover:bg-[#1E2A3F] text-white text-xs px-4"
+                          <Button
+                            size="sm"
+                            className="bg-[#141E35] hover:bg-[#1E2A3F] text-white text-xs px-2 sm:px-4 h-9 min-w-[60px]"
                           >
                             Sign up
                           </Button>
                         </a>
-                        <Link to={`${createPageUrl("SiteDetail")}?site=${site.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')}`}>
-                          <Button 
-                            size="sm" 
+                        <Link to={`${createPageUrl("SiteDetail")}?site=${site.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')}`} className="hidden sm:block">
+                          <Button
+                            size="sm"
                             variant="outline"
-                            className="border-[#1E2A3F] text-[#94A3B8] hover:bg-[#141E35] text-xs px-4"
+                            className="border-[#1E2A3F] text-[#94A3B8] hover:bg-[#141E35] text-xs px-4 h-9"
                           >
                             Review
                           </Button>

@@ -201,21 +201,21 @@ export default function AffiliateProgram() {
             <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 mb-4">
               Industry-Leading Affiliate Program
             </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
               Join Our <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Affiliate Program</span>
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+            <p className="text-base sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
               Partner with the industry's most trusted iGaming platform. Earn up to 50% revenue share with our comprehensive affiliate and agency programs.
             </p>
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
               <Link to={createPageUrl("BecomeAgent")}>
-                <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8 py-6 text-lg">
+                <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg min-h-[44px]">
                   Get Started Now
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
               <Link to={createPageUrl("Affiliate")}>
-                <Button variant="outline" className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 px-8 py-6 text-lg">
+                <Button variant="outline" className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg min-h-[44px]">
                   Affiliate Login
                 </Button>
               </Link>
@@ -246,10 +246,10 @@ export default function AffiliateProgram() {
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">
               Choose Your Path
             </h2>
-            <p className="text-xl text-gray-400">
+            <p className="text-base sm:text-xl text-gray-400">
               Two powerful programs designed for different types of partners
             </p>
           </div>
@@ -291,10 +291,10 @@ export default function AffiliateProgram() {
       <section className="py-20 px-4 bg-slate-900/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">
               Commission Structure
             </h2>
-            <p className="text-xl text-gray-400">
+            <p className="text-base sm:text-xl text-gray-400">
               Transparent, competitive rates that grow with your performance
             </p>
           </div>
@@ -327,10 +327,10 @@ export default function AffiliateProgram() {
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">
               Platform Features
             </h2>
-            <p className="text-xl text-gray-400">
+            <p className="text-base sm:text-xl text-gray-400">
               Powerful tools and features to maximize your success
             </p>
           </div>
@@ -386,17 +386,17 @@ export default function AffiliateProgram() {
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">
               Marketing Services & Add-ons
             </h2>
-            <p className="text-xl text-gray-400">
+            <p className="text-base sm:text-xl text-gray-400">
               Professional services to accelerate your growth
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
             {marketingTools.map((tool, idx) => (
-              <Card key={idx} className={`glass-card hover:border-cyan-500/30 transition-all ${tool.popular ? 'border-cyan-500/20' : ''}`}>
+              <Card key={idx} className={`relative glass-card hover:border-cyan-500/30 transition-all ${tool.popular ? 'border-cyan-500/20' : ''}`}>
                 {tool.popular && (
                   <div className="absolute top-4 right-4">
                     <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30">
@@ -468,21 +468,21 @@ export default function AffiliateProgram() {
           <Card className="glass-card border-emerald-500/20 text-center">
             <CardContent className="py-12">
               <Zap className="w-16 h-16 text-emerald-400 mx-auto mb-6" />
-              <h2 className="text-4xl font-bold text-white mb-4">
+              <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">
                 Ready to Start Earning?
               </h2>
-              <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+              <p className="text-base sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
                 Join thousands of affiliates and agencies earning competitive commissions with our industry-leading iGaming platform.
               </p>
-              <div className="flex flex-wrap gap-4 justify-center">
+              <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
                 <Link to={createPageUrl("BecomeAgent")}>
-                  <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-12 py-6 text-lg">
+                  <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8 sm:px-12 py-5 sm:py-6 text-base sm:text-lg min-h-[44px]">
                     Apply Now
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
                 </Link>
                 <Link to={createPageUrl("Affiliate")}>
-                  <Button variant="outline" className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 px-12 py-6 text-lg">
+                  <Button variant="outline" className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 px-8 sm:px-12 py-5 sm:py-6 text-base sm:text-lg min-h-[44px]">
                     Sign In
                   </Button>
                 </Link>
