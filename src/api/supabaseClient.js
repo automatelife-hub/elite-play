@@ -42,6 +42,9 @@ const TABLE_MAP = {
   DarkCoinsLedger: 'dark_coins_ledger',
   Mission: 'missions',
   MissionCompletion: 'mission_completions',
+  // Badges (DAR-27)
+  Badge: 'badges',
+  AgentBadge: 'agent_badges',
 };
 
 /**
