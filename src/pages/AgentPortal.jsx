@@ -21,6 +21,7 @@ import NotificationBell from "../components/agent/NotificationBell";
 import KPIAnalytics from "../components/agent/KPIAnalytics";
 import CustomDealManager from "../components/agent/CustomDealManager";
 import MissionBoard from "../components/agent/MissionBoard";
+import { OperatorDealGrid } from "../components/agent/OperatorDealCard";
 
 // Animated number counter using Framer Motion spring
 function AnimatedNumber({ value, prefix = "$", decimals = 0 }) {
@@ -54,6 +55,7 @@ export default function AgentPortal() {
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [agentDeals, setAgentDeals] = useState([]);
+  const [operatorDeals, setOperatorDeals] = useState([]);
   const [affiliateEarnings, setAffiliateEarnings] = useState([]);
   const [darkCoins, setDarkCoins] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
@@ -173,13 +175,14 @@ export default function AgentPortal() {
         return;
       }
 
-      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, deals, xpRow, coinRow] = await Promise.all([
+      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, deals, opDeals, xpRow, coinRow] = await Promise.all([
         db.entities.Agent.filter({ agent_email: currentUser.email }),
         currentUser.agent_id ? db.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : [],
         db.entities.Site.list(),
         currentUser.agent_id ? db.entities.AgentCommission.filter({ agent_id: currentUser.agent_id }) : [],
         currentUser.agent_id ? db.entities.AgentReferralLink.filter({ agent_id: currentUser.agent_id }) : [],
         currentUser.agent_id ? db.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) : [],
+        db.entities.OperatorDeal.filter({ is_active: true }),
         supabase.from("user_xp_totals").select("total_xp").eq("user_id", currentUser.id).single(),
         supabase.from("user_dark_coin_balances").select("balance").eq("user_id", currentUser.id).single(),
       ]);
@@ -192,6 +195,7 @@ export default function AgentPortal() {
       setCommissions(agentCommissions);
       setReferralLinks(agentReferralLinks);
       setAgentDeals(deals);
+      setOperatorDeals(opDeals);
       setTotalXp(Number(xpRow?.data?.total_xp ?? 0));
       setDarkCoins(Number(coinRow?.data?.balance ?? 0));
     } catch (error) {
@@ -380,12 +384,27 @@ export default function AgentPortal() {
 
         {/* Deals Overview */}
         <div className="col-span-12">
-          <DealsOverview 
-            agentDeals={agentDeals} 
-            sites={sites} 
+          <DealsOverview
+            agentDeals={agentDeals}
+            sites={sites}
             referralLinks={referralLinks}
           />
         </div>
+
+        {/* Operator Deal Cards */}
+        {operatorDeals.length > 0 && (
+          <div className="col-span-12">
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-white">Operator Deals</h2>
+              <p className="text-slate-400 text-sm">Click a card to reveal deal details and copy your personalised affiliate link.</p>
+            </div>
+            <OperatorDealGrid
+              operators={sites.filter(s => operatorDeals.some(d => d.site_id === s.id || d.operator_slug === s.slug))}
+              deals={operatorDeals}
+              agent={agent}
+            />
+          </div>
+        )}
 
         {/* KPI Analytics */}
         <div className="col-span-12">

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { db } from "@/api/supabaseClient";
+import { OperatorDealGrid } from "../components/agent/OperatorDealCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +13,23 @@ import {
 } from "lucide-react";
 
 export default function AffiliateProgram() {
+  const [featuredOperators, setFeaturedOperators] = useState([]);
+  const [featuredDeals, setFeaturedDeals] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      db.entities.OperatorDeal.filter({ is_active: true }),
+      db.entities.Site.list(),
+    ]).then(([deals, sites]) => {
+      const activeSiteIds = new Set(deals.map((d) => d.site_id));
+      const operators = sites.filter(
+        (s) => activeSiteIds.has(s.id) && (s.featured || s.featured_for_agents)
+      );
+      setFeaturedOperators(operators.slice(0, 6));
+      setFeaturedDeals(deals);
+    }).catch(() => {});
+  }, []);
+
   const affiliateVsAgency = [
     {
       title: "Affiliate Program",
@@ -410,6 +429,38 @@ export default function AffiliateProgram() {
           </div>
         </div>
       </section>
+
+      {/* Featured Operator Deals */}
+      {featuredOperators.length > 0 && (
+        <section className="py-20 px-4 bg-slate-950/60">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 mb-4">
+                LIVE DEALS
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Featured Operator Deals
+              </h2>
+              <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+                Flip a card to explore commission structures. Sign up as an agent to unlock your personalised tracking links.
+              </p>
+            </div>
+            <OperatorDealGrid
+              operators={featuredOperators}
+              deals={featuredDeals}
+              agent={null}
+            />
+            <div className="text-center mt-10">
+              <Link to={createPageUrl("BecomeAgent")}>
+                <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-10 py-5 text-base">
+                  Unlock All Deals — Apply Now
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-20 px-4">
