@@ -70,6 +70,7 @@ import IntelligenceSlots from './pages/IntelligenceSlots';
 import Leaderboard from './pages/Leaderboard';
 import MarketingHub from './pages/MarketingHub';
 import News from './pages/News';
+import OperatorDeals from './pages/OperatorDeals';
 import NewsMonitor from './pages/NewsMonitor';
 import PlayerIntelCommand from './pages/PlayerIntelCommand';
 import PokerAdvisor from './pages/PokerAdvisor';
@@ -110,6 +111,7 @@ export const PAGES = {
     "Leaderboard": Leaderboard,
     "MarketingHub": MarketingHub,
     "News": News,
+    "OperatorDeals": OperatorDeals,
     "NewsMonitor": NewsMonitor,
     "PlayerIntelCommand": PlayerIntelCommand,
     "PokerAdvisor": PokerAdvisor,
