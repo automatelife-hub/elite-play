@@ -1,83 +1,221 @@
-
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Star, Shield, Award, TrendingUp } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Shield, Crosshair, Database, Radio } from "lucide-react";
 import { createPageUrl } from "@/utils";
+import GIAMascot from "@/components/ui/GIAMascot";
+import MissionButton from "@/components/ui/MissionButton";
+import TacticalBadge from "@/components/ui/TacticalBadge";
+
+// ─── Static intel feed data ───────────────────────────────────────────────────
+
+const FEED_ITEMS = [
+  { id: 'F-001', time: '00:00:12', msg: 'GIA SYSTEMS ONLINE — ALL CHANNELS SECURE' },
+  { id: 'F-002', time: '00:00:08', msg: 'NEW EXTRACTION: 3 ELITE POKER SITES VERIFIED' },
+  { id: 'F-003', time: '00:00:03', msg: 'BONUS INTELLIGENCE UPDATED — MISSION GOLD TIER' },
+];
+
+const STATS = [
+  { value: '50+',   label: 'TARGETS REVIEWED',    color: '#00D9FF' },
+  { value: '$2M+',  label: 'EXTRACTIONS TRACKED',  color: '#FFD700' },
+  { value: '5.0★',  label: 'GIA RATING',           color: '#00FF41' },
+  { value: '24/7',  label: 'TACTICAL SUPPORT',     color: '#00D9FF' },
+];
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function HeroSection() {
+  const [tick, setTick] = useState(0);
+
+  // blinking cursor effect for the live feed
+  useEffect(() => {
+    const t = setInterval(() => setTick(n => n + 1), 800);
+    return () => clearInterval(t);
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-50">
-        <div className="absolute inset-0 bg-slate-800/5" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23374151' fill-opacity='0.05'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z'/%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
+    <section
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ background: '#0A0E27' }}
+    >
+      {/* ── Tactical grid background ── */}
+      <div
+        className="absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(0,217,255,0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,217,255,0.07) 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+        }}
+      />
+
+      {/* ── Radar pulse rings ── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        {[1, 2, 3].map(i => (
+          <div
+            key={i}
+            className="absolute rounded-full border border-cyan-500/10"
+            style={{
+              width:  `${i * 300}px`,
+              height: `${i * 300}px`,
+              animation: `ping ${i * 1.5 + 1}s ease-out infinite`,
+              animationDelay: `${i * 0.4}s`,
+              opacity: 0.3 / i,
+            }}
+          />
+        ))}
       </div>
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="mb-8">
-          <div className="inline-flex items-center px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-full mb-6">
-            <Shield className="w-4 h-4 text-slate-400 mr-2" />
-            <span className="text-slate-300 text-sm font-medium">Trusted by 50,000+ Players</span>
-          </div>
+
+      {/* ── Floating card suits ── */}
+      <div className="absolute top-20 left-10 text-cyan-400/15 text-6xl animate-pulse">♠</div>
+      <div className="absolute top-40 right-16 text-yellow-400/15 text-4xl animate-pulse" style={{ animationDelay: '1s' }}>♦</div>
+      <div className="absolute bottom-32 left-20 text-green-400/15 text-5xl animate-pulse" style={{ animationDelay: '2s' }}>♣</div>
+      <div className="absolute bottom-20 right-32 text-cyan-400/10 text-3xl animate-pulse" style={{ animationDelay: '0.5s' }}>♥</div>
+
+      {/* ── Main content ── */}
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
+        {/* Classification banner */}
+        <div className="flex justify-center mb-6">
+          <TacticalBadge level="topSecret" glow>
+            ◈ TOP SECRET / BRIEF-2026-OMEGA ◈
+          </TacticalBadge>
         </div>
 
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-white">
-          Discover the World's
-          <span className="block text-white mt-2">
-            Premier Poker Sites
-          </span>
-        </h1>
+        {/* GIA Mascot */}
+        <div className="flex justify-center mb-6">
+          <GIAMascot
+            size="large"
+            status="active"
+            showMessage={true}
+            message="GIA ONLINE — INTELLIGENCE READY"
+          />
+        </div>
 
-        <p className="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed">
-          Expert reviews, exclusive bonuses, and insider tips for 
-          <span className="text-blue-400 font-semibold"> Poker</span>, 
-          <span className="text-purple-400 font-semibold"> Casino</span>, and 
-          <span className="text-emerald-400 font-semibold"> Sportsbetting</span>
+        {/* Title */}
+        <h1
+          className="text-4xl md:text-6xl lg:text-7xl font-bold mb-3 leading-tight"
+          style={{
+            fontFamily: "'Orbitron', 'Exo 2', sans-serif",
+            color: '#00D9FF',
+            textShadow: '0 0 20px rgba(0,217,255,0.6), 0 0 60px rgba(0,71,171,0.4)',
+            letterSpacing: '4px',
+          }}
+        >
+          GAMBLE INTEL
+        </h1>
+        <p
+          className="text-lg md:text-xl mb-2 tracking-widest"
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            color: 'rgba(0,217,255,0.7)',
+            letterSpacing: '6px',
+          }}
+        >
+          YOUR INTELLIGENCE ADVANTAGE IN iGAMING
+        </p>
+        <p className="text-sm text-gray-500 mb-8 tracking-wider" style={{ fontFamily: "'Share Tech Mono', monospace" }}>
+          EXPERT REVIEWS • EXCLUSIVE BONUSES • AI-POWERED INSIGHTS
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        {/* CTA buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
           <Link to={createPageUrl("Reviews")}>
-            <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold px-8 py-3 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-              <Star className="w-5 h-5 mr-2" />
-              View Top Sites
-            </Button>
+            <MissionButton variant="primary" size="lg">
+              <Shield className="w-5 h-5" />
+              VIEW TOP SITES
+            </MissionButton>
+          </Link>
+          <Link to={createPageUrl("PokerAdvisor")}>
+            <MissionButton variant="gold" size="lg">
+              <Crosshair className="w-5 h-5" />
+              GIA ADVISOR
+            </MissionButton>
           </Link>
           <Link to={createPageUrl("Guides")}>
-            <Button variant="outline" className="bg-yellow-400 hover:bg-yellow-500 text-slate-900 hover:text-white px-8 py-3 text-lg font-semibold rounded-xl border-2 border-yellow-500 hover:border-yellow-600 transition-all duration-300 transform hover:scale-105">
-              <Award className="w-5 h-5 mr-2" />
-              Read Expert Guides
-            </Button>
+            <MissionButton variant="secondary" size="lg">
+              <Database className="w-5 h-5" />
+              INTEL GUIDES
+            </MissionButton>
           </Link>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-blue-400 mb-1">50+</div>
-            <div className="text-sm text-gray-500">Sites Reviewed</div>
+        {/* Stats row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-10">
+          {STATS.map((s, i) => (
+            <div
+              key={i}
+              className="text-center p-4"
+              style={{
+                border: '1px solid rgba(0,217,255,0.2)',
+                background: 'rgba(0,217,255,0.03)',
+              }}
+            >
+              <div
+                className="text-2xl md:text-3xl font-bold mb-1"
+                style={{
+                  fontFamily: "'Orbitron', sans-serif",
+                  color: s.color,
+                  textShadow: `0 0 10px ${s.color}`,
+                }}
+              >
+                {s.value}
+              </div>
+              <div
+                className="text-xs tracking-widest"
+                style={{
+                  fontFamily: "'Share Tech Mono', monospace",
+                  color: 'rgba(0,217,255,0.5)',
+                }}
+              >
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Live Intel Feed */}
+        <div
+          className="max-w-2xl mx-auto text-left"
+          style={{
+            border: '1px solid rgba(0,217,255,0.25)',
+            background: 'rgba(10,14,39,0.8)',
+            padding: '12px 16px',
+          }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Radio className="w-3 h-3 text-green-400 animate-pulse" />
+            <span
+              className="text-xs tracking-widest"
+              style={{ fontFamily: "'Share Tech Mono', monospace", color: '#00FF41' }}
+            >
+              LIVE INTEL FEED
+            </span>
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-purple-400 mb-1">$2M+</div>
-            <div className="text-sm text-gray-500">Bonuses Tracked</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-emerald-400 mb-1">5⭐</div>
-            <div className="text-sm text-gray-500">Expert Rating</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-slate-400 mb-1">24/7</div>
-            <div className="text-sm text-gray-500">Support Tracking</div>
+          {FEED_ITEMS.map((item) => (
+            <div key={item.id} className="flex gap-3 mb-1">
+              <span
+                className="text-xs shrink-0"
+                style={{ fontFamily: "'Share Tech Mono', monospace", color: 'rgba(0,217,255,0.4)' }}
+              >
+                -{item.time}
+              </span>
+              <span
+                className="text-xs"
+                style={{ fontFamily: "'Share Tech Mono', monospace", color: '#00D9FF' }}
+              >
+                {item.msg}
+              </span>
+            </div>
+          ))}
+          <div
+            className="text-xs mt-2"
+            style={{ fontFamily: "'Share Tech Mono', monospace", color: 'rgba(0,217,255,0.3)' }}
+          >
+            ▸ AWAITING NEXT TRANSMISSION{tick % 2 === 0 ? '_' : ' '}
           </div>
         </div>
       </div>
-
-      {/* Floating Elements - varied colors */}
-      <div className="absolute top-20 left-10 text-blue-400/20 text-6xl animate-pulse">♠</div>
-      <div className="absolute top-40 right-16 text-purple-400/20 text-4xl animate-pulse" style={{ animationDelay: '1s' }}>♦</div>
-      <div className="absolute bottom-32 left-20 text-emerald-400/20 text-5xl animate-pulse" style={{ animationDelay: '2s' }}>♣</div>
-      <div className="absolute bottom-20 right-32 text-slate-400/20 text-3xl animate-pulse" style={{ animationDelay: '0.5s' }}>♥</div>
-    </section>);
-
+    </section>
+  );
 }
