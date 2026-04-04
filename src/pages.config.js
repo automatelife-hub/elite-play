@@ -63,6 +63,7 @@ import BecomeAgent from './pages/BecomeAgent';
 import CasinoHome from './pages/CasinoHome';
 import ClubBasedApps from './pages/ClubBasedApps';
 import Compare from './pages/Compare';
+import GamificationHub from './pages/GamificationHub';
 import Guides from './pages/Guides';
 import Home from './pages/Home';
 import IntelligenceSlots from './pages/IntelligenceSlots';
@@ -102,6 +103,7 @@ export const PAGES = {
     "CasinoHome": CasinoHome,
     "ClubBasedApps": ClubBasedApps,
     "Compare": Compare,
+    "GamificationHub": GamificationHub,
     "Guides": Guides,
     "Home": Home,
     "IntelligenceSlots": IntelligenceSlots,
