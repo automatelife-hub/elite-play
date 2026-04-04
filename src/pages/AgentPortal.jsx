@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, TrendingUp, DollarSign, Plus, Search, Copy, Wallet, CheckCircle, Clock, CreditCard, ArrowUp, ArrowDown, Activity, Coins } from "lucide-react";
+import { Users, TrendingUp, DollarSign, Plus, Search, Copy, Wallet, CheckCircle, Clock, CreditCard, ArrowUp, ArrowDown, Activity, Coins, Target } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import PerformanceCharts from "../components/agent/PerformanceCharts";
@@ -264,6 +264,26 @@ export default function AgentPortal() {
         </div>
       </div>
 
+      {/* Top-level tabs */}
+      <Tabs defaultValue="dashboard" className="mb-8">
+        <TabsList className="bg-gray-900 border border-gray-800 mb-6">
+          <TabsTrigger value="dashboard" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+            <TrendingUp className="w-4 h-4 mr-1.5" /> Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="missions" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+            <Target className="w-4 h-4 mr-1.5" /> Missions
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Missions tab — full-width MissionBoard */}
+        <TabsContent value="missions">
+          <div className="max-w-2xl mx-auto">
+            {user?.id && <MissionBoard userId={user.id} />}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="dashboard">
+
       {/* 12-Column Grid Stats */}
       <div className="grid grid-cols-12 gap-6 mb-8">
         {/* Main Stats - Glassmorphism Cards */}
@@ -517,6 +537,9 @@ export default function AgentPortal() {
           </Card>
         </div>
       </div>
+
+        </TabsContent>{/* end dashboard TabsContent */}
+      </Tabs>
 
       {/* Add Player Dialog */}
       <Dialog open={showAddPlayer} onOpenChange={setShowAddPlayer}>
