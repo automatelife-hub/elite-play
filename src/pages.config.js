@@ -52,8 +52,10 @@ import AdminPayouts from './pages/AdminPayouts';
 import AdminServices from './pages/AdminServices';
 import AdminStats from './pages/AdminStats';
 import Affiliate from './pages/Affiliate';
+import AffiliateDashboard from './pages/AffiliateDashboard';
 import AffiliateLinks from './pages/AffiliateLinks';
 import AffiliateProgram from './pages/AffiliateProgram';
+import AffiliateReconciliation from './pages/AffiliateReconciliation';
 import AgentContests from './pages/AgentContests';
 import AgentDeals from './pages/AgentDeals';
 import AgentDemo from './pages/AgentDemo';
@@ -71,6 +73,7 @@ import Leaderboard from './pages/Leaderboard';
 import MarketingHub from './pages/MarketingHub';
 import News from './pages/News';
 import OperatorDeals from './pages/OperatorDeals';
+import OperatorLanding from './pages/OperatorLanding';
 import NewsMonitor from './pages/NewsMonitor';
 import PlayerIntelCommand from './pages/PlayerIntelCommand';
 import PokerAdvisor from './pages/PokerAdvisor';
@@ -93,8 +96,10 @@ export const PAGES = {
     "AdminServices": AdminServices,
     "AdminStats": AdminStats,
     "Affiliate": Affiliate,
+    "AffiliateDashboard": AffiliateDashboard,
     "AffiliateLinks": AffiliateLinks,
     "AffiliateProgram": AffiliateProgram,
+    "AffiliateReconciliation": AffiliateReconciliation,
     "AgentContests": AgentContests,
     "AgentDeals": AgentDeals,
     "AgentDemo": AgentDemo,
@@ -112,6 +117,7 @@ export const PAGES = {
     "MarketingHub": MarketingHub,
     "News": News,
     "OperatorDeals": OperatorDeals,
+    "OperatorLanding": OperatorLanding,
     "NewsMonitor": NewsMonitor,
     "PlayerIntelCommand": PlayerIntelCommand,
     "PokerAdvisor": PokerAdvisor,
