@@ -845,3 +845,76 @@ INSERT INTO public.slots (name, provider, rtp, live_rtp, volatility, max_win, fe
 ('Fruit Party', 'Pragmatic Play', 96.50, 96.20, 'High', 5000, ARRAY['Tumble', 'Free Spins', 'Buy Bonus'], 'Normal', ARRAY[96.4, 96.3, 96.2, 96.2, 96.2, 96.2, 96.2]),
 ('Dog House Megaways', 'Pragmatic Play', 96.55, 97.30, 'High', 9999, ARRAY['Megaways', 'Free Spins', 'Sticky Wilds', 'Multiplier'], 'Hot', ARRAY[95.8, 96.2, 96.7, 97.0, 97.2, 97.3, 97.3]),
 ('Wanted Dead or a Wild', 'Hacksaw Gaming', 96.38, 98.50, 'High', 12500, ARRAY['Free Spins', 'Buy Bonus', 'Wild Multiplier', 'Retrigger'], 'Hot', ARRAY[95.5, 96.0, 96.8, 97.4, 98.0, 98.3, 98.5]);
+
+-- =====================
+-- GAMIFICATION TABLES (Phase 1 - added DAR-16)
+-- =====================
+
+-- XP Ledger: tracks all XP transactions per user
+CREATE TABLE IF NOT EXISTS public.xp_ledger (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL,
+  source TEXT NOT NULL, -- 'player_referral', 'active_player_month', 'deal_conversion', 'login_streak'
+  reference_id UUID,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_xp_ledger_user_id ON public.xp_ledger(user_id);
+CREATE INDEX IF NOT EXISTS idx_xp_ledger_created_at ON public.xp_ledger(created_at);
+
+-- Dark Coins Ledger
+CREATE TABLE IF NOT EXISTS public.dark_coins_ledger (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL, -- positive = earn, negative = spend
+  source TEXT NOT NULL,
+  reference_id UUID,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_dark_coins_user_id ON public.dark_coins_ledger(user_id);
+
+-- Missions: daily and weekly definitions
+CREATE TABLE IF NOT EXISTS public.missions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  type TEXT NOT NULL CHECK (type IN ('daily', 'weekly')),
+  title TEXT NOT NULL,
+  description TEXT,
+  xp_reward INTEGER NOT NULL DEFAULT 0,
+  coin_reward INTEGER NOT NULL DEFAULT 0,
+  criteria_json JSONB NOT NULL DEFAULT '{}',
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Mission Completions
+CREATE TABLE IF NOT EXISTS public.mission_completions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  mission_id UUID NOT NULL REFERENCES public.missions(id) ON DELETE CASCADE,
+  completed_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_mission_completions_user ON public.mission_completions(user_id);
+CREATE INDEX IF NOT EXISTS idx_mission_completions_mission ON public.mission_completions(mission_id);
+
+-- XP Totals View (for leaderboard / tier display)
+-- Bronze: 0-999 | Silver: 1000-4999 | Gold: 5000-14999 | Platinum: 15000-29999 | Elite: 30000+
+CREATE OR REPLACE VIEW public.user_xp_totals AS
+SELECT
+  user_id,
+  COALESCE(SUM(amount), 0) AS total_xp,
+  CASE
+    WHEN COALESCE(SUM(amount), 0) >= 30000 THEN 'elite'
+    WHEN COALESCE(SUM(amount), 0) >= 15000 THEN 'platinum'
+    WHEN COALESCE(SUM(amount), 0) >= 5000  THEN 'gold'
+    WHEN COALESCE(SUM(amount), 0) >= 1000  THEN 'silver'
+    ELSE 'bronze'
+  END AS tier
+FROM public.xp_ledger
+GROUP BY user_id;
+
+-- Dark Coin Balances View
+CREATE OR REPLACE VIEW public.user_dark_coin_balances AS
+SELECT user_id, COALESCE(SUM(amount), 0) AS balance
+FROM public.dark_coins_ledger
+GROUP BY user_id;
