@@ -65,6 +65,7 @@ import ClubBasedApps from './pages/ClubBasedApps';
 import Compare from './pages/Compare';
 import Guides from './pages/Guides';
 import Home from './pages/Home';
+import IntelligenceSlots from './pages/IntelligenceSlots';
 import Leaderboard from './pages/Leaderboard';
 import MarketingHub from './pages/MarketingHub';
 import News from './pages/News';
@@ -103,6 +104,7 @@ export const PAGES = {
     "Compare": Compare,
     "Guides": Guides,
     "Home": Home,
+    "IntelligenceSlots": IntelligenceSlots,
     "Leaderboard": Leaderboard,
     "MarketingHub": MarketingHub,
     "News": News,
