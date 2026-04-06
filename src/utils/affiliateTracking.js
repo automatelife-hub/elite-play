@@ -8,6 +8,7 @@
  */
 
 import { supabase } from '@/api/supabaseClient';
+import { analytics } from '@/lib/analytics';
 
 // ---------------------------------------------------------------------------
 // Session storage keys
@@ -244,9 +245,20 @@ export function getOperatorBaseUrl(slug) {
  * @returns {string} The full outbound URL to navigate to
  */
 export function buildOutboundUrl(subId, operatorSlug, affiliateLinkId, userId) {
-  // Fire-and-forget click recording
+  // Fire-and-forget click recording (Supabase + GA4)
   recordClick({ subId, operatorSlug, affiliateLinkId, userId }).catch(() => {});
+  analytics.trackDealClick({ operator_slug: operatorSlug, sub_id: subId });
 
   const base = getOperatorBaseUrl(operatorSlug);
   return base + encodeURIComponent(subId);
+}
+
+/**
+ * Call when a user copies/claims a tracking link (deal_claim event).
+ *
+ * @param {string} subId
+ * @param {string} operatorSlug
+ */
+export function claimTrackingLink(subId, operatorSlug) {
+  analytics.trackDealClaim({ operator_slug: operatorSlug, sub_id: subId });
 }

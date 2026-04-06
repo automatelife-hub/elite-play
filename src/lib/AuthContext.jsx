@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
+import { analytics } from '@/lib/analytics';
 
 const AuthContext = createContext();
 
@@ -25,7 +26,17 @@ export const AuthProvider = ({ children }) => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             async (event, session) => {
                 if (event === 'SIGNED_IN' && session?.user) {
+                    analytics.trackLogin('email');
                     await fetchProfile(session.user);
+                } else if (event === 'USER_UPDATED' && session?.user) {
+                    // Supabase fires USER_UPDATED on the first sign-in for new accounts
+                    // Check created_at vs last_sign_in_at to detect true new registrations
+                    const { created_at, last_sign_in_at } = session.user;
+                    const isNewUser = created_at && last_sign_in_at &&
+                        Math.abs(new Date(created_at) - new Date(last_sign_in_at)) < 5000;
+                    if (isNewUser) {
+                        analytics.trackSignUp('email');
+                    }
                 } else if (event === 'SIGNED_OUT') {
                     setUser(null);
                     setIsAuthenticated(false);

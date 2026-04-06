@@ -8,6 +8,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import NavigationTracker from '@/lib/NavigationTracker';
+import { analytics } from '@/lib/analytics';
+
+// Initialise GA4 once at module load (no-op if VITE_GA4_MEASUREMENT_ID is absent)
+analytics.init();
 
 const PageFallback = () => (
     <div className="fixed inset-0 flex items-center justify-center">
@@ -73,6 +78,7 @@ function App() {
         <AuthProvider>
             <QueryClientProvider client={queryClientInstance}>
                 <Router>
+                    <NavigationTracker />
                     <AuthenticatedApp />
                 </Router>
                 <Toaster />

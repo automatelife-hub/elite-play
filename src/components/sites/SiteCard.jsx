@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, ExternalLink } from "lucide-react";
 import { createPageUrl } from "@/utils";
+import { analytics } from "@/lib/analytics";
 
 export default function SiteCard({ site, userCountry }) {
   const siteSlug = site.name.toLowerCase().replace(/\s+/g, '-');
+
+  useEffect(() => {
+    analytics.trackDealView({
+      operator_slug: siteSlug,
+      operator_name: site.name,
+      deal_type: site.type,
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [site.id]);
 
   return (
     <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700 hover:border-yellow-500/50 transition-all duration-300 group">
