@@ -1,29 +1,29 @@
 /**
  * pages.config.js - Page routing configuration
- * 
+ *
  * This file is AUTO-GENERATED. Do not add imports or modify PAGES manually.
  * Pages are auto-registered when you create files in the ./pages/ folder.
- * 
+ *
  * THE ONLY EDITABLE VALUE: mainPage
  * This controls which page is the landing page (shown when users visit the app).
- * 
+ *
  * Example file structure:
- * 
+ *
  *   import HomePage from './pages/HomePage';
  *   import Dashboard from './pages/Dashboard';
  *   import Settings from './pages/Settings';
- *   
+ *
  *   export const PAGES = {
  *       "HomePage": HomePage,
  *       "Dashboard": Dashboard,
  *       "Settings": Settings,
  *   }
- *   
+ *
  *   export const pagesConfig = {
  *       mainPage: "HomePage",
  *       Pages: PAGES,
  *   };
- * 
+ *
  * Example with Layout (wraps all pages):
  *
  *   import Home from './pages/Home';
@@ -47,46 +47,48 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import AdminAgents from './pages/AdminAgents';
-import AdminPayouts from './pages/AdminPayouts';
-import AdminServices from './pages/AdminServices';
-import AdminStats from './pages/AdminStats';
-import Affiliate from './pages/Affiliate';
-import AffiliateDashboard from './pages/AffiliateDashboard';
-import AffiliateLinks from './pages/AffiliateLinks';
-import AffiliateProgram from './pages/AffiliateProgram';
-import AffiliateReconciliation from './pages/AffiliateReconciliation';
-import AgentContests from './pages/AgentContests';
-import AgentDeals from './pages/AgentDeals';
-import AgentDemo from './pages/AgentDemo';
-import AgentMissionControl from './pages/AgentMissionControl';
-import AgentPortal from './pages/AgentPortal';
-import BecomeAgent from './pages/BecomeAgent';
-import CasinoHome from './pages/CasinoHome';
-import ClubBasedApps from './pages/ClubBasedApps';
-import Compare from './pages/Compare';
-import GamificationHub from './pages/GamificationHub';
-import Guides from './pages/Guides';
-import Home from './pages/Home';
-import IntelligenceSlots from './pages/IntelligenceSlots';
-import Leaderboard from './pages/Leaderboard';
-import MarketingHub from './pages/MarketingHub';
-import News from './pages/News';
-import OperatorDeals from './pages/OperatorDeals';
-import OperatorLanding from './pages/OperatorLanding';
-import NewsMonitor from './pages/NewsMonitor';
-import PlayerIntelCommand from './pages/PlayerIntelCommand';
-import PokerAdvisor from './pages/PokerAdvisor';
-import PokerNetworkDetail from './pages/PokerNetworkDetail';
-import PokerNetworks from './pages/PokerNetworks';
-import PremiumLanding from './pages/PremiumLanding';
-import Profile from './pages/Profile';
-import ReferralSignup from './pages/ReferralSignup';
-import Reviews from './pages/Reviews';
-import ServicesMarketplace from './pages/ServicesMarketplace';
-import SiteDetail from './pages/SiteDetail';
-import SportsbettingHome from './pages/SportsbettingHome';
-import Stats from './pages/Stats';
+import { lazy } from 'react';
+
+const AdminAgents = lazy(() => import('./pages/AdminAgents'));
+const AdminPayouts = lazy(() => import('./pages/AdminPayouts'));
+const AdminServices = lazy(() => import('./pages/AdminServices'));
+const AdminStats = lazy(() => import('./pages/AdminStats'));
+const Affiliate = lazy(() => import('./pages/Affiliate'));
+const AffiliateDashboard = lazy(() => import('./pages/AffiliateDashboard'));
+const AffiliateLinks = lazy(() => import('./pages/AffiliateLinks'));
+const AffiliateProgram = lazy(() => import('./pages/AffiliateProgram'));
+const AffiliateReconciliation = lazy(() => import('./pages/AffiliateReconciliation'));
+const AgentContests = lazy(() => import('./pages/AgentContests'));
+const AgentDeals = lazy(() => import('./pages/AgentDeals'));
+const AgentDemo = lazy(() => import('./pages/AgentDemo'));
+const AgentMissionControl = lazy(() => import('./pages/AgentMissionControl'));
+const AgentPortal = lazy(() => import('./pages/AgentPortal'));
+const BecomeAgent = lazy(() => import('./pages/BecomeAgent'));
+const CasinoHome = lazy(() => import('./pages/CasinoHome'));
+const ClubBasedApps = lazy(() => import('./pages/ClubBasedApps'));
+const Compare = lazy(() => import('./pages/Compare'));
+const GamificationHub = lazy(() => import('./pages/GamificationHub'));
+const Guides = lazy(() => import('./pages/Guides'));
+const Home = lazy(() => import('./pages/Home'));
+const IntelligenceSlots = lazy(() => import('./pages/IntelligenceSlots'));
+const Leaderboard = lazy(() => import('./pages/Leaderboard'));
+const MarketingHub = lazy(() => import('./pages/MarketingHub'));
+const News = lazy(() => import('./pages/News'));
+const OperatorDeals = lazy(() => import('./pages/OperatorDeals'));
+const OperatorLanding = lazy(() => import('./pages/OperatorLanding'));
+const NewsMonitor = lazy(() => import('./pages/NewsMonitor'));
+const PlayerIntelCommand = lazy(() => import('./pages/PlayerIntelCommand'));
+const PokerAdvisor = lazy(() => import('./pages/PokerAdvisor'));
+const PokerNetworkDetail = lazy(() => import('./pages/PokerNetworkDetail'));
+const PokerNetworks = lazy(() => import('./pages/PokerNetworks'));
+const PremiumLanding = lazy(() => import('./pages/PremiumLanding'));
+const Profile = lazy(() => import('./pages/Profile'));
+const ReferralSignup = lazy(() => import('./pages/ReferralSignup'));
+const Reviews = lazy(() => import('./pages/Reviews'));
+const ServicesMarketplace = lazy(() => import('./pages/ServicesMarketplace'));
+const SiteDetail = lazy(() => import('./pages/SiteDetail'));
+const SportsbettingHome = lazy(() => import('./pages/SportsbettingHome'));
+const Stats = lazy(() => import('./pages/Stats'));
 import __Layout from './Layout.jsx';
 
 
