@@ -202,7 +202,7 @@ const authWrapper = {
 
   redirectToLogin(returnPath) {
     sessionStorage.setItem('returnPath', returnPath || '/');
-    window.location.href = '/login';
+    window.location.href = '/Affiliate';
   },
 };
 

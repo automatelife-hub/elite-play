@@ -63,7 +63,7 @@ export default function Layout({ children, currentPageName }) {
     {
       section: "Browse",
       items: [
-        { title: "Poker Sites", url: createPageUrl("BestPokerSites"), icon: Star },
+        { title: "Poker Sites", url: createPageUrl("PokerNetworks"), icon: Star },
         { title: "Casino Sites", url: createPageUrl("CasinoHome"), icon: Gift },
         { title: "Sportsbetting", url: createPageUrl("SportsbettingHome"), icon: Target },
         { title: "Poker Networks", url: createPageUrl("PokerNetworks"), icon: Users },
@@ -155,7 +155,7 @@ export default function Layout({ children, currentPageName }) {
               <Link to={createPageUrl("Home")}><GIALogoMark /></Link>
 
               <div className="hidden md:flex items-center space-x-6">
-                <Link to={createPageUrl("PokerHome")} className="text-gray-300 hover:text-blue-400 transition-colors">
+                <Link to={createPageUrl("PokerNetworks")} className="text-gray-300 hover:text-blue-400 transition-colors">
                   Poker
                 </Link>
                 <Link to={createPageUrl("CasinoHome")} className="text-gray-300 hover:text-blue-300 transition-colors">
@@ -225,7 +225,7 @@ export default function Layout({ children, currentPageName }) {
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-[#1E2A3F] bg-[#080C14]">
               <div className="px-4 py-4 space-y-2">
-                <Link to={createPageUrl("PokerHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
+                <Link to={createPageUrl("PokerNetworks")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
                   Poker
                 </Link>
                 <Link to={createPageUrl("CasinoHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
