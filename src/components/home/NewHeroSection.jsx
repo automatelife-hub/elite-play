@@ -58,42 +58,42 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
           {/* Left Content */}
           <div className="pt-8">
             <h1 className="font-display font-extrabold text-white mb-6 leading-[1.08] tracking-tight" style={{ fontSize: "clamp(2.2rem, 5vw, 3.75rem)", fontFamily: "Syne, sans-serif", letterSpacing: "-0.03em" }}>
-              Your Premium<br />
-              <span className="bg-gradient-to-r from-blue-300 via-blue-400 to-blue-600 bg-clip-text text-transparent">iGaming Partner</span>
+              Maximum Rakeback.<br />
+              <span className="bg-gradient-to-r from-blue-300 via-blue-400 to-blue-600 bg-clip-text text-transparent">Zero Compromise.</span>
             </h1>
 
             <p className="text-lg text-[#94A3B8] mb-8 font-light leading-relaxed max-w-xl" style={{ fontFamily: "DM Sans, sans-serif" }}>
-              Premium deals, expert guidance, and the best rakeback offers across poker, casino, and sportsbetting.
+              Elite Play gives serious players the best poker rakeback deals, exclusive casino bonuses, and live slot RTP data — all in one place. Stop leaving money on the table.
             </p>
 
             <ul className="space-y-5 mb-12">
               <li className="flex items-center text-lg text-gray-300">
                 <span className="text-blue-400 mr-4 text-xl">✓</span>
-                24/7 player & agent support
+                Industry-leading rakeback &amp; VIP deals
               </li>
               <li className="flex items-center text-lg text-gray-300">
                 <span className="text-blue-400 mr-4 text-xl">✓</span>
-                Top rakeback & VIP deals
+                50+ verified poker, casino &amp; sportsbook sites
               </li>
               <li className="flex items-center text-lg text-gray-300">
                 <span className="text-blue-400 mr-4 text-xl">✓</span>
-                50+ verified sites
+                Live slot RTP intelligence tracker
               </li>
               <li className="flex items-center text-lg text-gray-300">
                 <span className="text-blue-400 mr-4 text-xl">✓</span>
-                Affiliate programs available
+                24/7 dedicated player support
               </li>
             </ul>
 
             <div className="flex flex-wrap gap-3 sm:gap-4">
               <Link to={createPageUrl("Reviews")}>
                 <Button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold px-6 sm:px-10 py-5 sm:py-7 text-base sm:text-lg shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 transform hover:scale-105 min-h-[44px]">
-                  Explore Sites
+                  Get Best Deals
                 </Button>
               </Link>
               <Link to={createPageUrl("BecomeAgent")}>
                 <Button variant="outline" className="border-2 border-blue-600/70 text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 px-6 sm:px-10 py-5 sm:py-7 text-base sm:text-lg font-bold transition-all duration-300 min-h-[44px]">
-                  Start an Agency
+                  Become an Affiliate
                 </Button>
               </Link>
             </div>

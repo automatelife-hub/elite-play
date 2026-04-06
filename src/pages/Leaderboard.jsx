@@ -11,6 +11,10 @@ export default function Leaderboard() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
+    document.title = "Agent Leaderboard — Top iGaming Affiliates Ranked | Elite Play";
+  }, []);
+
+  useEffect(() => {
     loadData();
   }, []);
 

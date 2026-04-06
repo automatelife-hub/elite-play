@@ -118,6 +118,10 @@ export default function OperatorDeals() {
   const [usingMock, setUsingMock] = useState(false);
 
   useEffect(() => {
+    document.title = "Operator Deals — Best Poker Rakeback & Casino Affiliate Deals | Elite Play";
+  }, []);
+
+  useEffect(() => {
     loadDeals();
   }, []);
 

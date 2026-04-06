@@ -68,6 +68,10 @@ export default function GamificationHub() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Gamification Hub — Earn XP, Unlock Rewards & Climb Tiers | Elite Play";
+  }, []);
+
+  useEffect(() => {
     db.auth.me()
       .then(u => setUser(u))
       .catch(() => setUser(null))
