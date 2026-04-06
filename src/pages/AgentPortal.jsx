@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { db } from "@/api/supabaseClient";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { db, supabase } from "@/api/supabaseClient";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, TrendingUp, DollarSign, Plus, Search, Copy, Wallet, CheckCircle, Clock, CreditCard, ArrowUp, ArrowDown, Activity } from "lucide-react";
+import { Users, TrendingUp, DollarSign, Plus, Search, Copy, Wallet, CheckCircle, Clock, CreditCard, ArrowUp, ArrowDown, Activity, Coins } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import PerformanceCharts from "../components/agent/PerformanceCharts";
@@ -19,6 +20,28 @@ import DealsOverview from "../components/agent/DealsOverview";
 import NotificationBell from "../components/agent/NotificationBell";
 import KPIAnalytics from "../components/agent/KPIAnalytics";
 import CustomDealManager from "../components/agent/CustomDealManager";
+import MissionBoard from "../components/agent/MissionBoard";
+
+// Animated number counter using Framer Motion spring
+function AnimatedNumber({ value, prefix = "$", decimals = 0 }) {
+  const motionValue = useMotionValue(0);
+  const spring = useSpring(motionValue, { stiffness: 75, damping: 15 });
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    motionValue.set(value);
+  }, [value, motionValue]);
+
+  useEffect(() => {
+    return spring.on("change", (v) => setDisplay(v));
+  }, [spring]);
+
+  const formatted = decimals > 0
+    ? display.toFixed(decimals)
+    : Math.round(display).toLocaleString();
+
+  return <>{prefix}{formatted}</>;
+}
 
 export default function AgentPortal() {
   const [user, setUser] = useState(null);
@@ -31,6 +54,13 @@ export default function AgentPortal() {
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [agentDeals, setAgentDeals] = useState([]);
+  const [affiliateEarnings, setAffiliateEarnings] = useState([]);
+  const [darkCoins, setDarkCoins] = useState(0);
+  const [totalXp, setTotalXp] = useState(0);
+
+  const channelsRef = useRef([]);
+  const pollingIntervalRef = useRef(null);
+  const realtimeConnectedRef = useRef(false);
 
   const [newPlayer, setNewPlayer] = useState({
     site_id: "",
@@ -43,6 +73,96 @@ export default function AgentPortal() {
     loadData();
   }, []);
 
+  const loadCommissionsAndEarnings = useCallback(async (agentId) => {
+    try {
+      const [fresh, earnings] = await Promise.all([
+        db.entities.AgentCommission.filter({ agent_id: agentId }),
+        db.entities.AffiliateEarnings.filter({ agent_id: agentId }),
+      ]);
+      setCommissions(fresh);
+      setAffiliateEarnings(earnings);
+    } catch (err) {
+      console.error("Polling refresh failed:", err);
+    }
+  }, []);
+
+  // Supabase Realtime subscriptions — commissions + affiliate_earnings
+  useEffect(() => {
+    if (!user?.agent_id) return;
+    const agentId = user.agent_id;
+
+    const startPolling = () => {
+      if (pollingIntervalRef.current) return;
+      pollingIntervalRef.current = setInterval(() => {
+        loadCommissionsAndEarnings(agentId);
+      }, 30000);
+    };
+
+    const commissionsChannel = supabase
+      .channel(`agent_commissions_${agentId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "agent_commissions", filter: `agent_id=eq.${agentId}` },
+        (payload) => {
+          setCommissions((prev) => {
+            if (payload.eventType === "INSERT") return [...prev, payload.new];
+            if (payload.eventType === "UPDATE") return prev.map((c) => (c.id === payload.new.id ? payload.new : c));
+            if (payload.eventType === "DELETE") return prev.filter((c) => c.id !== payload.old.id);
+            return prev;
+          });
+        }
+      )
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          realtimeConnectedRef.current = true;
+          if (pollingIntervalRef.current) {
+            clearInterval(pollingIntervalRef.current);
+            pollingIntervalRef.current = null;
+          }
+        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          realtimeConnectedRef.current = false;
+          startPolling();
+        }
+      });
+
+    const earningsChannel = supabase
+      .channel(`affiliate_earnings_${agentId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "affiliate_earnings", filter: `agent_id=eq.${agentId}` },
+        (payload) => {
+          setAffiliateEarnings((prev) => {
+            if (payload.eventType === "INSERT") return [...prev, payload.new];
+            if (payload.eventType === "UPDATE") return prev.map((e) => (e.id === payload.new.id ? payload.new : e));
+            if (payload.eventType === "DELETE") return prev.filter((e) => e.id !== payload.old.id);
+            return prev;
+          });
+        }
+      )
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          startPolling();
+        }
+      });
+
+    channelsRef.current = [commissionsChannel, earningsChannel];
+
+    // Start fallback polling if Realtime doesn't connect within 5s
+    const realtimeTimeout = setTimeout(() => {
+      if (!realtimeConnectedRef.current) startPolling();
+    }, 5000);
+
+    return () => {
+      clearTimeout(realtimeTimeout);
+      channelsRef.current.forEach((ch) => supabase.removeChannel(ch));
+      channelsRef.current = [];
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
+    };
+  }, [user?.agent_id, loadCommissionsAndEarnings]);
+
   const loadData = async () => {
     try {
       const currentUser = await db.auth.me();
@@ -53,13 +173,15 @@ export default function AgentPortal() {
         return;
       }
 
-      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, deals] = await Promise.all([
+      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, deals, xpRow, coinRow] = await Promise.all([
         db.entities.Agent.filter({ agent_email: currentUser.email }),
         currentUser.agent_id ? db.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : [],
         db.entities.Site.list(),
         currentUser.agent_id ? db.entities.AgentCommission.filter({ agent_id: currentUser.agent_id }) : [],
         currentUser.agent_id ? db.entities.AgentReferralLink.filter({ agent_id: currentUser.agent_id }) : [],
-        currentUser.agent_id ? db.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) : []
+        currentUser.agent_id ? db.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) : [],
+        supabase.from("user_xp_totals").select("total_xp").eq("user_id", currentUser.id).single(),
+        supabase.from("user_dark_coin_balances").select("balance").eq("user_id", currentUser.id).single(),
       ]);
 
       if (agentData.length > 0) {
@@ -70,6 +192,8 @@ export default function AgentPortal() {
       setCommissions(agentCommissions);
       setReferralLinks(agentReferralLinks);
       setAgentDeals(deals);
+      setTotalXp(Number(xpRow?.data?.total_xp ?? 0));
+      setDarkCoins(Number(coinRow?.data?.balance ?? 0));
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load agent data");
@@ -129,7 +253,15 @@ export default function AgentPortal() {
           <h1 className="text-4xl font-bold text-white mb-2">Agent Dashboard</h1>
           <p className="text-gray-400">Welcome back, {agent?.agent_name || user.full_name}</p>
         </div>
-        <NotificationBell players={players} commissions={commissions} agentDeals={agentDeals} />
+        <div className="flex items-center gap-3">
+          {/* Dark Coins balance */}
+          <div className="flex items-center gap-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+            <Coins className="w-4 h-4 text-yellow-400" />
+            <span className="text-yellow-300 font-semibold text-sm">{darkCoins.toLocaleString()}</span>
+            <span className="text-yellow-600 text-xs hidden sm:inline">Dark Coins</span>
+          </div>
+          <NotificationBell players={players} commissions={commissions} agentDeals={agentDeals} />
+        </div>
       </div>
 
       {/* 12-Column Grid Stats */}
@@ -179,9 +311,13 @@ export default function AgentPortal() {
                 Pending
               </Badge>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">${totalCommission.toFixed(0)}</div>
+            <div className="text-3xl font-bold text-white mb-1">
+              <AnimatedNumber value={totalCommission} prefix="$" decimals={0} />
+            </div>
             <div className="text-sm text-gray-400">Total Earned</div>
-            <div className="text-xs text-yellow-400 mt-1">${pendingCommission.toFixed(0)} pending</div>
+            <div className="text-xs text-yellow-400 mt-1">
+              <AnimatedNumber value={pendingCommission} prefix="$" decimals={0} /> pending
+            </div>
           </CardContent>
         </Card>
 
@@ -284,12 +420,8 @@ export default function AgentPortal() {
             </CardContent>
           </Card>
 
-          <TierProgressCard
-            agent={agent}
-            playersCount={players.length}
-            totalRevenue={totalRevenue}
-            averageCommissionRate={agentDeals.filter(d => d.status === 'approved').reduce((sum, d) => sum + d.commission_rate, 0) / Math.max(agentDeals.filter(d => d.status === 'approved').length, 1)}
-          />
+          <TierProgressCard agent={agent} totalXp={totalXp} />
+          {user?.id && <MissionBoard userId={user.id} />}
         </div>
 
         {/* Players Table - Full Width */}

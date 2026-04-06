@@ -63,11 +63,14 @@ import BecomeAgent from './pages/BecomeAgent';
 import CasinoHome from './pages/CasinoHome';
 import ClubBasedApps from './pages/ClubBasedApps';
 import Compare from './pages/Compare';
+import GamificationHub from './pages/GamificationHub';
 import Guides from './pages/Guides';
 import Home from './pages/Home';
+import IntelligenceSlots from './pages/IntelligenceSlots';
 import Leaderboard from './pages/Leaderboard';
 import MarketingHub from './pages/MarketingHub';
 import News from './pages/News';
+import OperatorDeals from './pages/OperatorDeals';
 import NewsMonitor from './pages/NewsMonitor';
 import PlayerIntelCommand from './pages/PlayerIntelCommand';
 import PokerAdvisor from './pages/PokerAdvisor';
@@ -101,11 +104,14 @@ export const PAGES = {
     "CasinoHome": CasinoHome,
     "ClubBasedApps": ClubBasedApps,
     "Compare": Compare,
+    "GamificationHub": GamificationHub,
     "Guides": Guides,
     "Home": Home,
+    "IntelligenceSlots": IntelligenceSlots,
     "Leaderboard": Leaderboard,
     "MarketingHub": MarketingHub,
     "News": News,
+    "OperatorDeals": OperatorDeals,
     "NewsMonitor": NewsMonitor,
     "PlayerIntelCommand": PlayerIntelCommand,
     "PokerAdvisor": PokerAdvisor,

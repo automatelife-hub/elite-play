@@ -57,6 +57,7 @@ export default function Layout({ children, currentPageName }) {
         { title: "AI Advisor", url: createPageUrl("PokerAdvisor"), icon: Bot },
         { title: "Compare Sites", url: createPageUrl("Compare"), icon: BarChart3 },
         { title: "Leaderboard", url: createPageUrl("Leaderboard"), icon: Trophy },
+        { title: "Gamification Hub", url: createPageUrl("GamificationHub"), icon: Crown },
       ]
     },
     {

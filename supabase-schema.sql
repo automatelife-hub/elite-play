@@ -786,3 +786,314 @@ INSERT INTO public.service_packages (name, description, category, price, feature
 ('Custom Banner Design', 'Professional banner designs for your affiliate marketing campaigns.', 'creative_design', 49.99, ARRAY['3 banner sizes', '2 revision rounds', 'Source files included', '48h delivery'], true, false),
 ('Landing Page Setup', 'Custom landing page optimized for poker/casino affiliate conversions.', 'creative_design', 199.99, ARRAY['Responsive design', 'SEO optimized', 'Analytics setup', 'A/B testing ready'], true, true),
 ('Social Media Package', 'Monthly social media content creation and scheduling for iGaming promotion.', 'creative_design', 149.99, ARRAY['20 posts per month', 'Platform optimization', 'Hashtag strategy', 'Performance report'], true, false);
+
+-- =====================
+-- SLOTS (Slot RTP Intelligence Hub)
+-- =====================
+CREATE TABLE public.slots (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  provider TEXT NOT NULL,
+  provider_logo_url TEXT,
+  thumbnail_url TEXT,
+  rtp NUMERIC(5,2) NOT NULL,
+  live_rtp NUMERIC(5,2),
+  volatility TEXT CHECK (volatility IN ('Low', 'Med', 'High')),
+  max_win INTEGER,
+  features TEXT[],
+  theme TEXT,
+  status TEXT DEFAULT 'Normal' CHECK (status IN ('Hot', 'Normal', 'Cold')),
+  rtp_history NUMERIC(5,2)[],
+  demo_url TEXT,
+  affiliate_url TEXT,
+  is_featured BOOLEAN DEFAULT FALSE,
+  release_date DATE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_slots_provider ON public.slots (provider);
+CREATE INDEX idx_slots_status ON public.slots (status);
+CREATE INDEX idx_slots_rtp ON public.slots (live_rtp DESC);
+
+-- RLS: anyone can read slots
+ALTER TABLE public.slots ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "slots_public_read" ON public.slots FOR SELECT USING (TRUE);
+CREATE POLICY "slots_admin_write" ON public.slots FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+
+-- =====================
+-- SEED DATA: Initial 20 slots (Backend Lead to expand to 500+)
+-- =====================
+INSERT INTO public.slots (name, provider, rtp, live_rtp, volatility, max_win, features, status, rtp_history) VALUES
+('Gates of Olympus', 'Pragmatic Play', 96.50, 97.80, 'High', 5000, ARRAY['Free Spins', 'Buy Bonus', 'Multiplier'], 'Hot', ARRAY[95.2, 96.1, 97.0, 96.8, 97.5, 97.8, 97.8]),
+('Sweet Bonanza', 'Pragmatic Play', 96.48, 96.90, 'High', 21100, ARRAY['Free Spins', 'Buy Bonus', 'Tumble'], 'Hot', ARRAY[94.5, 95.3, 96.1, 96.3, 96.7, 96.9, 96.9]),
+('Big Bass Bonanza', 'Pragmatic Play', 96.71, 95.20, 'High', 2100, ARRAY['Free Spins', 'Money Collect'], 'Normal', ARRAY[96.9, 96.4, 95.8, 95.5, 95.3, 95.2, 95.2]),
+('Book of Dead', 'Play''n GO', 96.21, 94.10, 'High', 5000, ARRAY['Free Spins', 'Expanding Symbols'], 'Cold', ARRAY[96.0, 95.4, 94.8, 94.5, 94.2, 94.1, 94.1]),
+('Starburst', 'NetEnt', 96.09, 96.30, 'Low', 500, ARRAY['Expanding Wilds', 'Respin'], 'Normal', ARRAY[95.8, 96.0, 96.1, 96.2, 96.3, 96.3, 96.3]),
+('Reactoonz', 'Play''n GO', 96.51, 98.10, 'High', 4570, ARRAY['Tumble', 'Multiplier', 'Quantum Leap'], 'Hot', ARRAY[95.0, 96.0, 97.0, 97.5, 97.9, 98.0, 98.1]),
+('Gonzo''s Quest Megaways', 'NetEnt', 96.00, 95.70, 'Med', 20000, ARRAY['Megaways', 'Avalanche', 'Free Spins'], 'Normal', ARRAY[96.2, 96.0, 95.9, 95.8, 95.7, 95.7, 95.7]),
+('Dead or Alive 2', 'NetEnt', 96.82, 93.50, 'High', 111111, ARRAY['Free Spins', 'Sticky Wilds'], 'Cold', ARRAY[97.0, 96.5, 95.8, 95.0, 94.2, 93.8, 93.5]),
+('Bonanza Megaways', 'Big Time Gaming', 96.00, 96.60, 'High', 10000, ARRAY['Megaways', 'Free Spins', 'Unlimited Multiplier'], 'Normal', ARRAY[95.9, 96.0, 96.2, 96.4, 96.5, 96.6, 96.6]),
+('Wolf Gold', 'Pragmatic Play', 96.01, 97.50, 'Med', 5000, ARRAY['Free Spins', 'Money Respin', 'Jackpot'], 'Hot', ARRAY[95.0, 95.8, 96.4, 96.8, 97.1, 97.3, 97.5]),
+('Jammin Jars', 'Push Gaming', 96.83, 98.40, 'High', 20000, ARRAY['Free Spins', 'Rainbow Feature', 'Expanding Symbols'], 'Hot', ARRAY[96.0, 96.8, 97.2, 97.6, 98.0, 98.2, 98.4]),
+('Immortal Romance', 'Microgaming', 96.86, 96.10, 'Med', 3645, ARRAY['Free Spins', 'Wild Desire', 'Chamber of Spins'], 'Normal', ARRAY[96.8, 96.7, 96.5, 96.3, 96.2, 96.1, 96.1]),
+('Razor Shark', 'Push Gaming', 96.70, 94.80, 'High', 50000, ARRAY['Free Spins', 'Buy Bonus', 'Nudge'], 'Cold', ARRAY[96.5, 96.0, 95.5, 95.2, 95.0, 94.9, 94.8]),
+('Fire Joker', 'Play''n GO', 96.15, 96.80, 'Med', 800, ARRAY['Free Spins', 'Wheel of Multiplier', 'Sticky Respin'], 'Normal', ARRAY[95.8, 96.0, 96.3, 96.5, 96.6, 96.7, 96.8]),
+('Thunderstruck II', 'Microgaming', 96.65, 95.90, 'Med', 2400, ARRAY['Free Spins', 'Great Hall of Spins', 'Wildstorm'], 'Normal', ARRAY[96.5, 96.3, 96.1, 96.0, 95.9, 95.9, 95.9]),
+('Legacy of Dead', 'Play''n GO', 96.58, 93.00, 'High', 5000, ARRAY['Free Spins', 'Expanding Symbols', 'Buy Bonus'], 'Cold', ARRAY[96.4, 95.8, 95.0, 94.2, 93.6, 93.2, 93.0]),
+('Pirate Gold Deluxe', 'Pragmatic Play', 96.48, 97.10, 'High', 1800, ARRAY['Free Spins', 'Treasure Chest', 'Multiplier Trail'], 'Hot', ARRAY[95.2, 95.8, 96.3, 96.7, 97.0, 97.1, 97.1]),
+('Fruit Party', 'Pragmatic Play', 96.50, 96.20, 'High', 5000, ARRAY['Tumble', 'Free Spins', 'Buy Bonus'], 'Normal', ARRAY[96.4, 96.3, 96.2, 96.2, 96.2, 96.2, 96.2]),
+('Dog House Megaways', 'Pragmatic Play', 96.55, 97.30, 'High', 9999, ARRAY['Megaways', 'Free Spins', 'Sticky Wilds', 'Multiplier'], 'Hot', ARRAY[95.8, 96.2, 96.7, 97.0, 97.2, 97.3, 97.3]),
+('Wanted Dead or a Wild', 'Hacksaw Gaming', 96.38, 98.50, 'High', 12500, ARRAY['Free Spins', 'Buy Bonus', 'Wild Multiplier', 'Retrigger'], 'Hot', ARRAY[95.5, 96.0, 96.8, 97.4, 98.0, 98.3, 98.5]);
+
+-- =====================
+-- GAMIFICATION TABLES (Phase 1 - added DAR-16)
+-- =====================
+
+-- XP Ledger: tracks all XP transactions per user
+CREATE TABLE IF NOT EXISTS public.xp_ledger (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL,
+  source TEXT NOT NULL, -- 'player_referral', 'active_player_month', 'deal_conversion', 'login_streak'
+  reference_id UUID,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_xp_ledger_user_id ON public.xp_ledger(user_id);
+CREATE INDEX IF NOT EXISTS idx_xp_ledger_created_at ON public.xp_ledger(created_at);
+
+-- Dark Coins Ledger
+CREATE TABLE IF NOT EXISTS public.dark_coins_ledger (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL, -- positive = earn, negative = spend
+  source TEXT NOT NULL,
+  reference_id UUID,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_dark_coins_user_id ON public.dark_coins_ledger(user_id);
+
+-- Missions: daily and weekly definitions
+CREATE TABLE IF NOT EXISTS public.missions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  type TEXT NOT NULL CHECK (type IN ('daily', 'weekly')),
+  title TEXT NOT NULL,
+  description TEXT,
+  xp_reward INTEGER NOT NULL DEFAULT 0,
+  coin_reward INTEGER NOT NULL DEFAULT 0,
+  criteria_json JSONB NOT NULL DEFAULT '{}',
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Mission Completions
+CREATE TABLE IF NOT EXISTS public.mission_completions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  mission_id UUID NOT NULL REFERENCES public.missions(id) ON DELETE CASCADE,
+  completed_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_mission_completions_user ON public.mission_completions(user_id);
+CREATE INDEX IF NOT EXISTS idx_mission_completions_mission ON public.mission_completions(mission_id);
+
+-- XP Totals View (for leaderboard / tier display)
+-- Bronze: 0-999 | Silver: 1000-4999 | Gold: 5000-14999 | Platinum: 15000-29999 | Elite: 30000+
+CREATE OR REPLACE VIEW public.user_xp_totals AS
+SELECT
+  user_id,
+  COALESCE(SUM(amount), 0) AS total_xp,
+  CASE
+    WHEN COALESCE(SUM(amount), 0) >= 30000 THEN 'elite'
+    WHEN COALESCE(SUM(amount), 0) >= 15000 THEN 'platinum'
+    WHEN COALESCE(SUM(amount), 0) >= 5000  THEN 'gold'
+    WHEN COALESCE(SUM(amount), 0) >= 1000  THEN 'silver'
+    ELSE 'bronze'
+  END AS tier
+FROM public.xp_ledger
+GROUP BY user_id;
+
+-- Dark Coin Balances View
+CREATE OR REPLACE VIEW public.user_dark_coin_balances AS
+SELECT user_id, COALESCE(SUM(amount), 0) AS balance
+FROM public.dark_coins_ledger
+GROUP BY user_id;
+
+-- =====================
+-- OPERATOR DEALS (DAR-20/DAR-23)
+-- Commission structures per operator for affiliate dashboard
+-- =====================
+CREATE TABLE IF NOT EXISTS public.operator_deals (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  site_id UUID REFERENCES public.sites(id) ON DELETE SET NULL,
+  operator_name TEXT NOT NULL,
+  operator_slug TEXT UNIQUE NOT NULL,
+  deal_type TEXT NOT NULL CHECK (deal_type IN ('revenue_share', 'cpa', 'hybrid', 'rakeback', 'flat')),
+  -- Revenue Share
+  revenue_share_pct NUMERIC(5,2),          -- e.g. 35.00 = 35%
+  -- CPA
+  cpa_amount NUMERIC(10,2),                -- per qualifying player
+  cpa_currency TEXT DEFAULT 'USD',
+  cpa_min_deposit NUMERIC(10,2),           -- minimum deposit to qualify
+  -- Rakeback / Hybrid
+  rakeback_pct NUMERIC(5,2),               -- e.g. 30.00 = 30% rakeback
+  hybrid_revshare_pct NUMERIC(5,2),
+  hybrid_cpa_amount NUMERIC(10,2),
+  -- Terms
+  negative_carryover BOOLEAN DEFAULT TRUE, -- does negative balance carry to next month?
+  sub_affiliate_pct NUMERIC(5,2),          -- % of referred sub-affiliate earnings
+  min_payout NUMERIC(10,2) DEFAULT 100,
+  payment_frequency TEXT DEFAULT 'monthly' CHECK (payment_frequency IN ('weekly', 'biweekly', 'monthly')),
+  payment_methods TEXT[] DEFAULT ARRAY['bank_transfer', 'crypto'],
+  geo_restrictions TEXT[],                 -- blocked country codes
+  deal_notes TEXT,
+  is_exclusive BOOLEAN DEFAULT FALSE,      -- exclusive deal negotiated
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_operator_deals_site ON public.operator_deals(site_id);
+CREATE INDEX IF NOT EXISTS idx_operator_deals_type ON public.operator_deals(deal_type);
+CREATE INDEX IF NOT EXISTS idx_operator_deals_active ON public.operator_deals(is_active);
+
+ALTER TABLE public.operator_deals ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "operator_deals_public_read" ON public.operator_deals FOR SELECT USING (TRUE);
+CREATE POLICY "operator_deals_admin_write" ON public.operator_deals FOR ALL USING (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
+-- =====================
+-- AFFILIATE CLICK EVENTS (DAR-20)
+-- Tracks every click on an affiliate link
+-- =====================
+CREATE TABLE IF NOT EXISTS public.affiliate_click_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  -- Link attribution
+  sub_id TEXT NOT NULL,                    -- unique subID per traffic source
+  operator_slug TEXT NOT NULL,             -- which operator was clicked
+  affiliate_link_id UUID REFERENCES public.affiliate_links(id) ON DELETE SET NULL,
+  -- Traffic source
+  traffic_source TEXT NOT NULL CHECK (traffic_source IN ('seo', 'social', 'email', 'referral', 'direct', 'paid', 'other')),
+  utm_source TEXT,
+  utm_medium TEXT,
+  utm_campaign TEXT,
+  utm_content TEXT,
+  landing_page TEXT,
+  -- User identity (pre-registration)
+  session_id TEXT,                         -- anonymous session cookie
+  fingerprint_hash TEXT,                   -- browser fingerprint for dedup
+  ip_hash TEXT,                            -- hashed IP (privacy-safe)
+  user_agent TEXT,
+  country_code CHAR(2),
+  -- Authenticated user (if logged in)
+  user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  -- Fraud flags
+  is_bot BOOLEAN DEFAULT FALSE,
+  is_duplicate BOOLEAN DEFAULT FALSE,
+  duplicate_of UUID REFERENCES public.affiliate_click_events(id) ON DELETE SET NULL,
+  -- Timing
+  clicked_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_click_events_sub_id ON public.affiliate_click_events(sub_id);
+CREATE INDEX IF NOT EXISTS idx_click_events_operator ON public.affiliate_click_events(operator_slug);
+CREATE INDEX IF NOT EXISTS idx_click_events_clicked_at ON public.affiliate_click_events(clicked_at DESC);
+CREATE INDEX IF NOT EXISTS idx_click_events_session ON public.affiliate_click_events(session_id);
+CREATE INDEX IF NOT EXISTS idx_click_events_user ON public.affiliate_click_events(user_id);
+
+ALTER TABLE public.affiliate_click_events ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "click_events_insert" ON public.affiliate_click_events FOR INSERT WITH CHECK (TRUE);
+CREATE POLICY "click_events_admin_read" ON public.affiliate_click_events FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
+-- =====================
+-- AFFILIATE CONVERSIONS (DAR-20)
+-- Tracks registrations, deposits, player activity from click events
+-- =====================
+CREATE TABLE IF NOT EXISTS public.affiliate_conversions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  -- Source click
+  click_event_id UUID REFERENCES public.affiliate_click_events(id) ON DELETE SET NULL,
+  sub_id TEXT NOT NULL,
+  operator_slug TEXT NOT NULL,
+  -- Conversion data
+  conversion_type TEXT NOT NULL CHECK (conversion_type IN ('registration', 'first_deposit', 'deposit', 'player_activity')),
+  player_id TEXT,                          -- operator's player ID (from their reports)
+  player_username TEXT,
+  -- Financial
+  deposit_amount NUMERIC(10,2),
+  deposit_currency TEXT DEFAULT 'USD',
+  commission_amount NUMERIC(10,2),
+  commission_currency TEXT DEFAULT 'USD',
+  -- Deal attribution
+  operator_deal_id UUID REFERENCES public.operator_deals(id) ON DELETE SET NULL,
+  deal_type TEXT,
+  -- Reconciliation
+  operator_report_date DATE,              -- date from operator's monthly report
+  is_reconciled BOOLEAN DEFAULT FALSE,   -- matched against operator report
+  reconciled_at TIMESTAMPTZ,
+  discrepancy_amount NUMERIC(10,2),      -- difference if any vs operator report
+  -- Timing
+  converted_at TIMESTAMPTZ DEFAULT NOW(),
+  reported_at TIMESTAMPTZ                -- when operator reported this conversion
+);
+
+CREATE INDEX IF NOT EXISTS idx_conversions_sub_id ON public.affiliate_conversions(sub_id);
+CREATE INDEX IF NOT EXISTS idx_conversions_operator ON public.affiliate_conversions(operator_slug);
+CREATE INDEX IF NOT EXISTS idx_conversions_type ON public.affiliate_conversions(conversion_type);
+CREATE INDEX IF NOT EXISTS idx_conversions_converted_at ON public.affiliate_conversions(converted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_conversions_reconciled ON public.affiliate_conversions(is_reconciled);
+
+ALTER TABLE public.affiliate_conversions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "conversions_insert" ON public.affiliate_conversions FOR INSERT WITH CHECK (TRUE);
+CREATE POLICY "conversions_admin_read" ON public.affiliate_conversions FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
+-- =====================
+-- SUBID TRACKING LINKS (DAR-20)
+-- Generated tracking URLs per agent/source
+-- =====================
+CREATE TABLE IF NOT EXISTS public.subid_tracking_links (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  sub_id TEXT UNIQUE NOT NULL,
+  operator_slug TEXT NOT NULL,
+  base_url TEXT NOT NULL,
+  full_url TEXT NOT NULL,                  -- base_url + tracking params
+  traffic_source TEXT NOT NULL,
+  agent_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  label TEXT,                              -- human-readable label
+  is_active BOOLEAN DEFAULT TRUE,
+  click_count INTEGER DEFAULT 0,
+  conversion_count INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_subid_links_sub_id ON public.subid_tracking_links(sub_id);
+CREATE INDEX IF NOT EXISTS idx_subid_links_operator ON public.subid_tracking_links(operator_slug);
+CREATE INDEX IF NOT EXISTS idx_subid_links_agent ON public.subid_tracking_links(agent_id);
+
+ALTER TABLE public.subid_tracking_links ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "subid_links_agent_own" ON public.subid_tracking_links FOR ALL USING (
+  agent_id = auth.uid()
+  OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
+-- =====================
+-- SEED: Operator Deals
+-- =====================
+INSERT INTO public.operator_deals (operator_name, operator_slug, deal_type, revenue_share_pct, rakeback_pct, sub_affiliate_pct, negative_carryover, payment_frequency, deal_notes, is_active) VALUES
+('PokerStars', 'pokerstars', 'revenue_share', 35.00, NULL, 5.00, FALSE, 'monthly', 'Tiered RevShare: 25% base up to 35% at volume. Negative carryover waived after 3 months.', TRUE),
+('GGPoker', 'ggpoker', 'hybrid', 30.00, NULL, 5.00, FALSE, 'monthly', 'Hybrid: 30% RevShare + $100 CPA on first deposit ≥$50. Best for high-volume traffic.', TRUE),
+('888poker', '888poker', 'revenue_share', 30.00, NULL, 3.00, TRUE, 'monthly', '30% RevShare, no negative carryover waiver. Exclusive deal can push to 35%.', TRUE),
+('PartyPoker', 'partypoker', 'cpa', NULL, NULL, 0.00, FALSE, 'monthly', 'CPA only: $150 per qualifying first deposit player ($20 min deposit). Simple attribution.', TRUE),
+('WPT Global', 'wpt-global', 'revenue_share', 40.00, NULL, 5.00, FALSE, 'biweekly', 'Aggressive 40% RevShare. Biweekly payments. Negative carryover resets quarterly.', TRUE),
+('ACR Poker', 'acr-poker', 'rakeback', NULL, 27.00, 3.00, FALSE, 'weekly', '27% instant rakeback to players. Agent earns sub-affiliate % on referred players.', TRUE),
+('Bovada', 'bovada', 'revenue_share', 25.00, NULL, 0.00, TRUE, 'monthly', '25% RevShare. US-focused traffic. Crypto payouts preferred.', TRUE),
+('BetOnline', 'betonline', 'hybrid', 25.00, NULL, 2.00, TRUE, 'monthly', 'Hybrid deal: 25% RevShare + $75 CPA. US/Canada traffic. Bitcoin payouts available.', TRUE),
+('Stake', 'stake', 'revenue_share', 40.00, NULL, 5.00, FALSE, 'weekly', '40% RevShare on casino. Crypto native. Weekly payouts. Best casino deal available.', TRUE),
+('ClubGG', 'clubgg', 'rakeback', NULL, 30.00, 5.00, FALSE, 'weekly', '30% rakeback. Club-based structure. Agent manages player pool directly.', TRUE)
+ON CONFLICT (operator_slug) DO NOTHING;
