@@ -2,11 +2,11 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { db } from "@/api/supabaseClient";
-import { 
-  Home, Star, BarChart3, BookOpen, Bot, Building2, 
-  Search, Bell, User as UserIcon, LogOut, Settings, 
+import {
+  Home, Star, BarChart3, BookOpen, Bot, Building2,
+  Search, Bell, User as UserIcon, LogOut, Settings,
   Menu, X, ChevronDown, Wallet, TrendingUp, Trophy,
-  Gift, Newspaper, Target, Users, Crown, ArrowLeft
+  Gift, Newspaper, Target, Users, Crown, ArrowLeft, LayoutDashboard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,7 @@ export default function Layout({ children, currentPageName }) {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
-  const rootPages = ["Home", "PokerAdvisor", "Reviews", "Profile"];
+  const rootPages = ["Home", "PokerAdvisor", "Reviews", "Profile", "PlayerDashboard"];
   const isRootPage = rootPages.includes(currentPageName);
 
   React.useEffect(() => {
@@ -50,6 +50,13 @@ export default function Layout({ children, currentPageName }) {
 
   // Navigation items for sidebar
   const navigationItems = [
+    ...(user ? [{
+      section: "My Account",
+      items: [
+        { title: "Dashboard", url: createPageUrl("PlayerDashboard"), icon: LayoutDashboard },
+        { title: "Gamification Hub", url: createPageUrl("GamificationHub"), icon: Crown },
+      ]
+    }] : []),
     {
       section: "Main",
       items: [
@@ -57,7 +64,7 @@ export default function Layout({ children, currentPageName }) {
         { title: "AI Advisor", url: createPageUrl("PokerAdvisor"), icon: Bot },
         { title: "Compare Sites", url: createPageUrl("Compare"), icon: BarChart3 },
         { title: "Leaderboard", url: createPageUrl("Leaderboard"), icon: Trophy },
-        { title: "Gamification Hub", url: createPageUrl("GamificationHub"), icon: Crown },
+        ...(!user ? [{ title: "Gamification Hub", url: createPageUrl("GamificationHub"), icon: Crown }] : []),
       ]
     },
     {
@@ -462,6 +469,12 @@ export default function Layout({ children, currentPageName }) {
                         </Badge>
                       )}
                     </div>
+                    <DropdownMenuItem asChild>
+                      <Link to={createPageUrl("PlayerDashboard")} className="cursor-pointer text-[#94A3B8]">
+                        <LayoutDashboard className="w-4 h-4 mr-2" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("Profile")} className="cursor-pointer text-[#94A3B8]">
                         <UserIcon className="w-4 h-4 mr-2" />

@@ -81,6 +81,7 @@ const PlayerIntelCommand = lazy(() => import('./pages/PlayerIntelCommand'));
 const PokerAdvisor = lazy(() => import('./pages/PokerAdvisor'));
 const PokerNetworkDetail = lazy(() => import('./pages/PokerNetworkDetail'));
 const PokerNetworks = lazy(() => import('./pages/PokerNetworks'));
+const PlayerDashboard = lazy(() => import('./pages/PlayerDashboard'));
 const PremiumLanding = lazy(() => import('./pages/PremiumLanding'));
 const Profile = lazy(() => import('./pages/Profile'));
 const ReferralSignup = lazy(() => import('./pages/ReferralSignup'));
@@ -125,6 +126,7 @@ export const PAGES = {
     "PokerAdvisor": PokerAdvisor,
     "PokerNetworkDetail": PokerNetworkDetail,
     "PokerNetworks": PokerNetworks,
+    "PlayerDashboard": PlayerDashboard,
     "PremiumLanding": PremiumLanding,
     "Profile": Profile,
     "ReferralSignup": ReferralSignup,

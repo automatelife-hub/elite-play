@@ -42,6 +42,9 @@ const TABLE_MAP = {
   DarkCoinsLedger: 'dark_coins_ledger',
   Mission: 'missions',
   MissionCompletion: 'mission_completions',
+  // Gamification views
+  UserXpTotals: 'user_xp_totals',
+  UserDarkCoinBalances: 'user_dark_coin_balances',
   // Badges (DAR-27)
   Badge: 'badges',
   AgentBadge: 'agent_badges',
