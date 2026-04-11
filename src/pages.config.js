@@ -67,6 +67,7 @@ const BecomeAgent = lazy(() => import('./pages/BecomeAgent'));
 const CasinoHome = lazy(() => import('./pages/CasinoHome'));
 const ClubBasedApps = lazy(() => import('./pages/ClubBasedApps'));
 const Compare = lazy(() => import('./pages/Compare'));
+const DealsMarketplace = lazy(() => import('./pages/DealsMarketplace'));
 const GamificationHub = lazy(() => import('./pages/GamificationHub'));
 const Guides = lazy(() => import('./pages/Guides'));
 const Home = lazy(() => import('./pages/Home'));
@@ -112,6 +113,7 @@ export const PAGES = {
     "CasinoHome": CasinoHome,
     "ClubBasedApps": ClubBasedApps,
     "Compare": Compare,
+    "DealsMarketplace": DealsMarketplace,
     "GamificationHub": GamificationHub,
     "Guides": Guides,
     "Home": Home,

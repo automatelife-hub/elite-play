@@ -70,6 +70,7 @@ export default function Layout({ children, currentPageName }) {
     {
       section: "Browse",
       items: [
+        { title: "Deals Marketplace", url: createPageUrl("DealsMarketplace"), icon: TrendingUp },
         { title: "Poker Sites", url: createPageUrl("PokerNetworks"), icon: Star },
         { title: "Casino Sites", url: createPageUrl("CasinoHome"), icon: Gift },
         { title: "Sportsbetting", url: createPageUrl("SportsbettingHome"), icon: Target },
