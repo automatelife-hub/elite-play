@@ -55,8 +55,8 @@ export const POKER_DEALS = [
     rakeback: "60% rakeback via Fish Buffet rewards",
 
     // Traffic details
-    affiliateCode: "ELITEPLAY",        // Code used in our tracking links — UPDATE when account confirmed
-    trackingUrl: "https://ggpoker.com/ref/ELITEPLAY",
+    affiliateCode: "ELITEPLAY",        // [UPDATE with real BTAg from GGPoker affiliate panel — format: ggpoker.com/?btag=XXXX_XXXX_XXXX]
+    trackingUrl: "https://ggpoker.com/ref/ELITEPLAY",  // [PLACEHOLDER — replace with portal BTAg URL on account confirmation]
     deepLinks: {
       download: "https://ggpoker.com/ref/ELITEPLAY?dl=1",
       register: "https://ggpoker.com/ref/ELITEPLAY?action=register",
@@ -739,11 +739,9 @@ export const SPORTS_DEALS = [
     bonusWagering: "Min deposit $10, bet credits used in 7 days",
     rakeback: null,
 
-    affiliateCode: "EPLYNG",          // [PENDING — apply at partners.bet365.com]
-    trackingUrl: "https://www.bet365.com/#/AC/B4/C1/D48/E1/I/",
-    deepLinks: {
-      register: "https://www.bet365.com/#/AC/B4/C1/D48/E1/I/",
-    },
+    affiliateCode: "EPLYNG",          // [PENDING — apply at partners.bet365.com; portal generates a dedicated click URL]
+    trackingUrl: null,                 // [PENDING — bet365 requires portal-generated click URL; do NOT use a generic bet365 URL as it won't track]
+    deepLinks: {},
 
     isExclusive: false,
     isActive: true,
