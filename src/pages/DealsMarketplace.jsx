@@ -37,6 +37,7 @@ const VERTICALS = [
   { id: "casino", label: "Casino", count: ALL_DEALS.filter((d) => d.category === "casino").length },
   { id: "poker",  label: "Poker",  count: ALL_DEALS.filter((d) => d.category === "poker").length },
   { id: "sports", label: "Sports", count: ALL_DEALS.filter((d) => d.category === "sports").length },
+  { id: "slots",  label: "Slots",  count: ALL_DEALS.filter((d) => d.category === "slots").length },
 ];
 
 const PAGE_SIZE = 6;

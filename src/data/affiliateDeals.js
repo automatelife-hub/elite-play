@@ -27,7 +27,7 @@ export const POKER_DEALS = [
     name: "GGPoker",
     category: "poker",
     subcategory: "international",
-    logo: "/logos/ggpoker.svg",
+    logo: "/logos/ggpoker.jpg",
     logoFallback: "GG",
     logoColor: "#FF6B35",
     website: "https://www.ggpoker.com",
@@ -191,7 +191,7 @@ export const POKER_DEALS = [
     name: "Americas Cardroom",
     category: "poker",
     subcategory: "us-facing",
-    logo: "/logos/acr-poker.svg",
+    logo: "/logos/acr-poker.png",
     logoFallback: "ACR",
     logoColor: "#CC0000",
     website: "https://www.americascardroom.eu",
@@ -242,7 +242,7 @@ export const POKER_DEALS = [
     name: "888poker",
     category: "poker",
     subcategory: "international",
-    logo: "/logos/888poker.svg",
+    logo: "/logos/888poker.png",
     logoFallback: "888",
     logoColor: "#FFD700",
     website: "https://www.888poker.com",
@@ -345,7 +345,7 @@ export const POKER_DEALS = [
     name: "partypoker",
     category: "poker",
     subcategory: "international",
-    logo: "/logos/partypoker.svg",
+    logo: "/logos/partypoker.png",
     logoFallback: "PP",
     logoColor: "#E8483B",
     website: "https://www.partypoker.com",
@@ -758,6 +758,418 @@ export const SPORTS_DEALS = [
     currency: "USD",
     score: 78,
   },
+
+  {
+    id: "betway",
+    slug: "betway",
+    name: "Betway",
+    category: "sports",
+    subcategory: "traditional-sportsbook",
+    logo: "/logos/betway.svg",
+    logoFallback: "BW",
+    logoColor: "#00A826",
+    website: "https://www.betway.com",
+
+    dealType: "hybrid",
+    revenueSharePct: 30,
+    cpaAmount: 75,
+    rakebackPct: null,
+    hybridNote: "30% RevShare + $75 CPA on first deposit ≥ $20 (choose one per player)",
+    subAffiliatePct: 5,
+    negativeCarryover: false,
+
+    paymentFrequency: "monthly",
+    minPayoutUsd: 100,
+    paymentMethods: ["bank_transfer", "skrill", "neteller"],
+
+    welcomeBonus: "100% up to $250 Free Bet",
+    welcomeBonusShort: "100% up to $250",
+    bonusCode: "ELITEBET",
+    bonusWagering: "1x wagering on free bet winnings",
+    rakeback: null,
+
+    affiliateCode: "ELITEBET",         // [PENDING — apply at betway.com/affiliate]
+    trackingUrl: "https://www.betway.com/?a_aid=ELITEBET",
+    deepLinks: {
+      sports: "https://www.betway.com/sports/?a_aid=ELITEBET",
+      register: "https://www.betway.com/account/register?a_aid=ELITEBET",
+    },
+
+    isExclusive: false,
+    isActive: true,
+    isFeatured: true,
+    isNew: true,
+    dealStatus: "pending",
+    dealNotes: "Flexible hybrid deal — choose RevShare or CPA per player. Strong brand globally. Premier League sponsor (West Ham). Excellent for UK/EU sports traffic. No negative carryover.",
+    dealStartDate: null,
+    dealRenewalDate: null,
+
+    rating: 4.5,
+    tags: ["sports", "established", "football", "esports", "no-negative-carryover"],
+    regions: ["global", "GB", "EU"],
+    currency: "USD",
+    score: 85,
+  },
+
+  {
+    id: "pinnacle",
+    slug: "pinnacle",
+    name: "Pinnacle",
+    category: "sports",
+    subcategory: "sharp-sportsbook",
+    logo: "/logos/pinnacle.svg",
+    logoFallback: "PIN",
+    logoColor: "#E31837",
+    website: "https://www.pinnacle.com",
+
+    dealType: "revenue_share",
+    revenueSharePct: 35,
+    cpaAmount: null,
+    rakebackPct: null,
+    hybridNote: null,
+    subAffiliatePct: 5,
+    negativeCarryover: false,
+
+    paymentFrequency: "monthly",
+    minPayoutUsd: 100,
+    paymentMethods: ["bank_transfer", "skrill", "crypto"],
+
+    welcomeBonus: "No welcome bonus — lowest margins, best odds in the industry",
+    welcomeBonusShort: "Best Odds Guaranteed",
+    bonusCode: null,
+    bonusWagering: null,
+    rakeback: "Lowest vig in the market — effectively 2-4% better odds than competitors",
+
+    affiliateCode: "ELITEPIN",         // [PENDING — apply at pinnacle.com/affiliates]
+    trackingUrl: "https://www.pinnacle.com/?affiliateid=ELITEPIN",
+    deepLinks: {
+      register: "https://www.pinnacle.com/account/register?affiliateid=ELITEPIN",
+    },
+
+    isExclusive: false,
+    isActive: true,
+    isFeatured: true,
+    isNew: true,
+    dealStatus: "pending",
+    dealNotes: "35% RevShare. Pinnacle is the gold standard for sharp bettors — no bet limits, lowest vig, accepts winners. Perfect for our informed player base. No negative carryover. Crypto payments available.",
+    dealStartDate: null,
+    dealRenewalDate: null,
+
+    rating: 4.8,
+    tags: ["sports", "sharp-friendly", "best-odds", "no-limits", "crypto"],
+    regions: ["global"],
+    currency: "USD",
+    score: 92,
+  },
+
+  {
+    id: "cloudbet",
+    slug: "cloudbet",
+    name: "Cloudbet",
+    category: "sports",
+    subcategory: "crypto-sportsbook",
+    logo: "/logos/cloudbet.svg",
+    logoFallback: "CB",
+    logoColor: "#0E76FD",
+    website: "https://www.cloudbet.com",
+
+    dealType: "revenue_share",
+    revenueSharePct: 40,
+    cpaAmount: null,
+    rakebackPct: null,
+    hybridNote: null,
+    subAffiliatePct: 5,
+    negativeCarryover: false,
+
+    paymentFrequency: "biweekly",
+    minPayoutUsd: 50,
+    paymentMethods: ["crypto", "bitcoin", "ethereum", "usdt"],
+
+    welcomeBonus: "100% up to 5 BTC Welcome Bonus + Free Bet",
+    welcomeBonusShort: "100% up to 5 BTC",
+    bonusCode: "ELITEPLAY",
+    bonusWagering: "Loyalty points unlock bonus — play-through model",
+    rakeback: null,
+
+    affiliateCode: "ELITEPLAY",        // [PENDING — apply at cloudbet.com/affiliates]
+    trackingUrl: "https://www.cloudbet.com/en/?af_token=ELITEPLAY",
+    deepLinks: {
+      sports: "https://www.cloudbet.com/en/sports/?af_token=ELITEPLAY",
+      casino: "https://www.cloudbet.com/en/casino/?af_token=ELITEPLAY",
+      register: "https://www.cloudbet.com/en/register?af_token=ELITEPLAY",
+    },
+
+    isExclusive: false,
+    isActive: true,
+    isFeatured: true,
+    isNew: true,
+    dealStatus: "pending",
+    dealNotes: "40% RevShare — best rate in crypto sports. Bitcoin pioneer since 2013. Excellent for crypto-native sports bettors. Also has casino vertical. No negative carryover. Biweekly crypto payouts.",
+    dealStartDate: null,
+    dealRenewalDate: null,
+
+    rating: 4.6,
+    tags: ["sports", "crypto", "btc", "no-kyc", "live-betting", "casino"],
+    regions: ["global"],
+    currency: "crypto",
+    score: 88,
+  },
+
+  {
+    id: "thunderpick",
+    slug: "thunderpick",
+    name: "Thunderpick",
+    category: "sports",
+    subcategory: "crypto-sportsbook",
+    logo: "/logos/thunderpick.svg",
+    logoFallback: "TP",
+    logoColor: "#7B61FF",
+    website: "https://thunderpick.io",
+
+    dealType: "revenue_share",
+    revenueSharePct: 35,
+    cpaAmount: null,
+    rakebackPct: null,
+    hybridNote: null,
+    subAffiliatePct: 3,
+    negativeCarryover: false,
+
+    paymentFrequency: "weekly",
+    minPayoutUsd: 25,
+    paymentMethods: ["crypto", "bitcoin", "ethereum", "usdt", "litecoin"],
+
+    welcomeBonus: "100% up to $500 First Deposit Bonus",
+    welcomeBonusShort: "100% up to $500",
+    bonusCode: "ELITE",
+    bonusWagering: "x5 wagering requirement",
+    rakeback: "ThunderLevel rewards system",
+
+    affiliateCode: "ELITE",            // [PENDING — apply at thunderpick.io/affiliates]
+    trackingUrl: "https://thunderpick.io/?r=ELITE",
+    deepLinks: {
+      esports: "https://thunderpick.io/esports?r=ELITE",
+      register: "https://thunderpick.io/register?r=ELITE",
+    },
+
+    isExclusive: false,
+    isActive: true,
+    isFeatured: false,
+    isNew: true,
+    dealStatus: "pending",
+    dealNotes: "35% RevShare. Esports-first sportsbook with strong CS2, Dota 2, LoL markets. Crypto-native. Weekly payouts with low $25 minimum. Perfect for younger gaming-savvy audience.",
+    dealStartDate: null,
+    dealRenewalDate: null,
+
+    rating: 4.3,
+    tags: ["sports", "esports", "crypto", "cs2", "dota2", "weekly-pay"],
+    regions: ["global"],
+    currency: "crypto",
+    score: 80,
+  },
+];
+
+// ---------------------------------------------------------------------------
+// SLOT PROVIDER AFFILIATE DEALS
+// ---------------------------------------------------------------------------
+
+export const SLOT_DEALS = [
+  {
+    id: "pragmatic-play",
+    slug: "pragmatic-play",
+    name: "Pragmatic Play",
+    category: "slots",
+    subcategory: "slot-provider",
+    logo: "/logos/pragmatic-play.svg",
+    logoFallback: "PP",
+    logoColor: "#FF4E00",
+    website: "https://www.pragmaticplay.com",
+
+    dealType: "revenue_share",
+    revenueSharePct: 30,
+    cpaAmount: null,
+    rakebackPct: null,
+    hybridNote: null,
+    subAffiliatePct: 5,
+    negativeCarryover: false,
+
+    paymentFrequency: "monthly",
+    minPayoutUsd: 200,
+    paymentMethods: ["bank_transfer", "crypto"],
+
+    welcomeBonus: "Promote Pragmatic Play slots across partner casinos — Drops & Wins promotions",
+    welcomeBonusShort: "Drops & Wins Promos",
+    bonusCode: null,
+    bonusWagering: null,
+    rakeback: null,
+
+    affiliateCode: "ELITEPLAY",        // [PENDING — apply at pragmaticplay.com/en/affiliate]
+    trackingUrl: "https://pragmaticplay.com/en/?aff=ELITEPLAY",
+    deepLinks: {
+      games: "https://pragmaticplay.com/en/games?aff=ELITEPLAY",
+    },
+
+    isExclusive: false,
+    isActive: true,
+    isFeatured: true,
+    isNew: true,
+    dealStatus: "pending",
+    dealNotes: "Pragmatic Play is the #1 slot provider by volume. Gates of Olympus, Sweet Bonanza, Dog House — all top performers. 30% RevShare on referred player activity across partner casinos. Drops & Wins promo network worth $2M+/month in prizes. Priority deal.",
+    dealStartDate: null,
+    dealRenewalDate: null,
+
+    rating: 4.9,
+    tags: ["slots", "provider", "drops-and-wins", "high-volume", "top-games"],
+    regions: ["global"],
+    currency: "USD",
+    score: 93,
+  },
+
+  {
+    id: "hacksaw-gaming",
+    slug: "hacksaw-gaming",
+    name: "Hacksaw Gaming",
+    category: "slots",
+    subcategory: "slot-provider",
+    logo: "/logos/hacksaw-gaming.svg",
+    logoFallback: "HG",
+    logoColor: "#00D4FF",
+    website: "https://www.hacksawgaming.com",
+
+    dealType: "revenue_share",
+    revenueSharePct: 25,
+    cpaAmount: null,
+    rakebackPct: null,
+    hybridNote: null,
+    subAffiliatePct: 3,
+    negativeCarryover: false,
+
+    paymentFrequency: "monthly",
+    minPayoutUsd: 150,
+    paymentMethods: ["bank_transfer", "crypto"],
+
+    welcomeBonus: "Promote Hacksaw slots — Wanted Dead or a Wild, Chaos Crew, Hand of Anubis",
+    welcomeBonusShort: "Top Volatile Slots",
+    bonusCode: null,
+    bonusWagering: null,
+    rakeback: null,
+
+    affiliateCode: "ELITEPLAY",        // [PENDING — apply at hacksawgaming.com/partners]
+    trackingUrl: "https://www.hacksawgaming.com/?ref=ELITEPLAY",
+    deepLinks: {},
+
+    isExclusive: false,
+    isActive: true,
+    isFeatured: false,
+    isNew: true,
+    dealStatus: "pending",
+    dealNotes: "Hacksaw Gaming is the hottest slot provider for high-volatility content. Wanted Dead or a Wild and Chaos Crew are streamer favorites. 25% RevShare — can negotiate to 30% with volume. Growing fast in crypto casino segment.",
+    dealStartDate: null,
+    dealRenewalDate: null,
+
+    rating: 4.7,
+    tags: ["slots", "provider", "high-volatility", "streamer-favorites", "crypto"],
+    regions: ["global"],
+    currency: "USD",
+    score: 87,
+  },
+
+  {
+    id: "push-gaming",
+    slug: "push-gaming",
+    name: "Push Gaming",
+    category: "slots",
+    subcategory: "slot-provider",
+    logo: "/logos/push-gaming.svg",
+    logoFallback: "PG",
+    logoColor: "#FF2D55",
+    website: "https://www.pushgaming.com",
+
+    dealType: "revenue_share",
+    revenueSharePct: 25,
+    cpaAmount: null,
+    rakebackPct: null,
+    hybridNote: null,
+    subAffiliatePct: 3,
+    negativeCarryover: false,
+
+    paymentFrequency: "monthly",
+    minPayoutUsd: 200,
+    paymentMethods: ["bank_transfer"],
+
+    welcomeBonus: "Promote Push Gaming slots — Jammin' Jars, Razor Shark, Fire Portals",
+    welcomeBonusShort: "Premium Slot Content",
+    bonusCode: null,
+    bonusWagering: null,
+    rakeback: null,
+
+    affiliateCode: "ELITEPLAY",        // [PENDING — apply at pushgaming.com/affiliates]
+    trackingUrl: "https://www.pushgaming.com/?partner=ELITEPLAY",
+    deepLinks: {},
+
+    isExclusive: false,
+    isActive: true,
+    isFeatured: false,
+    isNew: true,
+    dealStatus: "pending",
+    dealNotes: "Push Gaming produces premium, innovative slot content. Jammin' Jars franchise and Razor Shark are proven performers. 25% RevShare. Smaller catalogue but extremely high quality. Good for content-focused affiliate strategy.",
+    dealStartDate: null,
+    dealRenewalDate: null,
+
+    rating: 4.5,
+    tags: ["slots", "provider", "premium", "innovative", "high-quality"],
+    regions: ["global"],
+    currency: "USD",
+    score: 82,
+  },
+
+  {
+    id: "nolimit-city",
+    slug: "nolimit-city",
+    name: "Nolimit City",
+    category: "slots",
+    subcategory: "slot-provider",
+    logo: "/logos/nolimit-city.svg",
+    logoFallback: "NLC",
+    logoColor: "#E50914",
+    website: "https://www.nolimitcity.com",
+
+    dealType: "revenue_share",
+    revenueSharePct: 25,
+    cpaAmount: null,
+    rakebackPct: null,
+    hybridNote: null,
+    subAffiliatePct: 3,
+    negativeCarryover: false,
+
+    paymentFrequency: "monthly",
+    minPayoutUsd: 150,
+    paymentMethods: ["bank_transfer", "crypto"],
+
+    welcomeBonus: "Promote Nolimit City — Mental, Tombstone, San Quentin xWays",
+    welcomeBonusShort: "Extreme Volatility Slots",
+    bonusCode: null,
+    bonusWagering: null,
+    rakeback: null,
+
+    affiliateCode: "ELITEPLAY",        // [PENDING — apply at nolimitcity.com/partners]
+    trackingUrl: "https://www.nolimitcity.com/?aff=ELITEPLAY",
+    deepLinks: {},
+
+    isExclusive: false,
+    isActive: true,
+    isFeatured: false,
+    isNew: true,
+    dealStatus: "pending",
+    dealNotes: "Nolimit City makes the most extreme volatility slots in the industry. Mental, Tombstone RIP, San Quentin xWays — massive max win potential (up to 150,000x). Cult following on Twitch/YouTube. 25% RevShare. Owned by Evolution Gaming.",
+    dealStartDate: null,
+    dealRenewalDate: null,
+
+    rating: 4.6,
+    tags: ["slots", "provider", "extreme-volatility", "max-wins", "streamer-favorites"],
+    regions: ["global"],
+    currency: "USD",
+    score: 85,
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -765,7 +1177,7 @@ export const SPORTS_DEALS = [
 // ---------------------------------------------------------------------------
 
 /** All affiliate deals across all categories */
-export const ALL_DEALS = [...POKER_DEALS, ...CASINO_DEALS, ...SPORTS_DEALS];
+export const ALL_DEALS = [...POKER_DEALS, ...CASINO_DEALS, ...SPORTS_DEALS, ...SLOT_DEALS];
 
 /** Featured deals for homepage/landing display */
 export const FEATURED_DEALS = ALL_DEALS.filter((d) => d.isFeatured && d.isActive);
@@ -787,7 +1199,7 @@ export function getDealBySlug(slug) {
 
 /**
  * Get deals by category.
- * @param {"poker"|"casino"|"sports"} category
+ * @param {"poker"|"casino"|"sports"|"slots"} category
  * @returns {object[]}
  */
 export function getDealsByCategory(category) {
@@ -804,6 +1216,7 @@ export function buildDealTrackingUrl(slug, subId) {
   const deal = getDealBySlug(slug);
   if (!deal) return "#";
   const base = deal.trackingUrl;
+  if (!base) return "#";
   if (!subId) return base;
   const separator = base.includes("?") ? "&" : "?";
   return `${base}${separator}sub=${encodeURIComponent(subId)}`;
