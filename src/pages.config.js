@@ -57,6 +57,7 @@ const Affiliate = lazy(() => import('./pages/Affiliate'));
 const AffiliateDashboard = lazy(() => import('./pages/AffiliateDashboard'));
 const AffiliateLinks = lazy(() => import('./pages/AffiliateLinks'));
 const AffiliateProgram = lazy(() => import('./pages/AffiliateProgram'));
+const AffiliatePayoutsLanding = lazy(() => import('./pages/AffiliatePayoutsLanding'));
 const AffiliateReconciliation = lazy(() => import('./pages/AffiliateReconciliation'));
 const AgencyDashboard = lazy(() => import('./pages/AgencyDashboard'));
 const AgentContests = lazy(() => import('./pages/AgentContests'));
@@ -103,6 +104,7 @@ export const PAGES = {
     "AffiliateDashboard": AffiliateDashboard,
     "AffiliateLinks": AffiliateLinks,
     "AffiliateProgram": AffiliateProgram,
+    "AffiliatePayoutsLanding": AffiliatePayoutsLanding,
     "AffiliateReconciliation": AffiliateReconciliation,
     "AgencyDashboard": AgencyDashboard,
     "AgentContests": AgentContests,

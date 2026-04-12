@@ -166,6 +166,9 @@ export default function Layout({ children, currentPageName }) {
                 <Link to={createPageUrl("SportsbettingHome")} className="text-gray-300 hover:text-blue-300 transition-colors">
                   Sports
                 </Link>
+                <Link to={createPageUrl("AffiliatePayoutsLanding")} className="text-gray-300 hover:text-blue-400 transition-colors">
+                  Payouts
+                </Link>
                 <Link to={createPageUrl("Compare")} className="text-gray-300 hover:text-blue-400 transition-colors">
                   Compare
                 </Link>
