@@ -17,74 +17,49 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import OperatorComparisonMatrix from "../components/affiliate/OperatorComparisonMatrix";
+import { ALL_DEALS, getDealValueLabel } from "@/data/affiliateDeals";
 
-// Mock data fallback when Supabase table isn't seeded yet
-const MOCK_DEALS = [
-  {
-    id: "mock-1", operator_name: "Stake", operator_slug: "stake", deal_type: "revenue_share",
-    revenue_share_pct: 40, rakeback_pct: null, cpa_amount: null, hybrid_cpa_amount: null,
-    hybrid_revshare_pct: null, sub_affiliate_pct: 5, negative_carryover: false,
-    payment_frequency: "weekly", min_payout: 50, payment_methods: ["crypto", "bank_transfer"],
-    deal_notes: "40% RevShare on casino. Crypto native. Weekly payouts. Best casino deal available.",
-    is_exclusive: false, is_active: true, _score: 88,
-  },
-  {
-    id: "mock-2", operator_name: "WPT Global", operator_slug: "wpt-global", deal_type: "revenue_share",
-    revenue_share_pct: 40, rakeback_pct: null, cpa_amount: null, hybrid_cpa_amount: null,
-    hybrid_revshare_pct: null, sub_affiliate_pct: 5, negative_carryover: false,
-    payment_frequency: "biweekly", min_payout: 100, payment_methods: ["bank_transfer", "crypto"],
-    deal_notes: "Aggressive 40% RevShare. Biweekly payments. Negative carryover resets quarterly.",
-    is_exclusive: false, is_active: true,
-  },
-  {
-    id: "mock-3", operator_name: "PokerStars", operator_slug: "pokerstars", deal_type: "revenue_share",
-    revenue_share_pct: 35, rakeback_pct: null, cpa_amount: null, hybrid_cpa_amount: null,
-    hybrid_revshare_pct: null, sub_affiliate_pct: 5, negative_carryover: false,
-    payment_frequency: "monthly", min_payout: 100, payment_methods: ["bank_transfer"],
-    deal_notes: "Tiered RevShare: 25% base up to 35% at volume. Negative carryover waived after 3 months.",
-    is_exclusive: false, is_active: true,
-  },
-  {
-    id: "mock-4", operator_name: "GGPoker", operator_slug: "ggpoker", deal_type: "hybrid",
-    revenue_share_pct: null, rakeback_pct: null, cpa_amount: null, hybrid_cpa_amount: 100,
-    hybrid_revshare_pct: 30, sub_affiliate_pct: 5, negative_carryover: false,
-    payment_frequency: "monthly", min_payout: 100, payment_methods: ["bank_transfer", "crypto"],
-    deal_notes: "Hybrid: 30% RevShare + $100 CPA on first deposit ≥$50.",
-    is_exclusive: false, is_active: true,
-  },
-  {
-    id: "mock-5", operator_name: "ACR Poker", operator_slug: "acr-poker", deal_type: "rakeback",
-    revenue_share_pct: null, rakeback_pct: 27, cpa_amount: null, hybrid_cpa_amount: null,
-    hybrid_revshare_pct: null, sub_affiliate_pct: 3, negative_carryover: false,
-    payment_frequency: "weekly", min_payout: 25, payment_methods: ["crypto", "bank_transfer"],
-    deal_notes: "27% instant rakeback to players. Agent earns sub-affiliate % on referred players.",
-    is_exclusive: false, is_active: true,
-  },
-  {
-    id: "mock-6", operator_name: "ClubGG", operator_slug: "clubgg", deal_type: "rakeback",
-    revenue_share_pct: null, rakeback_pct: 30, cpa_amount: null, hybrid_cpa_amount: null,
-    hybrid_revshare_pct: null, sub_affiliate_pct: 5, negative_carryover: false,
-    payment_frequency: "weekly", min_payout: 25, payment_methods: ["crypto"],
-    deal_notes: "30% rakeback. Club-based structure. Agent manages player pool directly.",
-    is_exclusive: false, is_active: true,
-  },
-  {
-    id: "mock-7", operator_name: "PartyPoker", operator_slug: "partypoker", deal_type: "cpa",
-    revenue_share_pct: null, rakeback_pct: null, cpa_amount: 150, hybrid_cpa_amount: null,
-    hybrid_revshare_pct: null, sub_affiliate_pct: 0, negative_carryover: false,
-    payment_frequency: "monthly", min_payout: 150, cpa_min_deposit: 20,
-    payment_methods: ["bank_transfer"], deal_notes: "CPA only: $150 per qualifying first deposit player.",
-    is_exclusive: false, is_active: true,
-  },
-  {
-    id: "mock-8", operator_name: "888poker", operator_slug: "888poker", deal_type: "revenue_share",
-    revenue_share_pct: 30, rakeback_pct: null, cpa_amount: null, hybrid_cpa_amount: null,
-    hybrid_revshare_pct: null, sub_affiliate_pct: 3, negative_carryover: true,
-    payment_frequency: "monthly", min_payout: 100, payment_methods: ["bank_transfer"],
-    deal_notes: "30% RevShare. Exclusive deal can push to 35%.",
-    is_exclusive: false, is_active: true,
-  },
-];
+/**
+ * Converts the canonical affiliateDeals.js format to the shape expected by
+ * OperatorComparisonMatrix (snake_case DB column names).
+ * This ensures the UI works identically whether data comes from Supabase or the local deal file.
+ */
+function normalizeDeal(deal) {
+  return {
+    id:                 deal.id,
+    operator_name:      deal.name,
+    operator_slug:      deal.slug,
+    deal_type:          deal.dealType,
+    revenue_share_pct:  deal.revenueSharePct ?? null,
+    rakeback_pct:       deal.rakebackPct ?? null,
+    cpa_amount:         deal.cpaAmount ?? null,
+    hybrid_cpa_amount:  deal.dealType === "hybrid" ? deal.cpaAmount : null,
+    hybrid_revshare_pct: deal.dealType === "hybrid" ? deal.revenueSharePct : null,
+    sub_affiliate_pct:  deal.subAffiliatePct ?? 0,
+    negative_carryover: deal.negativeCarryover ?? false,
+    payment_frequency:  deal.paymentFrequency,
+    min_payout:         deal.minPayoutUsd,
+    payment_methods:    deal.paymentMethods ?? [],
+    deal_notes:         deal.dealNotes ?? "",
+    is_exclusive:       deal.isExclusive ?? false,
+    is_active:          deal.isActive ?? true,
+    _score:             deal.score ?? 0,
+    // Extended fields used in deal cards
+    welcome_bonus:      deal.welcomeBonus,
+    bonus_code:         deal.bonusCode,
+    tracking_url:       deal.trackingUrl,
+    deal_status:        deal.dealStatus,
+    category:           deal.category,
+    rating:             deal.rating,
+    tags:               deal.tags ?? [],
+    is_featured:        deal.isFeatured ?? false,
+    is_new:             deal.isNew ?? false,
+  };
+}
+
+// Seed data — real deals negotiated by Affiliate Manager (DAR-80).
+// This data is displayed when the Supabase operator_deals table is not yet seeded.
+const SEED_DEALS = ALL_DEALS.map(normalizeDeal);
 
 function StatCard({ icon: Icon, label, value, sub, color = "yellow" }) {
   const colorMap = {
@@ -118,6 +93,10 @@ export default function OperatorDeals() {
   const [usingMock, setUsingMock] = useState(false);
 
   useEffect(() => {
+    document.title = "Operator Deals — Best Poker Rakeback & Casino Affiliate Deals | Elite Play";
+  }, []);
+
+  useEffect(() => {
     loadDeals();
   }, []);
 
@@ -125,13 +104,13 @@ export default function OperatorDeals() {
     try {
       const data = await db.entities.OperatorDeal.filter({ is_active: true });
       if (!data || data.length === 0) {
-        setDeals(MOCK_DEALS);
+        setDeals(SEED_DEALS);
         setUsingMock(true);
       } else {
         setDeals(data);
       }
     } catch {
-      setDeals(MOCK_DEALS);
+      setDeals(SEED_DEALS);
       setUsingMock(true);
     } finally {
       setLoading(false);
@@ -149,7 +128,8 @@ export default function OperatorDeals() {
   };
 
   const copyAffiliateLink = (deal) => {
-    const url = `https://eliteplay.gg/go/${deal.operator_slug}?ref=agent&src=deals`;
+    // Use the real tracking URL if available, otherwise fall back to the Elite Play redirect
+    const url = deal.tracking_url || `https://eliteplay.gg/go/${deal.operator_slug}?ref=agent&src=deals`;
     navigator.clipboard.writeText(url).then(() =>
       toast.success(`Link copied for ${deal.operator_name}`)
     );

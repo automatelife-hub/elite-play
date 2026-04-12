@@ -8,6 +8,7 @@
  */
 
 import { supabase } from '@/api/supabaseClient';
+import { analytics } from '@/lib/analytics';
 
 // ---------------------------------------------------------------------------
 // Session storage keys
@@ -207,21 +208,41 @@ export async function createTrackingLink({ operatorSlug, baseUrl, trafficSource,
 }
 
 // ---------------------------------------------------------------------------
-// Operator base URLs
+// Operator base URLs  (DAR-80 — updated by Affiliate Manager 2026-04-08)
 // ---------------------------------------------------------------------------
 
-/** Known affiliate base URLs per operator slug. */
+/**
+ * Canonical affiliate base URLs per operator slug.
+ * These are the base URLs used to build tracked outbound links.
+ * The affiliate/tracking code is appended after the URL.
+ *
+ * Source of truth: src/data/affiliateDeals.js (trackingUrl per deal).
+ * This map provides a quick lookup for the recordClick / buildOutboundUrl helpers.
+ */
 export const OPERATOR_BASE_URLS = {
-  ggpoker:    'https://ggpoker.com/ref/',
-  pokerstars: 'https://www.pokerstars.com/poker/download/?source=',
-  'acr-poker': 'https://www.americascardroom.eu/poker-bonus/?bonus=',
-  bovada:     'https://www.bovada.lv/?overlayid=AFFPPA&btag=',
-  betonline:  'https://betonline.ag/promotions/poker?ref=',
-  stake:      'https://stake.com/?c=',
-  'wpt-global': 'https://www.wptglobal.com/deposit/?bonus=',
-  'acr-poker': 'https://www.americascardroom.eu/poker-bonus/?bonus=',
-  partypoker: 'https://www.partypoker.com/how-to-play/account/registration.html?bonuscode=',
-  '888poker':  'https://www.888poker.com/poker/download/?tcode=',
+  // === POKER ===
+  ggpoker:        'https://ggpoker.com/ref/',
+  pokerstars:     'https://www.pokerstars.com/poker/download/?source=',
+  'wpt-global':   'https://www.wptglobal.com/deposit/?bonus=',
+  'acr-poker':    'https://www.americascardroom.eu/poker-bonus/?bonus=',
+  '888poker':     'https://www.888poker.com/poker/download/?tcode=',
+  clubgg:         'https://www.clubgg.com/invite/',
+  partypoker:     'https://www.partypoker.com/how-to-play/account/registration.html?bonuscode=',
+  bovada:         'https://www.bovada.lv/?overlayid=AFFPPA&btag=',
+  betonline:      'https://betonline.ag/promotions/poker?ref=',
+
+  // === CRYPTO CASINOS ===
+  stake:          'https://stake.com/?c=',
+  bitstarz:       'https://www.bitstarz.com/?c=',
+  'bc-game':      'https://bc.game/i-',            // bc.game uses /i-{code}-n/ format
+  rollbit:        'https://rollbit.com/?c=',
+  duelbits:       'https://duelbits.com/?ref=',
+  roobet:         'https://roobet.com/?ref=',
+  'jackpot-city': 'https://www.jackpotcity.com/affiliate?ref=',
+
+  // === SPORTS ===
+  bet365:         'https://www.bet365.com/affiliate/',
+  draftkings:     'https://sportsbook.draftkings.com/?sourceid=',
 };
 
 /** Returns the operator's tracking base URL or a placeholder. */
@@ -244,9 +265,20 @@ export function getOperatorBaseUrl(slug) {
  * @returns {string} The full outbound URL to navigate to
  */
 export function buildOutboundUrl(subId, operatorSlug, affiliateLinkId, userId) {
-  // Fire-and-forget click recording
+  // Fire-and-forget click recording (Supabase + GA4)
   recordClick({ subId, operatorSlug, affiliateLinkId, userId }).catch(() => {});
+  analytics.trackDealClick({ operator_slug: operatorSlug, sub_id: subId });
 
   const base = getOperatorBaseUrl(operatorSlug);
   return base + encodeURIComponent(subId);
+}
+
+/**
+ * Call when a user copies/claims a tracking link (deal_claim event).
+ *
+ * @param {string} subId
+ * @param {string} operatorSlug
+ */
+export function claimTrackingLink(subId, operatorSlug) {
+  analytics.trackDealClaim({ operator_slug: operatorSlug, sub_id: subId });
 }

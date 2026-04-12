@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star, ExternalLink, Users, TrendingUp, FileText, Award, Zap, Shield, DollarSign, Globe } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { Link } from "react-router-dom";
+import { getOperatorLogo } from "@/data/operatorLogos";
 
 export default function PokerNetworkDetail() {
   const location = useLocation();
@@ -21,7 +22,7 @@ export default function PokerNetworkDetail() {
   const networkData = {
     gg_network: {
       name: "GG Network",
-      logo: "https://cms.worldpokerdeals.com/assets/e50fc940-c332-4bed-a942-1dbb98a559e6",
+      logo: getOperatorLogo("ggpoker"),
       description: "GG Network is one of the largest and fastest-growing poker networks in the world. Known for its innovative features and massive tournament schedules, GG Network has become a top choice for both recreational and professional players.",
       history: "Founded in 2014, GG Network quickly rose to prominence by focusing on the Asian market before expanding globally. The network is home to GGPoker, which hosts some of the biggest online poker tournaments including WSOP Online events. In recent years, GG Network has partnered with major poker brands and celebrities, establishing itself as a premier destination for online poker.",
       established: 2014,
@@ -36,7 +37,7 @@ export default function PokerNetworkDetail() {
     },
     chico_poker_network: {
       name: "Chico Poker Network",
-      logo: "https://cms.worldpokerdeals.com/assets/34530bc7-e2d1-47ef-af07-656892b46e84",
+      logo: getOperatorLogo("betonline"),
       description: "Chico Poker Network is a US-facing network known for soft games and reliable payments. The network has built a strong reputation among American players looking for trustworthy online poker options.",
       history: "Established in 2010, Chico Poker Network emerged as a reliable option for US players after the poker boom. The network includes brands like BetOnline Poker and SportsBetting Poker, which have maintained consistent player traffic and solid reputations over the years. Known for accepting cryptocurrency deposits and offering quick payouts.",
       established: 2010,
@@ -51,7 +52,7 @@ export default function PokerNetworkDetail() {
     },
     ipoker_network: {
       name: "iPoker Network",
-      logo: "https://cms.worldpokerdeals.com/assets/3d3ed418-c058-42be-ae1e-d1c56b843a1b",
+      logo: getOperatorLogo("ladbrokes"),
       description: "iPoker is one of the oldest and most established poker networks in the industry. With a large selection of poker rooms and solid player liquidity, it remains a top choice for European players.",
       history: "Launched in 2004 by Playtech, iPoker has been a cornerstone of the online poker industry for nearly two decades. The network survived the 2011 poker crisis and continues to thrive with 19+ poker rooms sharing player pools. Known for its reliability, extensive game selection, and competitive rakeback programs.",
       established: 2004,
@@ -66,7 +67,7 @@ export default function PokerNetworkDetail() {
     },
     winning_poker_network: {
       name: "Winning Poker Network",
-      logo: "https://cms.worldpokerdeals.com/assets/136f06c5-e0d3-4e41-a7a3-a16f2d92fed4",
+      logo: getOperatorLogo("acr-poker"),
       description: "Winning Poker Network (WPN) is home to Americas Cardroom and other major brands. Known for its massive tournament guarantees and cryptocurrency-friendly policies, WPN has become the largest US-facing network.",
       history: "WPN was established in 2001 and has grown to become the dominant network for US players. Americas Cardroom, its flagship brand, regularly hosts multi-million dollar tournament series including the OSS (Online Super Series) and Venom tournaments. The network pioneered Bitcoin deposits in online poker and maintains a reputation for innovation.",
       established: 2001,
@@ -81,7 +82,7 @@ export default function PokerNetworkDetail() {
     },
     horizon_poker_network: {
       name: "Horizon Poker Network",
-      logo: "https://cms.worldpokerdeals.com/assets/e952e374-9dac-4e51-ac54-9beb7ce45f24",
+      logo: getOperatorLogo("everygame"),
       description: "Horizon Poker Network is a growing network offering modern poker software and competitive gaming. While smaller than major networks, it provides good liquidity and attractive promotions.",
       history: "A relatively newer network in the industry, Horizon has been steadily building its player base through partnerships with established brands. The network focuses on delivering a solid poker experience with modern features and competitive rakeback deals.",
       established: 2018,
@@ -96,7 +97,7 @@ export default function PokerNetworkDetail() {
     },
     idnpoker_network: {
       name: "IDNPoker Network",
-      logo: "https://cms.worldpokerdeals.com/assets/37d2b879-84f7-4550-8927-81f7db0e5888",
+      logo: null,
       description: "IDNPoker is the dominant poker network in Asia, offering massive player traffic and unique game variations popular in Asian markets.",
       history: "Founded in 2010, IDNPoker has grown to become the second-largest poker network globally by cash game traffic. The network focuses primarily on Asian markets, offering games in multiple Asian languages and accepting various payment methods popular in the region. Known for its mobile-first approach and recreational player-friendly policies.",
       established: 2010,
@@ -111,7 +112,7 @@ export default function PokerNetworkDetail() {
     },
     independent: {
       name: "Independent Poker Sites",
-      logo: "https://cms.worldpokerdeals.com/assets/8097c14a-252e-4ffc-b259-50e3321c9909",
+      logo: null,
       description: "Independent poker sites operate their own software and player pools without joining a network. These sites often offer unique features and exclusive promotions.",
       history: "Independent sites include some of the biggest names in online poker like PokerStars, partypoker, and 888poker. These operators maintain their own software, player bases, and brand identities. While they don't share liquidity with other sites, their large player bases ensure excellent game selection and traffic at all stakes.",
       established: null,

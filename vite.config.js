@@ -2,12 +2,21 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [
         react(),
         visualizer({ open: false, filename: 'dist/stats.html', gzipSize: true }),
+        // Upload source maps to Sentry on production builds (no-op if env vars absent)
+        sentryVitePlugin({
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            silent: true,
+            telemetry: false,
+        }),
     ],
     resolve: {
         alias: {
@@ -15,6 +24,7 @@ export default defineConfig({
         },
     },
     build: {
+        sourcemap: true,
         rollupOptions: {
             output: {
                 manualChunks: {

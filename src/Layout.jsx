@@ -2,9 +2,9 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { db } from "@/api/supabaseClient";
-import { 
-  Home, Star, BarChart3, BookOpen, Bot, Building2, 
-  Search, Bell, User as UserIcon, LogOut, Settings, 
+import {
+  Home, Star, BarChart3, BookOpen, Bot, Building2,
+  Search, Bell, User as UserIcon, LogOut, Settings,
   Menu, X, ChevronDown, Wallet, TrendingUp, Trophy,
   Gift, Newspaper, Target, Users, Crown, ArrowLeft,
   LayoutDashboard
@@ -30,7 +30,7 @@ export default function Layout({ children, currentPageName }) {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
-  const rootPages = ["Home", "PokerAdvisor", "Reviews", "Profile"];
+  const rootPages = ["Home", "PokerAdvisor", "Reviews", "Profile", "PlayerDashboard"];
   const isRootPage = rootPages.includes(currentPageName);
 
   React.useEffect(() => {
@@ -51,6 +51,13 @@ export default function Layout({ children, currentPageName }) {
 
   // Navigation items for sidebar
   const navigationItems = [
+    ...(user ? [{
+      section: "My Account",
+      items: [
+        { title: "Dashboard", url: createPageUrl("PlayerDashboard"), icon: LayoutDashboard },
+        { title: "Gamification Hub", url: createPageUrl("GamificationHub"), icon: Crown },
+      ]
+    }] : []),
     {
       section: "Main",
       items: [
@@ -58,13 +65,14 @@ export default function Layout({ children, currentPageName }) {
         { title: "AI Advisor", url: createPageUrl("PokerAdvisor"), icon: Bot },
         { title: "Compare Sites", url: createPageUrl("Compare"), icon: BarChart3 },
         { title: "Leaderboard", url: createPageUrl("Leaderboard"), icon: Trophy },
-        { title: "Gamification Hub", url: createPageUrl("GamificationHub"), icon: Crown },
+        ...(!user ? [{ title: "Gamification Hub", url: createPageUrl("GamificationHub"), icon: Crown }] : []),
       ]
     },
     {
       section: "Browse",
       items: [
-        { title: "Poker Sites", url: createPageUrl("BestPokerSites"), icon: Star },
+        { title: "Deals Marketplace", url: createPageUrl("DealsMarketplace"), icon: TrendingUp },
+        { title: "Poker Sites", url: createPageUrl("PokerNetworks"), icon: Star },
         { title: "Casino Sites", url: createPageUrl("CasinoHome"), icon: Gift },
         { title: "Sportsbetting", url: createPageUrl("SportsbettingHome"), icon: Target },
         { title: "Poker Networks", url: createPageUrl("PokerNetworks"), icon: Users },
@@ -163,7 +171,7 @@ export default function Layout({ children, currentPageName }) {
               </Link>
 
               <div className="hidden md:flex items-center space-x-10">
-                <Link to={createPageUrl("PokerHome")} className="text-slate-300 hover:text-white transition-colors font-bold text-sm">
+                <Link to={createPageUrl("PokerNetworks")} className="text-slate-300 hover:text-white transition-colors font-bold text-sm">
                   Poker
                 </Link>
                 <Link to={createPageUrl("CasinoHome")} className="text-slate-300 hover:text-white transition-colors font-bold text-sm">
@@ -214,7 +222,7 @@ export default function Layout({ children, currentPageName }) {
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-[#1E2A3F] bg-[#080C14]">
               <div className="px-4 py-4 space-y-2">
-                <Link to={createPageUrl("PokerHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
+                <Link to={createPageUrl("PokerNetworks")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
                   Poker
                 </Link>
                 <Link to={createPageUrl("CasinoHome")} className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-[#141E35]">
@@ -451,6 +459,12 @@ export default function Layout({ children, currentPageName }) {
                         </Badge>
                       )}
                     </div>
+                    <DropdownMenuItem asChild>
+                      <Link to={createPageUrl("PlayerDashboard")} className="cursor-pointer text-[#94A3B8]">
+                        <LayoutDashboard className="w-4 h-4 mr-2" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl("Profile")} className="cursor-pointer text-[#94A3B8]">
                         <UserIcon className="w-4 h-4 mr-2" />

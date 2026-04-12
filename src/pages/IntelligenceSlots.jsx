@@ -239,6 +239,10 @@ export default function IntelligenceSlots() {
   const [lastUpdated] = useState(Date.now());
   const carouselRef = useRef(null);
 
+  React.useEffect(() => {
+    document.title = "Slot Intelligence Suite — Live RTP Tracker & Hot Slots | Elite Play";
+  }, []);
+
   const {
     slots, hotSlots, tickerSlots, loading,
     filters, updateFilter, resetFilters,

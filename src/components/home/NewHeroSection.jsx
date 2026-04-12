@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Gift, Users, Globe, ArrowRight } from "lucide-react";
+import { Gift, Users, Globe, ArrowRight } from "lucide-react";
 import { db } from "@/api/supabaseClient";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -47,48 +47,49 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
-          <motion.div 
+          <motion.div
+            className="pt-8"
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1] tracking-tight mb-8">
-              Empower Your <br />
-              <span className="text-white">iGaming Growth</span>
+            <h1 className="font-display font-extrabold text-white mb-6 leading-[1.08] tracking-tight" style={{ fontSize: "clamp(2.2rem, 5vw, 3.75rem)", fontFamily: "Syne, sans-serif", letterSpacing: "-0.03em" }}>
+              Maximum Rakeback.<br />
+              <span className="bg-gradient-to-r from-blue-300 via-blue-400 to-blue-600 bg-clip-text text-transparent">Zero Compromise.</span>
             </h1>
 
-            <p className="text-xl text-slate-400 mb-10 max-w-xl leading-relaxed font-medium">
-              Premium deals, expert guidance, and the best rakeback offers across poker, casino, and sportsbetting.
+            <p className="text-lg text-[#94A3B8] mb-8 font-light leading-relaxed max-w-xl" style={{ fontFamily: "DM Sans, sans-serif" }}>
+              Elite Play gives serious players the best poker rakeback deals, exclusive casino bonuses, and live slot RTP data — all in one place. Stop leaving money on the table.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 mb-12">
-              <div className="flex items-center gap-3 text-slate-200 font-semibold">
-                <CheckCircle className="w-5 h-5 text-teal-400" />
-                24/7 player & agent support
-              </div>
-              <div className="flex items-center gap-3 text-slate-200 font-semibold">
-                <CheckCircle className="w-5 h-5 text-teal-400" />
-                Top rakeback & VIP deals
-              </div>
-              <div className="flex items-center gap-3 text-slate-200 font-semibold">
-                <CheckCircle className="w-5 h-5 text-teal-400" />
-                50+ verified sites
-              </div>
-              <div className="flex items-center gap-3 text-slate-200 font-semibold">
-                <CheckCircle className="w-5 h-5 text-teal-400" />
-                Affiliate programs available
-              </div>
-            </div>
+            <ul className="space-y-5 mb-12">
+              <li className="flex items-center text-lg text-gray-300">
+                <span className="text-blue-400 mr-4 text-xl">&#10003;</span>
+                Industry-leading rakeback &amp; VIP deals
+              </li>
+              <li className="flex items-center text-lg text-gray-300">
+                <span className="text-blue-400 mr-4 text-xl">&#10003;</span>
+                50+ verified poker, casino &amp; sportsbook sites
+              </li>
+              <li className="flex items-center text-lg text-gray-300">
+                <span className="text-blue-400 mr-4 text-xl">&#10003;</span>
+                Live slot RTP intelligence tracker
+              </li>
+              <li className="flex items-center text-lg text-gray-300">
+                <span className="text-blue-400 mr-4 text-xl">&#10003;</span>
+                24/7 dedicated player support
+              </li>
+            </ul>
 
             <div className="flex flex-wrap gap-5">
               <Link to={createPageUrl("Reviews")}>
-                <Button className="bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-[#080C14] font-black px-10 py-7 text-lg rounded-xl shadow-[0_0_30px_rgba(45,212,191,0.3)] transition-all transform hover:scale-105">
-                  Explore All Deals
+                <Button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold px-6 sm:px-10 py-5 sm:py-7 text-base sm:text-lg shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 transform hover:scale-105 min-h-[44px]">
+                  Get Best Deals
                 </Button>
               </Link>
               <Link to={createPageUrl("BecomeAgent")}>
-                <Button variant="outline" className="border-2 border-slate-700 text-white hover:bg-white/5 px-10 py-7 text-lg font-black rounded-xl transition-all">
-                  Start an Agency
+                <Button variant="outline" className="border-2 border-blue-600/70 text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 px-6 sm:px-10 py-5 sm:py-7 text-base sm:text-lg font-bold transition-all duration-300 min-h-[44px]">
+                  Become an Affiliate
                 </Button>
               </Link>
             </div>

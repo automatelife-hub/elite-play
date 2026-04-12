@@ -69,6 +69,7 @@ const BecomeAgent = lazy(() => import('./pages/BecomeAgent'));
 const CasinoHome = lazy(() => import('./pages/CasinoHome'));
 const ClubBasedApps = lazy(() => import('./pages/ClubBasedApps'));
 const Compare = lazy(() => import('./pages/Compare'));
+const DealsMarketplace = lazy(() => import('./pages/DealsMarketplace'));
 const GamificationHub = lazy(() => import('./pages/GamificationHub'));
 const Guides = lazy(() => import('./pages/Guides'));
 const Home = lazy(() => import('./pages/Home'));
@@ -84,6 +85,7 @@ const PlayerStats = lazy(() => import('./pages/PlayerStats'));
 const PokerAdvisor = lazy(() => import('./pages/PokerAdvisor'));
 const PokerNetworkDetail = lazy(() => import('./pages/PokerNetworkDetail'));
 const PokerNetworks = lazy(() => import('./pages/PokerNetworks'));
+const PlayerDashboard = lazy(() => import('./pages/PlayerDashboard'));
 const PremiumLanding = lazy(() => import('./pages/PremiumLanding'));
 const Profile = lazy(() => import('./pages/Profile'));
 const ReferralSignup = lazy(() => import('./pages/ReferralSignup'));
@@ -116,6 +118,7 @@ export const PAGES = {
     "CasinoHome": CasinoHome,
     "ClubBasedApps": ClubBasedApps,
     "Compare": Compare,
+    "DealsMarketplace": DealsMarketplace,
     "GamificationHub": GamificationHub,
     "Guides": Guides,
     "Home": Home,
@@ -131,6 +134,7 @@ export const PAGES = {
     "PokerAdvisor": PokerAdvisor,
     "PokerNetworkDetail": PokerNetworkDetail,
     "PokerNetworks": PokerNetworks,
+    "PlayerDashboard": PlayerDashboard,
     "PremiumLanding": PremiumLanding,
     "Profile": Profile,
     "ReferralSignup": ReferralSignup,
