@@ -83,6 +83,8 @@ export default function Layout({ children, currentPageName }) {
       section: "Dashboard",
       items: [
         { title: "Overview", url: createPageUrl("AgentPortal"), icon: BarChart3 },
+        { title: "Agency Stats", url: createPageUrl("AgencyDashboard"), icon: LayoutDashboard },
+        { title: "Player Details", url: createPageUrl("PlayerStats"), icon: Users },
         { title: "My Deals", url: createPageUrl("AgentDeals"), icon: Target },
         { title: "Marketing Hub", url: createPageUrl("MarketingHub"), icon: TrendingUp },
         { title: "Contests", url: createPageUrl("AgentContests"), icon: Trophy },
