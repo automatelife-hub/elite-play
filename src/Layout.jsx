@@ -91,6 +91,8 @@ export default function Layout({ children, currentPageName }) {
       section: "Dashboard",
       items: [
         { title: "Overview", url: createPageUrl("AgentPortal"), icon: BarChart3 },
+        { title: "Agency Stats", url: createPageUrl("AgencyDashboard"), icon: LayoutDashboard },
+        { title: "Player Details", url: createPageUrl("PlayerStats"), icon: Users },
         { title: "My Deals", url: createPageUrl("AgentDeals"), icon: Target },
         { title: "Marketing Hub", url: createPageUrl("MarketingHub"), icon: TrendingUp },
         { title: "Contests", url: createPageUrl("AgentContests"), icon: Trophy },
@@ -159,57 +161,43 @@ export default function Layout({ children, currentPageName }) {
         {/* Top Navigation Bar for Landing Pages */}
         <nav className="fixed top-0 left-0 right-0 z-50 bg-[#080C14]/80 backdrop-blur-xl border-b border-[#1E2A3F]/60 mobile-header">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <Link to={createPageUrl("Home")}><GIALogoMark /></Link>
+            <div className="flex items-center justify-between h-20">
+              <Link to={createPageUrl("Home")} className="flex items-center gap-2">
+                <div className="w-8 h-8 text-teal-400">
+                  <TrendingUp className="w-full h-full" />
+                </div>
+                <span className="text-white text-2xl font-black tracking-tight">GambleIntel</span>
+              </Link>
 
-              <div className="hidden md:flex items-center space-x-6">
-                <Link to={createPageUrl("PokerNetworks")} className="text-gray-300 hover:text-blue-400 transition-colors">
+              <div className="hidden md:flex items-center space-x-10">
+                <Link to={createPageUrl("PokerNetworks")} className="text-slate-300 hover:text-white transition-colors font-bold text-sm">
                   Poker
                 </Link>
-                <Link to={createPageUrl("CasinoHome")} className="text-gray-300 hover:text-blue-300 transition-colors">
+                <Link to={createPageUrl("CasinoHome")} className="text-slate-300 hover:text-white transition-colors font-bold text-sm">
                   Casino
                 </Link>
-                <Link to={createPageUrl("SportsbettingHome")} className="text-gray-300 hover:text-blue-300 transition-colors">
+                <Link to={createPageUrl("SportsbettingHome")} className="text-slate-300 hover:text-white transition-colors font-bold text-sm">
                   Sports
                 </Link>
-                <Link to={createPageUrl("Compare")} className="text-gray-300 hover:text-blue-400 transition-colors">
+                <Link to={createPageUrl("Compare")} className="text-slate-300 hover:text-white transition-colors font-bold text-sm">
                   Compare
                 </Link>
-                <Link to={createPageUrl("BecomeAgent")} className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-1">
-                  <Building2 className="w-4 h-4" />
+                <Link to={createPageUrl("BecomeAgent")} className="text-slate-300 hover:text-white transition-colors font-bold text-sm">
                   Become Agent
                 </Link>
+              </div>
+
+              <div className="hidden md:flex items-center">
                 {user ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="text-gray-300 hover:text-blue-400">
-                        <UserIcon className="w-4 h-4 mr-2" />
-                        {user.full_name}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-[#0D1424] border-[#1E2A3F]">
-                      <DropdownMenuItem asChild>
-                        <Link to={createPageUrl("Profile")} className="cursor-pointer text-[#94A3B8]">
-                          Profile
-                        </Link>
-                      </DropdownMenuItem>
-                      {user.is_agent && (
-                        <DropdownMenuItem asChild>
-                          <Link to={createPageUrl("AgentPortal")} className="cursor-pointer text-[#94A3B8]">
-                            Agent Portal
-                          </Link>
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuSeparator className="bg-[#1E2A3F]" />
-                      <DropdownMenuItem onClick={() => db.auth.logout()} className="text-red-400 cursor-pointer">
-                        <LogOut className="w-4 h-4 mr-2" />
-                        Logout
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Button variant="ghost" className="bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 text-white rounded-full px-6 py-6 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-white">
+                      <UserIcon className="w-5 h-5" />
+                    </div>
+                    <span className="font-bold text-sm">{user.full_name}</span>
+                  </Button>
                 ) : (
                   <Link to={createPageUrl("Affiliate")}>
-                    <Button size="sm" className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
+                    <Button className="bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 text-white rounded-full px-8 py-6 font-bold text-sm">
                       Agent Login
                     </Button>
                   </Link>

@@ -57,7 +57,9 @@ const Affiliate = lazy(() => import('./pages/Affiliate'));
 const AffiliateDashboard = lazy(() => import('./pages/AffiliateDashboard'));
 const AffiliateLinks = lazy(() => import('./pages/AffiliateLinks'));
 const AffiliateProgram = lazy(() => import('./pages/AffiliateProgram'));
+const AffiliatePayoutsLanding = lazy(() => import('./pages/AffiliatePayoutsLanding'));
 const AffiliateReconciliation = lazy(() => import('./pages/AffiliateReconciliation'));
+const AgencyDashboard = lazy(() => import('./pages/AgencyDashboard'));
 const AgentContests = lazy(() => import('./pages/AgentContests'));
 const AgentDeals = lazy(() => import('./pages/AgentDeals'));
 const AgentDemo = lazy(() => import('./pages/AgentDemo'));
@@ -79,6 +81,7 @@ const OperatorDeals = lazy(() => import('./pages/OperatorDeals'));
 const OperatorLanding = lazy(() => import('./pages/OperatorLanding'));
 const NewsMonitor = lazy(() => import('./pages/NewsMonitor'));
 const PlayerIntelCommand = lazy(() => import('./pages/PlayerIntelCommand'));
+const PlayerStats = lazy(() => import('./pages/PlayerStats'));
 const PokerAdvisor = lazy(() => import('./pages/PokerAdvisor'));
 const PokerNetworkDetail = lazy(() => import('./pages/PokerNetworkDetail'));
 const PokerNetworks = lazy(() => import('./pages/PokerNetworks'));
@@ -103,7 +106,9 @@ export const PAGES = {
     "AffiliateDashboard": AffiliateDashboard,
     "AffiliateLinks": AffiliateLinks,
     "AffiliateProgram": AffiliateProgram,
+    "AffiliatePayoutsLanding": AffiliatePayoutsLanding,
     "AffiliateReconciliation": AffiliateReconciliation,
+    "AgencyDashboard": AgencyDashboard,
     "AgentContests": AgentContests,
     "AgentDeals": AgentDeals,
     "AgentDemo": AgentDemo,
@@ -125,6 +130,7 @@ export const PAGES = {
     "OperatorLanding": OperatorLanding,
     "NewsMonitor": NewsMonitor,
     "PlayerIntelCommand": PlayerIntelCommand,
+    "PlayerStats": PlayerStats,
     "PokerAdvisor": PokerAdvisor,
     "PokerNetworkDetail": PokerNetworkDetail,
     "PokerNetworks": PokerNetworks,
