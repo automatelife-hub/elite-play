@@ -6,7 +6,8 @@ import {
   Home, Star, BarChart3, BookOpen, Bot, Building2, 
   Search, Bell, User as UserIcon, LogOut, Settings, 
   Menu, X, ChevronDown, Wallet, TrendingUp, Trophy,
-  Gift, Newspaper, Target, Users, Crown, ArrowLeft
+  Gift, Newspaper, Target, Users, Crown, ArrowLeft,
+  LayoutDashboard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
