@@ -32,6 +32,19 @@ const TABLE_MAP = {
   SupportTicket: 'support_tickets',
   UserSiteSignup: 'user_site_signups',
   UserStats: 'user_stats',
+  // Affiliate tracking (DAR-20)
+  OperatorDeal: 'operator_deals',
+  AffiliateClickEvent: 'affiliate_click_events',
+  AffiliateConversion: 'affiliate_conversions',
+  SubidTrackingLink: 'subid_tracking_links',
+  // Gamification (DAR-16)
+  XpLedger: 'xp_ledger',
+  DarkCoinsLedger: 'dark_coins_ledger',
+  Mission: 'missions',
+  MissionCompletion: 'mission_completions',
+  // Badges (DAR-27)
+  Badge: 'badges',
+  AgentBadge: 'agent_badges',
 };
 
 /**
