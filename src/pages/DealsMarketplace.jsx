@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,20 +6,65 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   ExternalLink,
   Star,
-  Zap,
-  Clock,
   Globe,
-  ChevronRight,
   RefreshCw,
   Filter,
-  TrendingUp,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
+import { supabase } from "@/api/supabaseClient";
+import { getOperatorLogo } from "@/data/operatorLogos";
 import {
   ALL_DEALS,
-  getDealValueLabel,
   DEAL_STATUS_COLORS,
   buildDealTrackingUrl,
 } from "@/data/affiliateDeals";
+
+// ─── DB → Frontend mapping ───────────────────────────────────────────────────
+
+const BRAND_COLORS = {
+  ggpoker: "#FF6B35", "acr-poker": "#C62828", "888poker": "#1B5E20",
+  partypoker: "#FF6D00", pokerstars: "#C62828", stake: "#1565C0",
+  bitstarz: "#FF8F00", bovada: "#B71C1C", betonline: "#2E7D32",
+  ignition: "#E65100", coinpoker: "#F9A825", bwin: "#FFD600",
+  betfair: "#FFB300", sportsbetting: "#1B5E20",
+};
+
+function mapDbDealToFrontend(row) {
+  const slug = row.operator_slug ?? row.slug ?? "";
+  const name = row.operator_name ?? row.name ?? slug;
+  // Normalize DB category 'sportsbook' to frontend 'sports'
+  const category = row.category === "sportsbook" ? "sports" : row.category;
+  const logoPath = getOperatorLogo(slug);
+  return {
+    id: row.id ?? slug,
+    slug,
+    name,
+    category,
+    dealType: row.deal_type ?? "custom",
+    revenueSharePct: row.rev_share_pct ?? null,
+    cpaAmount: row.cpa_amount ?? null,
+    rakebackPct: row.rakeback_pct ?? null,
+    hybridNote: row.notes ?? null,
+    dealStatus: row.deal_status ?? "active",
+    regions: row.regions ?? ["global"],
+    welcomeBonus: row.welcome_bonus ?? null,
+    welcomeBonusShort: row.welcome_bonus_short ?? null,
+    paymentFrequency: row.payment_frequency ?? "monthly",
+    minPayoutUsd: row.min_payout ?? null,
+    rating: row.rating ? Number(row.rating) : null,
+    score: row.score ?? null,
+    isExclusive: row.is_exclusive ?? false,
+    isNew: row.is_new ?? false,
+    isFeatured: row.is_featured ?? false,
+    isActive: row.is_active ?? true,
+    rakeback: row.rakeback_pct ? `${row.rakeback_pct}% rakeback` : null,
+    trackingUrl: row.tracking_url ?? null,
+    logo: logoPath,
+    logoColor: BRAND_COLORS[slug] ?? "#6366f1",
+    logoFallback: name.slice(0, 2).toUpperCase(),
+  };
+}
 
 // ─── Region config ────────────────────────────────────────────────────────────
 
@@ -30,17 +75,13 @@ const REGIONS = [
   { id: "US",      label: "United States",     flag: "🇺🇸" },
   { id: "CA",      label: "Canada",            flag: "🇨🇦" },
   { id: "LATAM",   label: "Brazil & LATAM",    flag: "🇧🇷" },
+  { id: "APAC",    label: "Asia-Pacific",      flag: "🌏" },
 ];
 
-const VERTICALS = [
-  { id: "all",    label: "All",    count: ALL_DEALS.length },
-  { id: "casino", label: "Casino", count: ALL_DEALS.filter((d) => d.category === "casino").length },
-  { id: "poker",  label: "Poker",  count: ALL_DEALS.filter((d) => d.category === "poker").length },
-  { id: "sports", label: "Sports", count: ALL_DEALS.filter((d) => d.category === "sports").length },
-  { id: "slots",  label: "Slots",  count: ALL_DEALS.filter((d) => d.category === "slots").length },
-];
+const VERTICAL_IDS = ["all", "casino", "poker", "sports", "slots"];
+const VERTICAL_LABELS = { all: "All", casino: "Casino", poker: "Poker", sports: "Sports", slots: "Slots" };
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 12;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -87,7 +128,7 @@ function DealCard({ deal, index }) {
   const regionFlags = getRegionFlags(deal.regions);
   const commissionLabel = getDealTypeLabel(deal);
   const commissionColor = getCommissionColor(deal);
-  const trackingUrl = buildDealTrackingUrl(deal.slug);
+  const trackingUrl = deal.trackingUrl ?? buildDealTrackingUrl(deal.slug);
 
   return (
     <motion.div
@@ -99,8 +140,13 @@ function DealCard({ deal, index }) {
                  hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-900/20 transition-all duration-200"
     >
       {/* Status badge */}
-      {(deal.isNew || deal.dealStatus === "active") && (
-        <div className="absolute top-3 right-3 z-10">
+      {(deal.isExclusive || deal.isNew || deal.dealStatus === "active") && (
+        <div className="absolute top-3 right-3 z-10 flex gap-1">
+          {deal.isExclusive && (
+            <Badge className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-semibold uppercase tracking-wide">
+              Exclusive
+            </Badge>
+          )}
           {deal.isNew ? (
             <Badge className="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-semibold uppercase tracking-wide">
               New
@@ -116,9 +162,22 @@ function DealCard({ deal, index }) {
       <div className="p-5">
         {/* Header: logo + name + regions */}
         <div className="flex items-start gap-3 mb-4">
+          {deal.logo ? (
+            <img
+              src={deal.logo}
+              alt={deal.name}
+              className="w-11 h-11 rounded-lg object-contain shrink-0 bg-white/5"
+              onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
+            />
+          ) : null}
           <div
             className="w-11 h-11 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"
-            style={{ backgroundColor: deal.logoColor + "22", color: deal.logoColor, border: `1px solid ${deal.logoColor}44` }}
+            style={{
+              backgroundColor: deal.logoColor + "22",
+              color: deal.logoColor,
+              border: `1px solid ${deal.logoColor}44`,
+              display: deal.logo ? "none" : "flex",
+            }}
           >
             {deal.logoFallback}
           </div>
@@ -219,18 +278,60 @@ function DealCard({ deal, index }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function DealsMarketplace() {
+  const [allDeals, setAllDeals] = useState(ALL_DEALS);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [dataSource, setDataSource] = useState("static"); // "supabase" | "static"
   const [selectedRegions, setSelectedRegions] = useState([]);
   const [selectedVertical, setSelectedVertical] = useState("all");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  // Count new deals added in last 7 days (simulated from deals with startDate)
-  const newTodayCount = useMemo(
-    () => ALL_DEALS.filter((d) => d.isNew || d.dealStatus === "active").length,
-    []
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchDeals() {
+      try {
+        const { data, error: dbError } = await supabase
+          .from("operator_deals")
+          .select("*")
+          .order("is_featured", { ascending: false })
+          .order("score", { ascending: false, nullsFirst: false });
+
+        if (dbError) throw dbError;
+        if (cancelled) return;
+
+        if (data && data.length > 0) {
+          setAllDeals(data.map(mapDbDealToFrontend));
+          setDataSource("supabase");
+        }
+        // If DB returns empty, keep static fallback
+      } catch (err) {
+        console.error("[DealsMarketplace] Supabase fetch failed, using static fallback:", err);
+        if (!cancelled) setError(err.message);
+        // allDeals already initialized to ALL_DEALS — graceful degradation
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    fetchDeals();
+    return () => { cancelled = true; };
+  }, []);
+
+  const newDealsCount = useMemo(
+    () => allDeals.filter((d) => d.isNew).length,
+    [allDeals]
+  );
+
+  const verticals = useMemo(() =>
+    VERTICAL_IDS.map((id) => ({
+      id,
+      label: VERTICAL_LABELS[id],
+      count: id === "all" ? allDeals.length : allDeals.filter((d) => d.category === id).length,
+    })),
+    [allDeals]
   );
 
   const filteredDeals = useMemo(() => {
-    let deals = ALL_DEALS.filter((d) => d.isActive);
+    let deals = allDeals.filter((d) => d.isActive);
     if (selectedVertical !== "all") {
       deals = deals.filter((d) => d.category === selectedVertical);
     }
@@ -243,7 +344,7 @@ export default function DealsMarketplace() {
       if (!a.isFeatured && b.isFeatured) return 1;
       return (b.score ?? 0) - (a.score ?? 0);
     });
-  }, [selectedVertical, selectedRegions]);
+  }, [selectedVertical, selectedRegions, allDeals]);
 
   const visibleDeals = filteredDeals.slice(0, visibleCount);
   const hasMore = visibleCount < filteredDeals.length;
@@ -270,14 +371,14 @@ export default function DealsMarketplace() {
           <div className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
             <span className="text-purple-400 text-xs font-semibold uppercase tracking-widest">
-              {newTodayCount} NEW OFFERS TODAY
+              {newDealsCount} NEW DEALS ADDED
             </span>
           </div>
           <h1 className="text-3xl font-bold text-white mb-1">
-            Engaging Geo-Targeted Partner Offers
+            Exclusive Deals &amp; Maximum Rakeback
           </h1>
           <p className="text-gray-400 text-sm">
-            Direct affiliate deals with premium brands. Filter by location and reward structure.
+            Hand-negotiated affiliate deals across 30+ operators. Best bonuses, highest commissions, verified payouts.
           </p>
         </div>
 
@@ -315,7 +416,7 @@ export default function DealsMarketplace() {
                 Verticals
               </p>
               <div className="space-y-1">
-                {VERTICALS.map((v) => (
+                {verticals.map((v) => (
                   <button
                     key={v.id}
                     onClick={() => handleVerticalChange(v.id)}
@@ -334,7 +435,7 @@ export default function DealsMarketplace() {
                           : "bg-gray-800 text-gray-500"
                       }`}
                     >
-                      {v.id === "all" ? filteredDeals.length : ALL_DEALS.filter((d) => d.category === v.id && d.isActive).length}
+                      {v.count}
                     </Badge>
                   </button>
                 ))}
@@ -361,7 +462,7 @@ export default function DealsMarketplace() {
           <div className="flex-1 min-w-0">
             {/* Vertical tabs (top) */}
             <div className="flex items-center gap-2 mb-5 flex-wrap">
-              {VERTICALS.map((v) => (
+              {verticals.map((v) => (
                 <button
                   key={v.id}
                   onClick={() => handleVerticalChange(v.id)}
@@ -390,7 +491,12 @@ export default function DealsMarketplace() {
             </div>
 
             {/* Deal grid */}
-            {visibleDeals.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-16 text-gray-500">
+                <Loader2 className="w-8 h-8 mx-auto mb-3 animate-spin text-purple-400" />
+                <p className="text-sm">Loading deals...</p>
+              </div>
+            ) : visibleDeals.length === 0 ? (
               <div className="text-center py-16 text-gray-500">
                 <Globe className="w-10 h-10 mx-auto mb-3 opacity-30" />
                 <p className="text-sm">No deals match your current filters.</p>
@@ -433,6 +539,14 @@ export default function DealsMarketplace() {
                 Showing all {filteredDeals.length} deals
                 {selectedRegions.length > 0 || selectedVertical !== "all" ? " matching your filters" : ""}
               </p>
+            )}
+
+            {/* Error banner (non-blocking — fallback data is shown) */}
+            {error && dataSource === "static" && (
+              <div className="mt-6 flex items-center gap-2 text-amber-400/70 text-xs justify-center">
+                <AlertCircle className="w-3.5 h-3.5" />
+                <span>Live data unavailable — showing cached deals</span>
+              </div>
             )}
           </div>
         </div>
