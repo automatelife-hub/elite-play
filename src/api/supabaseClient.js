@@ -134,6 +134,27 @@ function createEntityProxy(tableName) {
       return data || [];
     },
 
+    async updateMany(updates, conditions) {
+      if (!conditions || Object.keys(conditions).length === 0) {
+        throw new Error('updateMany requires conditions to prevent accidental full-table updates');
+      }
+      let query = supabase.from(tableName).update(updates);
+      for (const [key, value] of Object.entries(conditions)) {
+        if (value === undefined || value === null) {
+          query = query.is(key, null);
+          continue;
+        }
+        if (Array.isArray(value)) {
+          query = query.in(key, value);
+        } else {
+          query = query.eq(key, value);
+        }
+      }
+      const { data, error } = await query.select();
+      if (error) throw error;
+      return data || [];
+    },
+
     async schema() {
       // Return basic schema info - used minimally (Stats page)
       return { json_schema: { properties: {} } };

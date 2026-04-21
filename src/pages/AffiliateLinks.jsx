@@ -142,12 +142,10 @@ export default function AffiliateLinks() {
 
   const handleSetDefault = async (link) => {
     try {
-      // First, unset all defaults for this site
-      const siteLinks = links.filter(l => l.site_id === link.site_id);
-      await Promise.all(
-        siteLinks.map(l => 
-          db.entities.AffiliateLink.update(l.id, { is_default: false })
-        )
+      // First, unset all defaults for this site in one batch
+      await db.entities.AffiliateLink.updateMany(
+        { is_default: false },
+        { site_id: link.site_id }
       );
       
       // Then set this one as default
