@@ -414,9 +414,6 @@ export default function VisualEditAgent() {
 		};
 
 		const handleMessage = (event) => {
-			// Check origin if desired
-			//if (event.origin !== 'parent-origin') return;
-
 			const message = event.data;
 
 			switch (message.type) {
