@@ -1,5 +1,6 @@
 import React from 'react';
 import { TacticalCardBackground } from './TacticalBackground';
+import { getTrendColor } from './intel-utils';
 
 export default function IntelPanel({ 
   children, 
@@ -73,9 +74,7 @@ export default function IntelPanel({
 
 // Stat display component for intel panels
 export function IntelStat({ label, value, trend, icon: Icon, unit = '' }) {
-  const trendColor = trend && trend.startsWith('+') ? 'text-mission-secure-green' : 
-                     trend && trend.startsWith('-') ? 'text-mission-alert-red' : 
-                     'text-intel-cyan';
+  const trendColor = getTrendColor(trend);
 
   return (
     <div className="intel-stat flex items-center justify-between p-3 bg-intel-navy/50 rounded border border-intel-cyan/20">
