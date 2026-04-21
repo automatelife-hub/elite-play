@@ -71,8 +71,6 @@ export default function AgentApplicationForm({ onSuccess }) {
     toast.info("Submitting your application...");
 
     try {
-      console.log("Creating agent record...");
-      
       // Generate unique codes
       const trackingCode = `${formData.full_name.substring(0, 3).toUpperCase()}${Date.now().toString().slice(-6)}`;
       const agentReferralCode = `AGT${Date.now().toString().slice(-8)}`;
@@ -111,7 +109,6 @@ export default function AgentApplicationForm({ onSuccess }) {
           referred_by: referralCode || null
         })
       });
-      console.log("Agent record created successfully");
 
       // Create referral tracking if referred
       if (referrerAgentId) {
@@ -124,7 +121,6 @@ export default function AgentApplicationForm({ onSuccess }) {
         });
       }
 
-      console.log("Sending confirmation email to applicant...");
       // Send confirmation email to applicant
       await db.integrations.Core.SendEmail({
         from_name: "AceRakeback Team",
@@ -153,7 +149,6 @@ This is an automated confirmation email. Please do not reply directly to this me
         `
       });
 
-      console.log("Sending notification email to admin...");
       // Send notification email to admin
       await db.integrations.Core.SendEmail({
         from_name: "Agent Application System",
@@ -190,7 +185,6 @@ Applied: ${new Date().toLocaleString()}
         `
       });
 
-      console.log("Application submitted successfully!");
       setApplicantEmail(formData.email);
       setSubmitted(true);
       toast.success("Application submitted successfully!");
