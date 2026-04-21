@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-// TODO: Replace with Firebase Auth imports
-// import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-// import { firebaseApp } from '@/lib/firebase-config';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase-config';
 
 const AuthContext = createContext();
 
@@ -14,38 +13,39 @@ export const AuthProvider = ({ children }) => {
     const [appPublicSettings, setAppPublicSettings] = useState(null);
 
     useEffect(() => {
-          // TODO: Wire up Firebase onAuthStateChanged listener
-                  // const auth = getAuth(firebaseApp);
-                  // const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-                  //   if (firebaseUser) {
-                  //     setUser({
-                  //       id: firebaseUser.uid,
-                  //       email: firebaseUser.email,
-                  //       full_name: firebaseUser.displayName,
-                  //       photo_url: firebaseUser.photoURL,
-                  //       role: 'user',
-                  //       is_agent: false,
-                  //     });
-                  //     setIsAuthenticated(true);
-                  //   } else {
-                  //     setUser(null);
-                  //     setIsAuthenticated(false);
-                  //   }
-                  //   setIsLoadingAuth(false);
-                  // });
-                  // return () => unsubscribe();
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                setUser({
+                    id: firebaseUser.uid,
+                    email: firebaseUser.email,
+                    full_name: firebaseUser.displayName,
+                    photo_url: firebaseUser.photoURL,
+                    role: 'user', // Default role
+                    is_agent: false,
+                });
+                setIsAuthenticated(true);
+            } else {
+                setUser(null);
+                setIsAuthenticated(false);
+            }
+            setIsLoadingAuth(false);
+        });
 
-                  // Placeholder: skip auth loading for now
-                  setIsLoadingAuth(false);
+        return () => unsubscribe();
     }, []);
 
-    const logout = (shouldRedirect = true) => {
-          // TODO: Replace with Firebase signOut
-          setUser(null);
-          setIsAuthenticated(false);
-          if (shouldRedirect) {
-                  window.location.href = '/';
-          }
+    const logout = async (shouldRedirect = true) => {
+        try {
+            await signOut(auth);
+            setUser(null);
+            setIsAuthenticated(false);
+            if (shouldRedirect) {
+                window.location.href = '/';
+            }
+        } catch (error) {
+            console.error('Error signing out:', error);
+            setAuthError(error.message);
+        }
     };
 
     const navigateToLogin = () => {
