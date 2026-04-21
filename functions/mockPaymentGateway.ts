@@ -31,7 +31,11 @@ Deno.serve(async (req) => {
 
     if (success) {
       // Generate mock transaction ID
-      const transactionId = `TXN_${Date.now()}_${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+      const randomPart = Array.from(crypto.getRandomValues(new Uint8Array(9)))
+        .map(b => (b % 36).toString(36))
+        .join('')
+        .toUpperCase();
+      const transactionId = `TXN_${Date.now()}_${randomPart}`;
       
       return Response.json({
         success: true,
