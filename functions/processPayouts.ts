@@ -73,11 +73,11 @@ Deno.serve(async (req) => {
         });
 
         // Update commission statuses to processing
-        for (const commission of agentCommissions) {
-          await base44.asServiceRole.entities.AgentCommission.update(commission.id, {
+        await Promise.all(agentCommissions.map(commission =>
+          base44.asServiceRole.entities.AgentCommission.update(commission.id, {
             payout_status: 'processing'
-          });
-        }
+          })
+        ));
 
         results.batches_created++;
         results.total_amount += totalPending;

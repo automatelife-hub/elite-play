@@ -61,13 +61,13 @@ Deno.serve(async (req) => {
       });
 
       // Update all commissions in batch to completed
-      for (const commissionId of batch.commission_ids) {
-        await base44.asServiceRole.entities.AgentCommission.update(commissionId, {
+      await Promise.all(batch.commission_ids.map(commissionId =>
+        base44.asServiceRole.entities.AgentCommission.update(commissionId, {
           payout_status: 'completed',
           payout_date: new Date().toISOString().split('T')[0],
           transaction_id: paymentResponse.transaction_id
-        });
-      }
+        })
+      ));
 
       // Update agent's total paid out and last payout date
       await base44.asServiceRole.entities.Agent.update(batch.agent_id, {
@@ -115,11 +115,11 @@ AceRakeback Team
       });
 
       // Update commissions back to pending
-      for (const commissionId of batch.commission_ids) {
-        await base44.asServiceRole.entities.AgentCommission.update(commissionId, {
+      await Promise.all(batch.commission_ids.map(commissionId =>
+        base44.asServiceRole.entities.AgentCommission.update(commissionId, {
           payout_status: 'pending'
-        });
-      }
+        })
+      ));
 
       return Response.json({
         success: false,
