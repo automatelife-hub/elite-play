@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-// TODO: Replace with Firebase Auth imports
-// import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-// import { firebaseApp } from '@/lib/firebase-config';
+import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { firebaseApp } from '@/lib/firebase-config';
 
 const AuthContext = createContext();
 
@@ -14,43 +13,60 @@ export const AuthProvider = ({ children }) => {
     const [appPublicSettings, setAppPublicSettings] = useState(null);
 
     useEffect(() => {
-          // TODO: Wire up Firebase onAuthStateChanged listener
-                  // const auth = getAuth(firebaseApp);
-                  // const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-                  //   if (firebaseUser) {
-                  //     setUser({
-                  //       id: firebaseUser.uid,
-                  //       email: firebaseUser.email,
-                  //       full_name: firebaseUser.displayName,
-                  //       photo_url: firebaseUser.photoURL,
-                  //       role: 'user',
-                  //       is_agent: false,
-                  //     });
-                  //     setIsAuthenticated(true);
-                  //   } else {
-                  //     setUser(null);
-                  //     setIsAuthenticated(false);
-                  //   }
-                  //   setIsLoadingAuth(false);
-                  // });
-                  // return () => unsubscribe();
-
-                  // Placeholder: skip auth loading for now
-                  setIsLoadingAuth(false);
+                  const auth = getAuth(firebaseApp);
+                  const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+                    try {
+                        if (firebaseUser) {
+                          setUser({
+                            id: firebaseUser.uid,
+                            email: firebaseUser.email,
+                            full_name: firebaseUser.displayName,
+                            photo_url: firebaseUser.photoURL,
+                            role: 'user',
+                            is_agent: false,
+                          });
+                          setIsAuthenticated(true);
+                        } else {
+                          setUser(null);
+                          setIsAuthenticated(false);
+                        }
+                    } catch (error) {
+                        console.error("Auth state change error:", error);
+                        setAuthError(error);
+                    } finally {
+                        setIsLoadingAuth(false);
+                    }
+                  });
+                  return () => unsubscribe();
     }, []);
 
-    const logout = (shouldRedirect = true) => {
-          // TODO: Replace with Firebase signOut
-          setUser(null);
-          setIsAuthenticated(false);
-          if (shouldRedirect) {
-                  window.location.href = '/';
+    const logout = async (shouldRedirect = true) => {
+          try {
+              const auth = getAuth(firebaseApp);
+              await signOut(auth);
+              setUser(null);
+              setIsAuthenticated(false);
+              if (shouldRedirect) {
+                      window.location.href = '/';
+              }
+          } catch (error) {
+              console.error("Logout error:", error);
           }
     };
 
-    const navigateToLogin = () => {
-          // TODO: Replace with your Google/Firebase login flow
-          window.location.href = '/login';
+    const navigateToLogin = async () => {
+          try {
+              const auth = getAuth(firebaseApp);
+              const provider = new GoogleAuthProvider();
+              await signInWithPopup(auth, provider);
+          } catch (error) {
+              console.error("Login error:", error);
+              if (error.code === 'auth/popup-closed-by-user') {
+                  // Ignore this specific error or show a silent toast
+              } else {
+                  setAuthError(error);
+              }
+          }
     };
 
     const checkAppState = async () => {
@@ -70,7 +86,7 @@ export const AuthProvider = ({ children }) => {
                   checkAppState
           }}>
             {children}
-          </AuthContext.Provider>AuthContext.Provider>
+          </AuthContext.Provider>
         );
 };
 
