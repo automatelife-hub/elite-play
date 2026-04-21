@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -187,6 +187,13 @@ export default function AdminPayouts() {
     statusFilter === "all" || batch.status === statusFilter
   );
 
+  const agentsMap = useMemo(() => {
+    return agents.reduce((acc, agent) => {
+      acc[agent.id] = agent;
+      return acc;
+    }, {});
+  }, [agents]);
+
   const pendingApprovalCount = payoutBatches.filter(b => b.status === 'pending_approval').length;
   const totalPendingAmount = payoutBatches
     .filter(b => b.status === 'pending_approval')
@@ -321,7 +328,7 @@ export default function AdminPayouts() {
         {/* Payout Batches */}
         <div className="space-y-4">
           {filteredBatches.map(batch => {
-            const agent = agents.find(a => a.id === batch.agent_id);
+            const agent = agentsMap[batch.agent_id];
             const status = statusConfig[batch.status];
             const StatusIcon = status.icon;
 
