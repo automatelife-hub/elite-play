@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/api/supabaseClient";
-import { db } from "@/api/supabaseClient";
+import { supabase, db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
