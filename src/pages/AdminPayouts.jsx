@@ -133,8 +133,8 @@ export default function AdminPayouts() {
       });
 
       // Update commissions back to pending
-      for (const commissionId of selectedBatch.commission_ids) {
-        await db.entities.AgentCommission.update(commissionId, {
+      if (selectedBatch.commission_ids && selectedBatch.commission_ids.length > 0) {
+        await db.entities.AgentCommission.bulkUpdate(selectedBatch.commission_ids, {
           payout_status: 'pending'
         });
       }

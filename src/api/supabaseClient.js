@@ -101,6 +101,16 @@ function createEntityProxy(tableName) {
       return data;
     },
 
+    async bulkUpdate(ids, updates) {
+      const { data, error } = await supabase
+        .from(tableName)
+        .update(updates)
+        .in('id', ids)
+        .select();
+      if (error) throw error;
+      return data || [];
+    },
+
     async delete(id) {
       const { error } = await supabase
         .from(tableName)
