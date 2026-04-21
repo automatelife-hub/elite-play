@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -102,6 +102,12 @@ export default function AgentPortal() {
   const monthlyRevenue = players.reduce((sum, p) => sum + (p.monthly_revenue || 0), 0);
   const totalCommission = commissions.reduce((sum, c) => sum + (c.commission_amount || 0), 0);
   const pendingCommission = commissions.filter(c => c.payout_status === "pending").reduce((sum, c) => sum + (c.commission_amount || 0), 0);
+
+  const averageCommissionRate = useMemo(() => {
+    const approvedDeals = agentDeals.filter(d => d.status === 'approved');
+    if (approvedDeals.length === 0) return 0;
+    return approvedDeals.reduce((sum, d) => sum + (d.commission_rate || 0), 0) / approvedDeals.length;
+  }, [agentDeals]);
 
   if (loading) {
     return (
@@ -288,7 +294,7 @@ export default function AgentPortal() {
             agent={agent}
             playersCount={players.length}
             totalRevenue={totalRevenue}
-            averageCommissionRate={agentDeals.filter(d => d.status === 'approved').reduce((sum, d) => sum + d.commission_rate, 0) / Math.max(agentDeals.filter(d => d.status === 'approved').length, 1)}
+            averageCommissionRate={averageCommissionRate}
           />
         </div>
 
