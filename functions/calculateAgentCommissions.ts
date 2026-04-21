@@ -28,16 +28,25 @@ Deno.serve(async (req) => {
     const agent = agents[0];
     const commissionsCreated: any[] = [];
 
+    const agentDealsMap = new Map();
+    if (agentDeals) {
+      for (const deal of agentDeals) {
+        agentDealsMap.set(deal.site_id, deal);
+      }
+    }
+
+    const commissionsToCreate: any[] = [];
+
     for (const player of players ?? []) {
       if (player.status !== "active" && player.status !== "approved") continue;
-      const deal = agentDeals?.find((d: any) => d.site_id === player.site_id);
+      const deal = agentDealsMap.get(player.site_id);
       if (!deal) continue;
 
       const revenueGenerated = player.monthly_revenue || 0;
       const commissionAmount = (revenueGenerated * deal.commission_rate) / 100;
 
       if (commissionAmount > 0) {
-        const { data: commission } = await db.from("agent_commissions").insert({
+        commissionsToCreate.push({
           agent_id,
           player_id: player.id,
           site_id: player.site_id,
@@ -47,8 +56,14 @@ Deno.serve(async (req) => {
           commission_rate: deal.commission_rate,
           commission_amount: commissionAmount,
           payout_status: "pending",
-        }).select().single();
-        if (commission) commissionsCreated.push(commission);
+        });
+      }
+    }
+
+    if (commissionsToCreate.length > 0) {
+      const { data: insertedCommissions } = await db.from("agent_commissions").insert(commissionsToCreate).select();
+      if (insertedCommissions) {
+        commissionsCreated.push(...insertedCommissions);
       }
     }
 
