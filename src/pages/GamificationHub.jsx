@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Crown, Zap, Target, Award, Gift, TrendingUp, Users, DollarSign } from 'lucide-react';
+import { Crown, Zap, Target, Award, Gift, TrendingUp, Users, DollarSign, LogIn } from 'lucide-react';
 import { db } from '@/api/supabaseClient';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 import XPProgressBar from '@/components/gamification/XPProgressBar';
 import TierRoadmap from '@/components/gamification/TierRoadmap';
@@ -10,16 +12,16 @@ import MissionsCenter from '@/components/gamification/MissionsCenter';
 import BadgesGallery from '@/components/gamification/BadgesGallery';
 import LuckyWheel from '@/components/gamification/LuckyWheel';
 
-// ─── Mock data (will be replaced with real Supabase queries) ─────────────────
-const MOCK_USER_GAMIFICATION = {
-  xp: 1340,
-  tier: 'silver',
+// ─── Default gamification state for new / unauthenticated users ──────────────
+const DEFAULT_GAMIFICATION = {
+  xp: 0,
+  tier: 'bronze',
   prevXp: null,
-  darkCoins: 320,
-  weeklyStreak: 5,
-  rank: 42,
-  totalEarnings: 287.50,
-  activeReferrals: 3,
+  darkCoins: 0,
+  weeklyStreak: 0,
+  rank: 0,
+  totalEarnings: 0,
+  activeReferrals: 0,
 };
 
 // ─── Stat card ───────────────────────────────────────────────────────────────
@@ -64,23 +66,86 @@ function Section({ children, delay = 0 }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function GamificationHub() {
   const [user, setUser] = useState(null);
-  const [gamification, setGamification] = useState(MOCK_USER_GAMIFICATION);
+  const [gamification, setGamification] = useState(DEFAULT_GAMIFICATION);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    db.auth.me()
-      .then(u => setUser(u))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
+    document.title = "Gamification Hub — Earn XP, Unlock Rewards & Climb Tiers | Elite Play";
   }, []);
 
-  // Live XP demo: increment XP after 3s to show gain animation
   useEffect(() => {
-    const t = setTimeout(() => {
-      setGamification(prev => ({ ...prev, prevXp: prev.xp, xp: prev.xp + 75 }));
-    }, 3000);
-    return () => clearTimeout(t);
+    async function loadGamificationData() {
+      try {
+        const u = await db.auth.me();
+        setUser(u);
+        if (!u) {
+          setLoading(false);
+          return;
+        }
+
+        const [xpRows, coinsRows, xpLedgerEntries, userStats, allXpTotals] = await Promise.all([
+          db.entities.UserXpTotals.filter({ user_id: u.id }),
+          db.entities.UserDarkCoinBalances.filter({ user_id: u.id }),
+          db.entities.XpLedger.filter({ user_id: u.id, source: 'login_streak' }),
+          db.entities.UserStats.filter({ user_email: u.email }),
+          db.entities.UserXpTotals.list('-total_xp'),
+        ]);
+
+        const totalXp = Number(xpRows[0]?.total_xp) || 0;
+        const tier = xpRows[0]?.tier || 'bronze';
+        const darkCoins = Number(coinsRows[0]?.balance) || 0;
+
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const recentLogins = xpLedgerEntries.filter(e => new Date(e.created_at) > sevenDaysAgo);
+        const uniqueDays = new Set(recentLogins.map(e => new Date(e.created_at).toDateString()));
+        const weeklyStreak = uniqueDays.size;
+
+        const totalEarnings = userStats.reduce((sum, s) => sum + (Number(s.commission_earned) || 0), 0);
+
+        const rankIndex = allXpTotals.findIndex(row => row.user_id === u.id);
+        const rank = rankIndex >= 0 ? rankIndex + 1 : allXpTotals.length + 1;
+
+        setGamification({ xp: totalXp, tier, prevXp: null, darkCoins, weeklyStreak, rank, totalEarnings, activeReferrals: 0 });
+      } catch (err) {
+        console.error('Failed to load gamification data:', err);
+        setGamification(DEFAULT_GAMIFICATION);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadGamificationData();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center"
+        style={{ background: 'linear-gradient(160deg, #080C14 0%, #0D1424 60%, #080C14 100%)' }}>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2" style={{ borderColor: '#C8A951' }} />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4"
+        style={{ background: 'linear-gradient(160deg, #080C14 0%, #0D1424 60%, #080C14 100%)' }}>
+        <div className="text-center max-w-sm">
+          <Crown className="w-14 h-14 mx-auto mb-4" style={{ color: '#C8A951' }} />
+          <h2 className="text-2xl font-bold text-white mb-2">Sign In to Earn XP</h2>
+          <p className="text-gray-400 text-sm mb-6">
+            Track your progress, complete missions, and climb the leaderboard.
+          </p>
+          <Link to={createPageUrl("Affiliate")}>
+            <button className="flex items-center gap-2 mx-auto px-6 py-2.5 rounded-xl font-semibold text-sm"
+              style={{ background: 'rgba(200,169,81,0.15)', border: '1px solid rgba(200,169,81,0.4)', color: '#C8A951' }}>
+              <LogIn className="w-4 h-4" />
+              Sign In
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const tier = gamification.tier;
   const tierLabel = tier.charAt(0).toUpperCase() + tier.slice(1);

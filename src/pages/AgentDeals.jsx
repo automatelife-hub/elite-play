@@ -7,18 +7,22 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  Search, CheckCircle, Clock, Archive, Plus, ExternalLink, 
-  TrendingUp, Users, DollarSign, AlertCircle, FileText, X, Target 
+import {
+  Search, CheckCircle, Clock, Archive, Plus, ExternalLink,
+  TrendingUp, Users, DollarSign, AlertCircle, FileText, X, Target,
+  BarChart2
 } from "lucide-react";
 import { toast } from "sonner";
 import CustomDealRequestForm from "../components/agent/CustomDealRequestForm";
+import OperatorComparisonMatrix from "../components/affiliate/OperatorComparisonMatrix";
 
 export default function AgentDeals() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sites, setSites] = useState([]);
   const [myDeals, setMyDeals] = useState([]);
+  const [operatorDeals, setOperatorDeals] = useState([]);
+  const [selectedOperatorDeal, setSelectedOperatorDeal] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSite, setSelectedSite] = useState(null);
   const [showApplyDialog, setShowApplyDialog] = useState(false);
@@ -41,14 +45,16 @@ export default function AgentDeals() {
         return;
       }
 
-      const [allSites, userDeals] = await Promise.all([
+      const [allSites, userDeals, opDeals] = await Promise.all([
         db.entities.Site.list(),
-        currentUser.agent_id ? db.entities.AgentDeal.list() : []
+        currentUser.agent_id ? db.entities.AgentDeal.list() : [],
+        db.entities.OperatorDeal.filter({ is_active: true }),
       ]);
 
       setSites(allSites);
       const filteredDeals = userDeals.filter(d => d.agent_id === currentUser.agent_id);
       setMyDeals(filteredDeals);
+      setOperatorDeals(opDeals);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load deals data");
@@ -297,6 +303,10 @@ export default function AgentDeals() {
       <Tabs defaultValue="my-deals" className="space-y-6">
         <TabsList className="glass-card-light border-slate-700">
           <TabsTrigger value="my-deals">My Deals</TabsTrigger>
+          <TabsTrigger value="compare">
+            <BarChart2 className="w-3.5 h-3.5 mr-1.5" />
+            Compare Operators
+          </TabsTrigger>
           <TabsTrigger value="apply">Apply for Deals</TabsTrigger>
         </TabsList>
 
@@ -360,6 +370,67 @@ export default function AgentDeals() {
               </div>
             </TabsContent>
           </Tabs>
+        </TabsContent>
+
+        {/* Compare Operators Tab */}
+        <TabsContent value="compare" className="space-y-6">
+          <Card className="glass-card-light">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-1">
+                <div>
+                  <h2 className="text-lg font-semibold text-white">Operator Deal Comparison</h2>
+                  <p className="text-sm text-gray-400 mt-0.5">
+                    Compare all active operator deals side-by-side. Select a deal to apply.
+                  </p>
+                </div>
+                {selectedOperatorDeal && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400">Selected:</span>
+                    <Badge className="bg-yellow-400/20 text-yellow-300 border-yellow-400/30">
+                      {selectedOperatorDeal.operator_name}
+                    </Badge>
+                    <Button
+                      size="sm"
+                      className="h-7 px-3 text-xs bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600"
+                      onClick={() => {
+                        // Find corresponding site if linked
+                        const linkedSite = sites.find(
+                          (s) => s.id === selectedOperatorDeal.site_id
+                        );
+                        if (linkedSite) {
+                          setSelectedSite(linkedSite);
+                          setShowApplyDialog(true);
+                        } else {
+                          toast.info("Contact us to apply for this deal: " + selectedOperatorDeal.operator_name);
+                        }
+                      }}
+                    >
+                      Apply for This Deal
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {operatorDeals.length === 0 ? (
+            <Card className="glass-card-light">
+              <CardContent className="p-12 text-center">
+                <BarChart2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-400">No operator deals available at this time.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <OperatorComparisonMatrix
+              deals={operatorDeals}
+              selectedDealIds={selectedOperatorDeal ? [selectedOperatorDeal.id] : []}
+              onSelectDeal={(deal) =>
+                setSelectedOperatorDeal((prev) =>
+                  prev?.id === deal.id ? null : deal
+                )
+              }
+            />
+          )}
         </TabsContent>
 
         {/* Apply for Deals Tab */}

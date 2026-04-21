@@ -3,12 +3,20 @@ import { db } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, TrendingUp, Users, DollarSign, Crown, Award, Sparkles } from "lucide-react";
+import { Trophy, TrendingUp, Users, DollarSign, Crown, Award, Sparkles, Lock } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 export default function Leaderboard() {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+  const [accessDenied, setAccessDenied] = useState(false);
+
+  useEffect(() => {
+    document.title = "Agent Leaderboard — Top iGaming Affiliates Ranked | Elite Play";
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -22,6 +30,7 @@ export default function Leaderboard() {
 
       // Check access: approved agents, managers, VIPs, or admins
       if (user.role !== 'admin' && !user.is_agent) {
+        setAccessDenied(true);
         setLoading(false);
         return;
       }
@@ -31,12 +40,14 @@ export default function Leaderboard() {
         const agent = agents[0];
         const hasManagerTag = agent.internal_tags?.includes('Manager');
         const hasVIPTag = agent.internal_tags?.includes('VIP');
-        
+
         if (agent.status !== 'approved' && !hasManagerTag && !hasVIPTag && user.role !== 'admin') {
+          setAccessDenied(true);
           setLoading(false);
           return;
         }
       } else if (user.role !== 'admin') {
+        setAccessDenied(true);
         setLoading(false);
         return;
       }
@@ -159,14 +170,35 @@ export default function Leaderboard() {
     );
   }
 
-  // Access denied check
-  if (agents.length === 0 && !currentUser) {
+  // Access denied — show informative empty state with CTA
+  if (accessDenied) {
     return (
-      <div className="bg-gray-950 text-white min-h-screen py-12">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <Trophy className="w-16 h-16 text-gray-700 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold mb-2">Access Restricted</h1>
-          <p className="text-gray-400">Agent leaderboard is only available to approved agents, managers, and administrators.</p>
+      <div className="bg-gray-950 text-white min-h-screen py-12 flex items-center justify-center px-4">
+        <div className="max-w-md text-center">
+          <div className="w-20 h-20 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-9 h-9 text-yellow-500" />
+          </div>
+          <h1 className="text-2xl font-bold mb-3">Agent-Only Leaderboard</h1>
+          <p className="text-gray-400 mb-2">
+            The leaderboard ranks our top-performing affiliate agents by revenue, player referrals, and commissions earned.
+          </p>
+          <p className="text-gray-500 text-sm mb-8">
+            Become an approved agent to compete, track your rank, and win weekly prize pools.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link to={createPageUrl("BecomeAgent")}>
+              <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold w-full sm:w-auto">
+                <Trophy className="w-4 h-4 mr-2" />
+                Become an Agent
+              </Button>
+            </Link>
+            <Link to={createPageUrl("GamificationHub")}>
+              <Button variant="outline" className="border-gray-700 text-gray-300 hover:text-white hover:border-gray-500 w-full sm:w-auto">
+                <Crown className="w-4 h-4 mr-2" />
+                Gamification Hub
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );

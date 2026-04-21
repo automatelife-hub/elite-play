@@ -21,6 +21,10 @@ export default function Home() {
   const [userCountry, setUserCountry] = useState(null);
 
   useEffect(() => {
+    document.title = "Elite Play — Best Rakeback Deals, Poker & Casino Bonuses";
+  }, []);
+
+  useEffect(() => {
     loadData();
   }, []);
 

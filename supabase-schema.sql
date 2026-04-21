@@ -928,6 +928,14 @@ CREATE TABLE IF NOT EXISTS public.operator_deals (
   site_id UUID REFERENCES public.sites(id) ON DELETE SET NULL,
   operator_name TEXT NOT NULL,
   operator_slug TEXT UNIQUE NOT NULL,
+  -- Categorisation
+  category TEXT,                           -- 'poker' | 'casino' | 'sports'
+  subcategory TEXT,
+  website TEXT,
+  -- Affiliate tracking
+  affiliate_code TEXT,                     -- our code with this operator
+  tracking_url TEXT,                       -- full affiliate link
+  -- Deal type & commission structure
   deal_type TEXT NOT NULL CHECK (deal_type IN ('revenue_share', 'cpa', 'hybrid', 'rakeback', 'flat')),
   -- Revenue Share
   revenue_share_pct NUMERIC(5,2),          -- e.g. 35.00 = 35%
@@ -946,7 +954,22 @@ CREATE TABLE IF NOT EXISTS public.operator_deals (
   payment_frequency TEXT DEFAULT 'monthly' CHECK (payment_frequency IN ('weekly', 'biweekly', 'monthly')),
   payment_methods TEXT[] DEFAULT ARRAY['bank_transfer', 'crypto'],
   geo_restrictions TEXT[],                 -- blocked country codes
+  -- Player-facing bonus / offer
+  welcome_bonus TEXT,
+  welcome_bonus_short TEXT,
+  bonus_code TEXT,
+  bonus_wagering TEXT,
+  -- Deal lifecycle
+  deal_status TEXT DEFAULT 'active' CHECK (deal_status IN ('active','pending','negotiating','inactive')),
   deal_notes TEXT,
+  deal_start_date DATE,
+  deal_renewal_date DATE,
+  -- Display / ranking
+  rating NUMERIC(3,1),
+  tags TEXT[],
+  is_featured BOOLEAN DEFAULT FALSE,
+  is_new BOOLEAN DEFAULT FALSE,
+  score INTEGER,
   is_exclusive BOOLEAN DEFAULT FALSE,      -- exclusive deal negotiated
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -1083,17 +1106,186 @@ CREATE POLICY "subid_links_agent_own" ON public.subid_tracking_links FOR ALL USI
 );
 
 -- =====================
--- SEED: Operator Deals
+-- SEED: Operator Deals (core subset — full 14-deal seed via migration 20260408000000)
 -- =====================
-INSERT INTO public.operator_deals (operator_name, operator_slug, deal_type, revenue_share_pct, rakeback_pct, sub_affiliate_pct, negative_carryover, payment_frequency, deal_notes, is_active) VALUES
-('PokerStars', 'pokerstars', 'revenue_share', 35.00, NULL, 5.00, FALSE, 'monthly', 'Tiered RevShare: 25% base up to 35% at volume. Negative carryover waived after 3 months.', TRUE),
-('GGPoker', 'ggpoker', 'hybrid', 30.00, NULL, 5.00, FALSE, 'monthly', 'Hybrid: 30% RevShare + $100 CPA on first deposit ≥$50. Best for high-volume traffic.', TRUE),
-('888poker', '888poker', 'revenue_share', 30.00, NULL, 3.00, TRUE, 'monthly', '30% RevShare, no negative carryover waiver. Exclusive deal can push to 35%.', TRUE),
-('PartyPoker', 'partypoker', 'cpa', NULL, NULL, 0.00, FALSE, 'monthly', 'CPA only: $150 per qualifying first deposit player ($20 min deposit). Simple attribution.', TRUE),
-('WPT Global', 'wpt-global', 'revenue_share', 40.00, NULL, 5.00, FALSE, 'biweekly', 'Aggressive 40% RevShare. Biweekly payments. Negative carryover resets quarterly.', TRUE),
-('ACR Poker', 'acr-poker', 'rakeback', NULL, 27.00, 3.00, FALSE, 'weekly', '27% instant rakeback to players. Agent earns sub-affiliate % on referred players.', TRUE),
-('Bovada', 'bovada', 'revenue_share', 25.00, NULL, 0.00, TRUE, 'monthly', '25% RevShare. US-focused traffic. Crypto payouts preferred.', TRUE),
-('BetOnline', 'betonline', 'hybrid', 25.00, NULL, 2.00, TRUE, 'monthly', 'Hybrid deal: 25% RevShare + $75 CPA. US/Canada traffic. Bitcoin payouts available.', TRUE),
-('Stake', 'stake', 'revenue_share', 40.00, NULL, 5.00, FALSE, 'weekly', '40% RevShare on casino. Crypto native. Weekly payouts. Best casino deal available.', TRUE),
-('ClubGG', 'clubgg', 'rakeback', NULL, 30.00, 5.00, FALSE, 'weekly', '30% rakeback. Club-based structure. Agent manages player pool directly.', TRUE)
+INSERT INTO public.operator_deals (
+  operator_name, operator_slug, category,
+  deal_type, revenue_share_pct, rakeback_pct, cpa_amount, cpa_currency, cpa_min_deposit,
+  hybrid_revshare_pct, hybrid_cpa_amount,
+  sub_affiliate_pct, negative_carryover,
+  payment_frequency, min_payout, payment_methods,
+  affiliate_code, tracking_url,
+  welcome_bonus, bonus_code,
+  deal_status, deal_notes, is_exclusive, is_active, is_featured, rating, score
+) VALUES
+('GGPoker',           'ggpoker',    'poker',  'hybrid',        NULL,  NULL,  NULL,   'USD', 50.00, 30.00, 100.00, 5.00, FALSE, 'monthly',   100.00, ARRAY['bank_transfer','skrill','neteller','crypto'],  'ELITEPLAY',  'https://ggpoker.com/ref/ELITEPLAY',                                                              '200% up to $600 + $100 in tickets',          'ELITEPLAY', 'active',      '30% RevShare + $100 CPA on first deposit ≥$50. No negative carryover. Fish Buffet 60% rakeback.',                                                          FALSE, TRUE,  TRUE,  4.8, 91),
+('PokerStars',        'pokerstars', 'poker',  'revenue_share', 35.00, NULL,  NULL,   'USD', NULL,  NULL,  NULL,   5.00, FALSE, 'monthly',   100.00, ARRAY['bank_transfer','skrill','neteller'],           'ELITE600',   'https://www.pokerstars.com/poker/download/?source=ELITE600',                                     '100% up to $600 First Deposit Bonus',        'ELITE600',  'pending',     'Tiered RevShare: 25% base, 30% at 20+ FTDs, 35% at 50+ FTDs. Application submitted.',                                                                      FALSE, TRUE,  TRUE,  4.6, 87),
+('WPT Global',        'wpt-global', 'poker',  'revenue_share', 40.00, NULL,  NULL,   'USD', NULL,  NULL,  NULL,   5.00, FALSE, 'biweekly',  100.00, ARRAY['bank_transfer','crypto'],                      'ELITEPLAY',  'https://www.wptglobal.com/deposit/?bonus=ELITEPLAY',                                             '100% up to $1,200 First Deposit Bonus',      'ELITEPLAY', 'active',      'Aggressive 40% RevShare. Biweekly payments. Negative carryover resets quarterly.',                                                                          FALSE, TRUE,  TRUE,  4.7, 90),
+('Americas Cardroom', 'acr-poker',  'poker',  'rakeback',      NULL,  27.00, NULL,   'USD', NULL,  NULL,  NULL,   3.00, FALSE, 'weekly',     25.00, ARRAY['crypto','bitcoin','check'],                    'ELITE',      'https://www.americascardroom.eu/poker-bonus/?bonus=ELITE',                                       '200% up to $1,000 + free tickets',           'ELITE',     'pending',     '27% instant rakeback to players. US-friendly. Weekly crypto payouts.',                                                                                     FALSE, TRUE,  FALSE, 4.2, 78),
+('888poker',          '888poker',   'poker',  'revenue_share', 35.00, NULL,  NULL,   'USD', NULL,  NULL,  NULL,   3.00, TRUE,  'monthly',   100.00, ARRAY['bank_transfer','skrill','neteller'],           'ELITEPLAY',  'https://www.888poker.com/poker/download/?tcode=ELITEPLAY',                                       '$88 Free + 100% up to $888',                 'ELITEPLAY', 'negotiating', '888 Affiliates. Negotiating 35% RevShare. Negative carryover — pushing for waiver.',                                                                       FALSE, TRUE,  FALSE, 4.3, 80),
+('ClubGG',            'clubgg',     'poker',  'rakeback',      NULL,  30.00, NULL,   'USD', NULL,  NULL,  NULL,   5.00, FALSE, 'weekly',     25.00, ARRAY['crypto','usdt'],                               'ELITEGG',    'https://www.clubgg.com/invite/ELITEGG',                                                          '30% rakeback from day one',                  NULL,        'pending',     'Club-based. Agent manages player pool. 30% rakeback to players. Weekly USDT.',                                                                              FALSE, TRUE,  FALSE, 4.1, 74),
+('partypoker',        'partypoker', 'poker',  'cpa',           NULL,  NULL,  150.00, 'USD', 20.00, NULL,  NULL,   0.00, FALSE, 'monthly',   150.00, ARRAY['bank_transfer','neteller'],                    'ELITE40',    'https://www.partypoker.com/how-to-play/account/registration.html?bonuscode=ELITE40',          '40% up to $500 Welcome Bonus',               'ELITE40',   'pending',     'CPA $150 per qualifying first deposit ≥$20. Monthly payments.',                                                                                            FALSE, TRUE,  FALSE, 4.0, 72),
+('Stake.com',         'stake',      'casino', 'revenue_share', 40.00, NULL,  NULL,   'USD', NULL,  NULL,  NULL,   5.00, FALSE, 'weekly',     50.00, ARRAY['crypto','bitcoin','ethereum','litecoin'],      'ELITEPLAY',  'https://stake.com/?c=ELITEPLAY',                                                                 'VIP Rakeback + Weekly Bonuses',              'ELITEPLAY', 'active',      '40% RevShare on casino. Crypto native. Weekly payouts. Best crypto casino deal.',                                                                           FALSE, TRUE,  TRUE,  4.9, 95),
+('BitStarz',          'bitstarz',   'casino', 'cpa',           NULL,  NULL,  100.00, 'USD', 20.00, NULL,  NULL,   0.00, FALSE, 'monthly',   100.00, ARRAY['crypto','bitcoin'],                            'ELITE',      'https://www.bitstarz.com/?c=ELITE&i=affiliate',                                                  '5 BTC + 180 Free Spins Welcome Package',     'ELITE',     'pending',     'CPA $100 per first depositor. Award-winning BTC casino.',                                                                                                  FALSE, TRUE,  TRUE,  4.7, 88),
+('BC.Game',           'bc-game',    'casino', 'revenue_share', 40.00, NULL,  NULL,   'USD', NULL,  NULL,  NULL,   3.00, FALSE, 'weekly',     50.00, ARRAY['crypto','bitcoin','ethereum','bnb'],           'ELITEPLAY',  'https://bc.game/i-eliteplay-n/',                                                                 'Up to 220% First Deposit + Daily Lucky Spin', 'ELITEPLAY', 'pending',    '40% RevShare. Strong crypto-native player base. Pragmatic Play slots.',                                                                                    FALSE, TRUE,  TRUE,  4.6, 86),
+('Rollbit',           'rollbit',    'casino', 'revenue_share', 35.00, NULL,  NULL,   'USD', NULL,  NULL,  NULL,   5.00, FALSE, 'weekly',     50.00, ARRAY['crypto','bitcoin','ethereum','solana'],        'ELITEPLAY',  'https://rollbit.com/?c=ELITEPLAY',                                                               'Rakeback + RLB Tokens',                      'ELITEPLAY', 'pending',     '35% RevShare. RLB token economy. Good for influencer traffic.',                                                                                            FALSE, TRUE,  FALSE, 4.4, 82),
+('Duelbits',          'duelbits',   'casino', 'revenue_share', 35.00, NULL,  NULL,   'USD', NULL,  NULL,  NULL,   3.00, FALSE, 'biweekly',   50.00, ARRAY['crypto','bitcoin','ethereum','litecoin'],      'ELITE',      'https://duelbits.com/?ref=ELITE',                                                                '100% up to $200 + Rakeback',                 'ELITE',     'pending',     '35% RevShare. Growing crypto casino with strong esports focus. Biweekly payments.',                                                                        FALSE, TRUE,  FALSE, 4.3, 79),
+('Roobet',            'roobet',     'casino', 'revenue_share', 35.00, NULL,  NULL,   'USD', NULL,  NULL,  NULL,   5.00, FALSE, 'weekly',     50.00, ARRAY['crypto','bitcoin','ethereum'],                 'ELITEPLAY',  'https://roobet.com/?ref=ELITEPLAY',                                                              'Rakeback + Weekly Boost',                    'ELITEPLAY', 'active',      '35% RevShare confirmed. Weekly payouts. Influencer-heavy platform.',                                                                                       FALSE, TRUE,  FALSE, 4.5, 84),
+('bet365',            'bet365',     'sports', 'revenue_share', 30.00, NULL,  NULL,   'USD', NULL,  NULL,  NULL,   0.00, TRUE,  'monthly',   100.00, ARRAY['bank_transfer'],                               'EPLYNG',     'https://www.bet365.com/#/AC/B4/C1/D48/E1/I/',                                                   'Up to $30 in Bet Credits',                   NULL,        'negotiating', '30% RevShare. Large established sportsbook. Negative carryover. Application in progress.',                                                                  FALSE, TRUE,  FALSE, 4.4, 78)
 ON CONFLICT (operator_slug) DO NOTHING;
+
+-- =====================
+-- BADGES (DAR-27)
+-- Badge definitions and per-agent award tracking
+-- =====================
+
+CREATE TABLE IF NOT EXISTS public.badges (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  key TEXT UNIQUE NOT NULL,          -- machine-readable key e.g. 'first_referral'
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  icon TEXT NOT NULL,                -- emoji used in UI
+  color TEXT NOT NULL DEFAULT 'blue', -- blue | green | purple | gold | silver | cyan | orange | yellow
+  xp_reward INTEGER NOT NULL DEFAULT 0,
+  condition_type TEXT NOT NULL,      -- 'referral_count' | 'active_deal' | 'player_revenue' | 'active_player_count' | 'tier' | 'login_streak' | 'dark_coins'
+  condition_value NUMERIC NOT NULL,  -- numeric threshold for the condition
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.agent_badges (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  agent_id UUID NOT NULL REFERENCES public.agents(id) ON DELETE CASCADE,
+  badge_id UUID NOT NULL REFERENCES public.badges(id) ON DELETE CASCADE,
+  awarded_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(agent_id, badge_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_agent_badges_agent ON public.agent_badges(agent_id);
+CREATE INDEX IF NOT EXISTS idx_agent_badges_badge ON public.agent_badges(badge_id);
+
+-- RLS
+ALTER TABLE public.badges ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "badges_public_read" ON public.badges FOR SELECT USING (TRUE);
+CREATE POLICY "badges_admin_write" ON public.badges FOR ALL USING (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
+ALTER TABLE public.agent_badges ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "agent_badges_own_read" ON public.agent_badges FOR SELECT USING (
+  agent_id IN (SELECT id FROM public.agents WHERE user_id = auth.uid())
+  OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
+CREATE POLICY "agent_badges_system_insert" ON public.agent_badges FOR INSERT WITH CHECK (TRUE);
+
+-- =====================
+-- SEED: 10 Starter Badges
+-- =====================
+INSERT INTO public.badges (key, name, description, icon, color, xp_reward, condition_type, condition_value, sort_order) VALUES
+  ('first_referral',       'First Referral',       'Refer your first player to the network',           '🤝', 'blue',   100,  'referral_count',       1,   1),
+  ('deal_maker',           'Deal Maker',            'Activate your first operator deal',                '📋', 'green',  100,  'active_deal',          1,   2),
+  ('high_roller',          'High Roller',           'A referred player generates 500+ in revenue',      '🎰', 'purple', 250,  'player_revenue',       500, 3),
+  ('network_builder',      'Network Builder',       'Build a network of 10 active players',             '🌐', 'cyan',   200,  'active_player_count',  10,  4),
+  ('silver_achiever',      'Silver Achiever',       'Reach Silver tier status',                         '🥈', 'silver', 150,  'tier',                 2,   5),
+  ('gold_achiever',        'Gold Achiever',         'Reach Gold tier status',                           '🥇', 'gold',   300,  'tier',                 3,   6),
+  ('platinum_club',        'Platinum Club',         'Reach Platinum tier status',                       '💎', 'purple', 500,  'tier',                 4,   7),
+  ('elite_status',         'Elite Status',          'Reach the top — Elite tier',                       '👑', 'gold',   1000, 'tier',                 5,   8),
+  ('streak_master',        'Streak Master',         'Log in 7 days in a row',                           '🔥', 'orange', 150,  'login_streak',         7,   9),
+  ('dark_coins_collector', 'Dark Coins Collector',  'Accumulate 100 Dark Coins',                        '🪙', 'yellow', 100,  'dark_coins',           100, 10)
+ON CONFLICT (key) DO NOTHING;
+
+-- =====================
+-- FUNCTION: check_and_award_badges
+-- Call after any XP/tier/referral change to award newly unlocked badges.
+-- Returns the count of newly awarded badges.
+-- =====================
+CREATE OR REPLACE FUNCTION public.check_and_award_badges(p_agent_id UUID)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_agent          public.agents%ROWTYPE;
+  v_tier_rank      INTEGER;
+  v_referral_count BIGINT;
+  v_active_deals   BIGINT;
+  v_max_player_rev NUMERIC;
+  v_active_players BIGINT;
+  v_streak_days    BIGINT;
+  v_dark_coins     NUMERIC;
+  v_badge          RECORD;
+  v_awarded        INTEGER := 0;
+  v_qualifies      BOOLEAN;
+  -- Tier ordering: bronze=1, silver=2, gold=3, platinum=4, elite=5
+  TIER_RANKS       CONSTANT JSONB := '{"bronze":1,"silver":2,"gold":3,"platinum":4,"elite":5}';
+BEGIN
+  -- Fetch agent row
+  SELECT * INTO v_agent FROM public.agents WHERE id = p_agent_id;
+  IF NOT FOUND THEN RETURN 0; END IF;
+
+  v_tier_rank := COALESCE((TIER_RANKS ->> v_agent.tier)::INTEGER, 1);
+
+  -- Aggregate stats
+  SELECT COUNT(*) INTO v_referral_count
+    FROM public.agent_players WHERE agent_id = p_agent_id;
+
+  SELECT COUNT(*) INTO v_active_deals
+    FROM public.agent_deals WHERE agent_id = p_agent_id AND status = 'active';
+
+  SELECT COALESCE(MAX(total_revenue), 0) INTO v_max_player_rev
+    FROM public.agent_players WHERE agent_id = p_agent_id;
+
+  SELECT COUNT(*) INTO v_active_players
+    FROM public.agent_players WHERE agent_id = p_agent_id AND status = 'active';
+
+  -- Login streak: count distinct days with a login_streak XP entry in last 7 days
+  SELECT COUNT(DISTINCT DATE(created_at)) INTO v_streak_days
+    FROM public.xp_ledger
+    WHERE user_id = v_agent.user_id
+      AND source = 'login_streak'
+      AND created_at >= NOW() - INTERVAL '7 days';
+
+  -- Dark coin balance
+  SELECT COALESCE(SUM(amount), 0) INTO v_dark_coins
+    FROM public.dark_coins_ledger
+    WHERE user_id = v_agent.user_id;
+
+  -- Iterate all badge definitions and award where qualified and not yet earned
+  FOR v_badge IN SELECT * FROM public.badges ORDER BY sort_order LOOP
+    -- Skip if already awarded
+    IF EXISTS (
+      SELECT 1 FROM public.agent_badges
+      WHERE agent_id = p_agent_id AND badge_id = v_badge.id
+    ) THEN CONTINUE; END IF;
+
+    v_qualifies := FALSE;
+
+    CASE v_badge.condition_type
+      WHEN 'referral_count'      THEN v_qualifies := v_referral_count    >= v_badge.condition_value;
+      WHEN 'active_deal'         THEN v_qualifies := v_active_deals       >= v_badge.condition_value;
+      WHEN 'player_revenue'      THEN v_qualifies := v_max_player_rev     >= v_badge.condition_value;
+      WHEN 'active_player_count' THEN v_qualifies := v_active_players     >= v_badge.condition_value;
+      WHEN 'tier'                THEN v_qualifies := v_tier_rank           >= v_badge.condition_value;
+      WHEN 'login_streak'        THEN v_qualifies := v_streak_days        >= v_badge.condition_value;
+      WHEN 'dark_coins'          THEN v_qualifies := v_dark_coins         >= v_badge.condition_value;
+      ELSE v_qualifies := FALSE;
+    END CASE;
+
+    IF v_qualifies THEN
+      INSERT INTO public.agent_badges (agent_id, badge_id)
+      VALUES (p_agent_id, v_badge.id)
+      ON CONFLICT DO NOTHING;
+
+      -- Grant XP reward for the badge
+      IF v_badge.xp_reward > 0 AND v_agent.user_id IS NOT NULL THEN
+        INSERT INTO public.xp_ledger (user_id, amount, source, reference_id)
+        VALUES (v_agent.user_id, v_badge.xp_reward, 'badge_award', v_badge.id);
+      END IF;
+
+      v_awarded := v_awarded + 1;
+    END IF;
+  END LOOP;
+
+  RETURN v_awarded;
+END;
+$$;

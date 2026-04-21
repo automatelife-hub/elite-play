@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
-import { Star, ExternalLink, Gift, Users } from "lucide-react";
+import { Gift, Users, Globe, ArrowRight, CheckCircle } from "lucide-react";
 import { db } from "@/api/supabaseClient";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function NewHeroSection({ sites, loading, userCountry }) {
   const [showClubApps, setShowClubApps] = useState(false);
@@ -33,189 +34,169 @@ export default function NewHeroSection({ sites, loading, userCountry }) {
   const isLoading = showClubApps ? loadingClubs : loading;
 
   return (
-    <div className="relative min-h-[620px] overflow-hidden" style={{ backgroundColor: "#080C14" }}>
-      {/* Dot grid background */}
-      <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle, rgba(37,99,235,0.09) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
-      
-      {/* Floating Card Symbols */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 text-6xl text-blue-400/10 animate-pulse">♥</div>
-        <div className="absolute top-40 left-1/4 text-5xl text-blue-300/8 animate-pulse" style={{animationDelay: '0.5s'}}>♠</div>
-        <div className="absolute bottom-32 left-16 text-7xl text-blue-400/8 animate-pulse" style={{animationDelay: '1s'}}>♦</div>
-        <div className="absolute top-28 right-1/3 text-4xl text-blue-300/8 animate-pulse" style={{animationDelay: '0.3s'}}>♣</div>
-        <div className="absolute bottom-20 left-1/3 text-5xl text-blue-500/8 animate-pulse" style={{animationDelay: '0.7s'}}>♠</div>
+    <div className="relative min-h-[700px] flex items-center overflow-hidden bg-[#080C14]">
+      {/* Background with cards and chips effect */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+        <div className="absolute top-20 right-1/4 w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px]" />
+        
+        {/* Decorative elements to mimic the image's background */}
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
       </div>
-      
-      {/* Glowing orbs for ambiance */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-600/8 rounded-full blur-3xl" />
-      
-      {/* Dark overlay gradient */}
-      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(37,99,235,0.4), transparent)" }} />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
-          <div className="pt-8">
-            <h1 className="font-display font-extrabold text-white mb-6 leading-[1.08] tracking-tight" style={{ fontSize: "clamp(2.2rem, 5vw, 3.75rem)", fontFamily: "Syne, sans-serif", letterSpacing: "-0.03em" }}>
-              Your Premium<br />
-              <span className="bg-gradient-to-r from-blue-300 via-blue-400 to-blue-600 bg-clip-text text-transparent">iGaming Partner</span>
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1] tracking-tight mb-8">
+              Empower Your <br />
+              <span className="text-white">iGaming Growth</span>
             </h1>
 
-            <p className="text-lg text-[#94A3B8] mb-8 font-light leading-relaxed max-w-xl" style={{ fontFamily: "DM Sans, sans-serif" }}>
+            <p className="text-xl text-slate-400 mb-10 max-w-xl leading-relaxed font-medium">
               Premium deals, expert guidance, and the best rakeback offers across poker, casino, and sportsbetting.
             </p>
 
-            <ul className="space-y-5 mb-12">
-              <li className="flex items-center text-lg text-gray-300">
-                <span className="text-blue-400 mr-4 text-xl">✓</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 mb-12">
+              <div className="flex items-center gap-3 text-slate-200 font-semibold">
+                <CheckCircle className="w-5 h-5 text-teal-400" />
                 24/7 player & agent support
-              </li>
-              <li className="flex items-center text-lg text-gray-300">
-                <span className="text-blue-400 mr-4 text-xl">✓</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate-200 font-semibold">
+                <CheckCircle className="w-5 h-5 text-teal-400" />
                 Top rakeback & VIP deals
-              </li>
-              <li className="flex items-center text-lg text-gray-300">
-                <span className="text-blue-400 mr-4 text-xl">✓</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate-200 font-semibold">
+                <CheckCircle className="w-5 h-5 text-teal-400" />
                 50+ verified sites
-              </li>
-              <li className="flex items-center text-lg text-gray-300">
-                <span className="text-blue-400 mr-4 text-xl">✓</span>
+              </div>
+              <div className="flex items-center gap-3 text-slate-200 font-semibold">
+                <CheckCircle className="w-5 h-5 text-teal-400" />
                 Affiliate programs available
-              </li>
-            </ul>
+              </div>
+            </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-5">
               <Link to={createPageUrl("Reviews")}>
-                <Button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold px-10 py-7 text-lg shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 transform hover:scale-105">
-                  Explore Sites
+                <Button className="bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-[#080C14] font-black px-10 py-7 text-lg rounded-xl shadow-[0_0_30px_rgba(45,212,191,0.3)] transition-all transform hover:scale-105">
+                  Explore All Deals
                 </Button>
               </Link>
               <Link to={createPageUrl("BecomeAgent")}>
-                <Button variant="outline" className="border-2 border-blue-600/70 text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 px-10 py-7 text-lg font-bold transition-all duration-300">
+                <Button variant="outline" className="border-2 border-slate-700 text-white hover:bg-white/5 px-10 py-7 text-lg font-black rounded-xl transition-all">
                   Start an Agency
                 </Button>
               </Link>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right Content - Rooms List */}
-          <div className="bg-[#0D1424]/80 backdrop-blur-sm rounded-xl border border-gray-800 overflow-hidden">
-            {/* Header */}
-            <div className="grid grid-cols-2 border-b border-gray-800">
+          {/* Right Content - Tabbed List Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-[#111827]/80 backdrop-blur-xl rounded-[2rem] border border-slate-800/50 shadow-2xl overflow-hidden"
+          >
+            {/* Tabs Header */}
+            <div className="flex p-4 gap-2">
               <button
                 onClick={() => setShowClubApps(false)}
-                className={`px-6 py-4 border-r border-gray-800 text-left transition-colors ${
-                  !showClubApps ? 'bg-blue-600/10' : 'hover:bg-[#141E35]/50'
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl transition-all font-bold text-sm ${
+                  !showClubApps ? 'bg-slate-800 text-white border border-slate-700' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                <div className={`font-semibold ${!showClubApps ? 'text-blue-400' : 'text-white'}`}>
-                  Best rooms
-                </div>
-                <div className="text-gray-400 text-sm flex items-center">
-                  <span className="mr-1">🌍</span> for {userCountry || 'Worldwide'}
-                </div>
+                Best rooms <span className="text-lg">🌎</span> for US
               </button>
               <button
                 onClick={() => setShowClubApps(true)}
-                className={`px-6 py-4 text-left transition-colors ${
-                  showClubApps ? 'bg-blue-600/10' : 'hover:bg-[#141E35]/50'
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl transition-all font-bold text-sm ${
+                  showClubApps ? 'bg-slate-800 text-white border border-slate-700' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                <div className={`font-semibold flex items-center ${showClubApps ? 'text-blue-400' : 'text-white'}`}>
-                  <Users className="w-4 h-4 mr-2" />
-                  Apps
-                </div>
-                <div className="text-gray-400 text-sm">with private clubs</div>
+                Apps with private clubs
               </button>
             </div>
 
-            {/* Sites List */}
-            <div className="divide-y divide-[#1E2A3F]">
-              {isLoading ? (
-                // Loading skeleton
-                Array(5).fill(0).map((_, i) => (
-                  <div key={i} className="px-6 py-4 animate-pulse">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-10 h-10 bg-gray-700 rounded-lg" />
-                        <div>
-                          <div className="h-4 bg-gray-700 rounded w-24 mb-2" />
-                          <div className="h-3 bg-gray-700 rounded w-32" />
+            {/* List Content */}
+            <div className="px-4 pb-4 space-y-3">
+              <AnimatePresence mode="wait">
+                {isLoading ? (
+                  <motion.div 
+                    key="loading"
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    exit={{ opacity: 0 }}
+                    className="space-y-3"
+                  >
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="h-20 bg-slate-800/50 rounded-2xl animate-pulse" />
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key={showClubApps ? "clubs" : "rooms"}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-2"
+                  >
+                    {displaySites.length > 0 ? (
+                      displaySites.map((site, index) => (
+                        <div key={site.id} className="group bg-slate-900/40 hover:bg-slate-800/60 border border-slate-800/50 hover:border-slate-700 rounded-2xl p-3 flex items-center justify-between transition-all">
+                          <div className="flex items-center gap-4 min-w-0">
+                            <div className="w-14 h-14 bg-slate-800 rounded-xl overflow-hidden flex-shrink-0 border border-slate-700 p-1 flex items-center justify-center">
+                              {site.logo_url ? (
+                                <img src={site.logo_url} alt={site.name} className="w-full h-full object-contain" />
+                              ) : (
+                                <div className="text-teal-400 font-black text-xl">{site.name.charAt(0)}</div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="text-white font-bold text-base truncate">{site.name}</h4>
+                              <p className="text-teal-400/90 text-xs font-bold truncate flex items-center gap-1.5">
+                                <Gift className="w-3 h-3" />
+                                {site.bonus_offer || "Exclusive Welcome Bonus"}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <a href={site.affiliate_url} target="_blank" rel="noopener noreferrer">
+                              <Button size="sm" className="bg-cyan-500 hover:bg-cyan-400 text-[#080C14] font-black rounded-lg h-9 px-4 text-xs">
+                                Sign up
+                              </Button>
+                            </a>
+                            <Link to={`${createPageUrl("SiteDetail")}?site=${site.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')}`}>
+                              <Button size="sm" variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg h-9 px-4 text-xs font-bold">
+                                Review
+                              </Button>
+                            </Link>
+                          </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="py-20 text-center text-slate-500 font-bold">
+                        No sites found for this category.
                       </div>
-                      <div className="flex space-x-2">
-                        <div className="h-8 bg-gray-700 rounded w-16" />
-                        <div className="h-8 bg-gray-700 rounded w-16" />
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : displaySites.length > 0 ? (
-                displaySites.map((site, index) => (
-                  <div key={site.id} className="px-6 py-4 hover:bg-[#141E35]/50 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        {site.logo_url ? (
-                          <div className="w-16 h-16 bg-white rounded-lg p-2 flex items-center justify-center shadow-md">
-                            <img
-                              src={site.logo_url}
-                              alt={site.name}
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-white font-bold">
-                            {site.name.charAt(0)}
-                          </div>
-                        )}
-                        <div>
-                          <div className="text-white font-semibold">{site.name}</div>
-                          <div className="text-green-400 text-sm flex items-center">
-                            <Gift className="w-3 h-3 mr-1" />
-                            {site.bonus_offer || `Up to $${1000 + index * 500}`}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <a href={site.affiliate_url} target="_blank" rel="noopener noreferrer">
-                          <Button 
-                            size="sm" 
-                            className="bg-[#141E35] hover:bg-[#1E2A3F] text-white text-xs px-4"
-                          >
-                            Sign up
-                          </Button>
-                        </a>
-                        <Link to={`${createPageUrl("SiteDetail")}?site=${site.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')}`}>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            className="border-[#1E2A3F] text-[#94A3B8] hover:bg-[#141E35] text-xs px-4"
-                          >
-                            Review
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="px-6 py-8 text-center text-gray-400">
-                  {showClubApps ? 'No club-based apps available yet' : 'No sites available'}
-                </div>
-              )}
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* View All Link */}
-            <div className="px-6 py-4 border-t border-gray-800 text-center">
-              <Link 
-                to={createPageUrl("Reviews")}
-                className="text-blue-400 hover:text-blue-300 text-sm font-medium"
-              >
-                View all sites →
+            {/* Footer */}
+            <div className="p-6 text-center border-t border-slate-800/50">
+              <Link to={createPageUrl("Reviews")} className="text-teal-400 hover:text-teal-300 font-black text-sm flex items-center justify-center gap-2 group">
+                View all sites
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

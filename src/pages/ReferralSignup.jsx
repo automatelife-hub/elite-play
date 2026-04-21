@@ -1,34 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, UserPlus, TrendingUp } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { CheckCircle, TrendingUp, Mail } from "lucide-react";
 import { toast } from "sonner";
+import MultiStepSignup from "@/components/ui/MultiStepSignup";
 
 export default function ReferralSignup() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [referralCode, setReferralCode] = useState("");
   const [sites, setSites] = useState([]);
-  const [formData, setFormData] = useState({
-    site_id: "",
-    player_username: "",
-    player_email: "",
-    platform: "poker"
-  });
+  const [applicantEmail, setApplicantEmail] = useState("");
 
   useEffect(() => {
-    // Get referral code from URL
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('ref');
     if (ref) {
       setReferralCode(ref);
     }
-
-    // Load sites
     loadSites();
   }, []);
 
@@ -41,9 +31,62 @@ export default function ReferralSignup() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+  const steps = [
+    {
+      title: "Platform",
+      description: "Choose where you want to play",
+      fields: [
+        { 
+          name: "platform", 
+          label: "Gaming Platform", 
+          type: "select", 
+          placeholder: "Select platform",
+          required: true,
+          options: [
+            { label: "Poker", value: "poker", icon: "♠️" },
+            { label: "Casino", value: "casino", icon: "🎰" },
+            { label: "Sportsbetting", value: "sportsbetting", icon: "⚽" },
+          ]
+        },
+        { 
+          name: "site_id", 
+          label: "Specific Site", 
+          type: "select", 
+          placeholder: "Select a site",
+          required: true,
+          options: sites.map(s => ({ label: s.name, value: s.id }))
+        }
+      ]
+    },
+    {
+      title: "Account",
+      description: "Enter your gaming account details",
+      fields: [
+        { name: "player_username", label: "Player Username", placeholder: "Your username on the site", required: true },
+        { name: "player_email", label: "Email Address", type: "email", placeholder: "your@email.com" }
+      ]
+    },
+    {
+      title: "Submit",
+      description: "Review and complete your signup",
+      fields: [
+        { name: "notes", label: "Additional Info", type: "textarea", placeholder: "Any questions for our team?" }
+      ]
+    }
+  ];
+
+  const perks = {
+    title: "Player Benefits",
+    items: [
+      "Exclusive Rakeback Deals",
+      "VIP Support Access",
+      "Private Promotions",
+      "Reward Tracking",
+      "Verified Gaming Sites"
+    ]
+  };
+
+  const handleSubmit = async (formData) => {
     if (!referralCode) {
       toast.error("No referral code found");
       return;
@@ -57,6 +100,7 @@ export default function ReferralSignup() {
       });
 
       if (response.data.success) {
+        setApplicantEmail(formData.player_email);
         setSuccess(true);
         toast.success("Signup tracked successfully!");
       } else {
@@ -72,17 +116,27 @@ export default function ReferralSignup() {
 
   if (success) {
     return (
-      <div className="bg-gray-950 text-white min-h-screen py-12 flex items-center justify-center">
-        <Card className="bg-gray-900 border-green-500/30 max-w-md">
+      <div className="bg-[#080C14] text-white min-h-screen py-24 px-4">
+        <Card className="bg-[#111827]/80 backdrop-blur-xl border-slate-800/50 max-w-2xl mx-auto rounded-[2rem] shadow-2xl">
           <CardContent className="p-12 text-center">
-            <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">Signup Tracked!</h2>
-            <p className="text-gray-400 mb-6">
-              Your signup has been recorded. The referring agent will receive commission on your activity.
+            <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(34,197,94,0.2)]">
+              <CheckCircle className="w-12 h-12 text-green-500" />
+            </div>
+            <h2 className="text-3xl font-black text-white mb-4">Signup Tracked!</h2>
+            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+              Your account details have been recorded. You're now eligible for elite rewards through your referring agent.
             </p>
+            
+            {applicantEmail && (
+              <div className="bg-slate-900/50 rounded-2xl p-6 mb-8 border border-slate-800 flex items-center justify-center gap-3 text-teal-400">
+                <Mail className="w-5 h-5" />
+                <span className="font-bold">Confirmation sent to {applicantEmail}</span>
+              </div>
+            )}
+
             <Button
               onClick={() => window.location.href = '/'}
-              className="bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700"
+              className="bg-blue-600 hover:bg-blue-500 text-white font-black px-12 h-14 rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all"
             >
               Go to Homepage
             </Button>
@@ -94,12 +148,14 @@ export default function ReferralSignup() {
 
   if (!referralCode) {
     return (
-      <div className="bg-gray-950 text-white min-h-screen py-12 flex items-center justify-center">
-        <Card className="bg-gray-900 border-gray-800 max-w-md">
+      <div className="bg-[#080C14] text-white min-h-screen py-24 flex items-center justify-center px-4">
+        <Card className="bg-[#111827]/80 backdrop-blur-xl border-slate-800/50 max-w-md rounded-2xl shadow-2xl">
           <CardContent className="p-12 text-center">
-            <UserPlus className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+            <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
+              <TrendingUp className="w-8 h-8 text-slate-500" />
+            </div>
             <h2 className="text-2xl font-bold text-white mb-2">No Referral Code</h2>
-            <p className="text-gray-400">
+            <p className="text-slate-400">
               This page requires a valid referral code. Please use the link provided by your agent.
             </p>
           </CardContent>
@@ -109,99 +165,18 @@ export default function ReferralSignup() {
   }
 
   return (
-    <div className="bg-gray-950 text-white min-h-screen py-12">
-      <div className="max-w-2xl mx-auto px-4">
-        <Card className="bg-gray-900 border-gray-800">
-          <CardHeader>
-            <CardTitle className="text-white text-2xl flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-emerald-400" />
-              Complete Your Signup
-            </CardTitle>
-            <p className="text-gray-400 mt-2">
-              You're signing up through a referral link. Complete the form below to get started.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label className="text-gray-300">Platform *</Label>
-                <Select
-                  value={formData.platform}
-                  onValueChange={(value) => setFormData({ ...formData, platform: value })}
-                >
-                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="poker">Poker</SelectItem>
-                    <SelectItem value="casino">Casino</SelectItem>
-                    <SelectItem value="sportsbetting">Sportsbetting</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label className="text-gray-300">Site *</Label>
-                <Select
-                  value={formData.site_id}
-                  onValueChange={(value) => setFormData({ ...formData, site_id: value })}
-                  required
-                >
-                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white mt-1">
-                    <SelectValue placeholder="Select a site" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {sites
-                      .filter((s) => s.type === formData.platform || s.type.includes(formData.platform))
-                      .map((site) => (
-                        <SelectItem key={site.id} value={site.id}>
-                          {site.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="player_username" className="text-gray-300">Your Username *</Label>
-                <Input
-                  id="player_username"
-                  value={formData.player_username}
-                  onChange={(e) => setFormData({ ...formData, player_username: e.target.value })}
-                  placeholder="Your username on the gaming site"
-                  className="bg-gray-800 border-gray-700 text-white mt-1"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="player_email" className="text-gray-300">Email (Optional)</Label>
-                <Input
-                  id="player_email"
-                  type="email"
-                  value={formData.player_email}
-                  onChange={(e) => setFormData({ ...formData, player_email: e.target.value })}
-                  placeholder="your@email.com"
-                  className="bg-gray-800 border-gray-700 text-white mt-1"
-                />
-              </div>
-
-              <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
-                <p className="text-sm text-emerald-400">
-                  ✓ Signing up with referral code: <span className="font-mono">{referralCode}</span>
-                </p>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white font-semibold"
-              >
-                {loading ? "Processing..." : "Complete Signup"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+    <div className="bg-[#080C14] text-white min-h-screen py-20 px-4 flex items-center justify-center">
+      <div className="w-full max-w-5xl">
+        <div className="mb-10 text-center">
+          <h1 className="text-4xl font-black text-white mb-2">Complete Your Signup</h1>
+          <p className="text-slate-400 font-bold">Referral Active: <span className="text-blue-400 font-mono">{referralCode}</span></p>
+        </div>
+        
+        <MultiStepSignup
+          steps={steps}
+          perks={perks}
+          onSubmit={handleSubmit}
+        />
       </div>
     </div>
   );

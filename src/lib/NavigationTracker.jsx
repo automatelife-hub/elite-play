@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { pagesConfig } from '@/pages.config';
+import { analytics } from '@/lib/analytics';
 
 export default function NavigationTracker() {
     const location = useLocation();
@@ -15,6 +16,11 @@ export default function NavigationTracker() {
             type: "app_changed_url",
             url: window.location.href
         }, '*');
+    }, [location]);
+
+    // GA4 page_view on every SPA navigation
+    useEffect(() => {
+        analytics.trackPageView(location.pathname + location.search);
     }, [location]);
 
     // Log user activity when navigating to a page

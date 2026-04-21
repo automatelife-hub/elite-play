@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, TrendingUp, DollarSign, Plus, Search, Copy, Wallet, CheckCircle, Clock, CreditCard, ArrowUp, ArrowDown, Activity, Coins } from "lucide-react";
+import { Users, TrendingUp, DollarSign, Plus, Search, Copy, Wallet, CheckCircle, Clock, CreditCard, ArrowUp, ArrowDown, Activity, Coins, Target } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import PerformanceCharts from "../components/agent/PerformanceCharts";
@@ -21,6 +21,7 @@ import NotificationBell from "../components/agent/NotificationBell";
 import KPIAnalytics from "../components/agent/KPIAnalytics";
 import CustomDealManager from "../components/agent/CustomDealManager";
 import MissionBoard from "../components/agent/MissionBoard";
+import { OperatorDealGrid } from "../components/agent/OperatorDealCard";
 
 // Animated number counter using Framer Motion spring
 function AnimatedNumber({ value, prefix = "$", decimals = 0 }) {
@@ -54,6 +55,7 @@ export default function AgentPortal() {
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [agentDeals, setAgentDeals] = useState([]);
+  const [operatorDeals, setOperatorDeals] = useState([]);
   const [affiliateEarnings, setAffiliateEarnings] = useState([]);
   const [darkCoins, setDarkCoins] = useState(0);
   const [totalXp, setTotalXp] = useState(0);
@@ -173,13 +175,14 @@ export default function AgentPortal() {
         return;
       }
 
-      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, deals, xpRow, coinRow] = await Promise.all([
+      const [agentData, agentPlayers, allSites, agentCommissions, agentReferralLinks, deals, opDeals, xpRow, coinRow] = await Promise.all([
         db.entities.Agent.filter({ agent_email: currentUser.email }),
         currentUser.agent_id ? db.entities.AgentPlayer.filter({ agent_id: currentUser.agent_id }) : [],
         db.entities.Site.list(),
         currentUser.agent_id ? db.entities.AgentCommission.filter({ agent_id: currentUser.agent_id }) : [],
         currentUser.agent_id ? db.entities.AgentReferralLink.filter({ agent_id: currentUser.agent_id }) : [],
         currentUser.agent_id ? db.entities.AgentDeal.filter({ agent_id: currentUser.agent_id }) : [],
+        db.entities.OperatorDeal.filter({ is_active: true }),
         supabase.from("user_xp_totals").select("total_xp").eq("user_id", currentUser.id).single(),
         supabase.from("user_dark_coin_balances").select("balance").eq("user_id", currentUser.id).single(),
       ]);
@@ -192,6 +195,7 @@ export default function AgentPortal() {
       setCommissions(agentCommissions);
       setReferralLinks(agentReferralLinks);
       setAgentDeals(deals);
+      setOperatorDeals(opDeals);
       setTotalXp(Number(xpRow?.data?.total_xp ?? 0));
       setDarkCoins(Number(coinRow?.data?.balance ?? 0));
     } catch (error) {
@@ -248,21 +252,43 @@ export default function AgentPortal() {
   return (
     <div className="max-w-[1600px] mx-auto">
       {/* Page Header */}
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">Agent Dashboard</h1>
-          <p className="text-gray-400">Welcome back, {agent?.agent_name || user.full_name}</p>
+          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">Agent Dashboard</h1>
+          <p className="text-gray-400 text-sm sm:text-base">Welcome back, {agent?.agent_name || user.full_name}</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Dark Coins balance */}
-          <div className="flex items-center gap-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-            <Coins className="w-4 h-4 text-yellow-400" />
+          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg min-h-[44px]">
+            <Coins className="w-4 h-4 text-yellow-400 flex-shrink-0" />
             <span className="text-yellow-300 font-semibold text-sm">{darkCoins.toLocaleString()}</span>
             <span className="text-yellow-600 text-xs hidden sm:inline">Dark Coins</span>
           </div>
           <NotificationBell players={players} commissions={commissions} agentDeals={agentDeals} />
         </div>
       </div>
+
+      {/* Top-level tabs */}
+      <Tabs defaultValue="dashboard" className="mb-8">
+        <div className="overflow-x-auto mb-6">
+          <TabsList className="bg-gray-900 border border-gray-800 w-max min-w-full sm:w-auto">
+            <TabsTrigger value="dashboard" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white min-h-[44px]">
+              <TrendingUp className="w-4 h-4 mr-1.5" /> Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="missions" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white min-h-[44px]">
+              <Target className="w-4 h-4 mr-1.5" /> Missions
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        {/* Missions tab — full-width MissionBoard */}
+        <TabsContent value="missions">
+          <div className="max-w-2xl mx-auto">
+            {user?.id && <MissionBoard userId={user.id} />}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="dashboard">
 
       {/* 12-Column Grid Stats */}
       <div className="grid grid-cols-12 gap-6 mb-8">
@@ -360,12 +386,27 @@ export default function AgentPortal() {
 
         {/* Deals Overview */}
         <div className="col-span-12">
-          <DealsOverview 
-            agentDeals={agentDeals} 
-            sites={sites} 
+          <DealsOverview
+            agentDeals={agentDeals}
+            sites={sites}
             referralLinks={referralLinks}
           />
         </div>
+
+        {/* Operator Deal Cards */}
+        {operatorDeals.length > 0 && (
+          <div className="col-span-12">
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-white">Operator Deals</h2>
+              <p className="text-slate-400 text-sm">Click a card to reveal deal details and copy your personalised affiliate link.</p>
+            </div>
+            <OperatorDealGrid
+              operators={sites.filter(s => operatorDeals.some(d => d.site_id === s.id || d.operator_slug === s.slug))}
+              deals={operatorDeals}
+              agent={agent}
+            />
+          </div>
+        )}
 
         {/* KPI Analytics */}
         <div className="col-span-12">
@@ -398,21 +439,21 @@ export default function AgentPortal() {
             <CardContent className="space-y-3">
               <Button
                 onClick={() => setShowAddPlayer(true)}
-                className="w-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-cyan-500/30 text-emerald-400 border border-emerald-500/30 justify-start"
+                className="w-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-cyan-500/30 text-emerald-400 border border-emerald-500/30 justify-start min-h-[44px]"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add New Player
               </Button>
               <Button
                 variant="outline"
-                className="w-full border-slate-700 text-gray-300 hover:bg-slate-800 justify-start"
+                className="w-full border-slate-700 text-gray-300 hover:bg-slate-800 justify-start min-h-[44px]"
               >
                 <Copy className="w-4 h-4 mr-2" />
                 Copy Tracking Link
               </Button>
               <Button
                 variant="outline"
-                className="w-full border-slate-700 text-gray-300 hover:bg-slate-800 justify-start"
+                className="w-full border-slate-700 text-gray-300 hover:bg-slate-800 justify-start min-h-[44px]"
               >
                 <CreditCard className="w-4 h-4 mr-2" />
                 Request Payout
@@ -517,6 +558,9 @@ export default function AgentPortal() {
           </Card>
         </div>
       </div>
+
+        </TabsContent>{/* end dashboard TabsContent */}
+      </Tabs>
 
       {/* Add Player Dialog */}
       <Dialog open={showAddPlayer} onOpenChange={setShowAddPlayer}>
