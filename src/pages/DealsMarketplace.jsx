@@ -123,6 +123,34 @@ function getCommissionColor(deal) {
 
 // ─── Deal Card ────────────────────────────────────────────────────────────────
 
+const DealLogo = ({ src, name, fallback, logoColor }) => {
+  const [error, setError] = useState(false);
+
+  if (error || !src) {
+    return (
+      <div
+        className="w-11 h-11 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"
+        style={{
+          backgroundColor: logoColor + "22",
+          color: logoColor,
+          border: `1px solid ${logoColor}44`,
+        }}
+      >
+        {fallback}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={name}
+      className="w-11 h-11 rounded-lg object-contain shrink-0 bg-white/5"
+      onError={() => setError(true)}
+    />
+  );
+};
+
 function DealCard({ deal, index }) {
   const statusColors = DEAL_STATUS_COLORS[deal.dealStatus] ?? DEAL_STATUS_COLORS.inactive;
   const regionFlags = getRegionFlags(deal.regions);
@@ -162,25 +190,12 @@ function DealCard({ deal, index }) {
       <div className="p-5">
         {/* Header: logo + name + regions */}
         <div className="flex items-start gap-3 mb-4">
-          {deal.logo ? (
-            <img
-              src={deal.logo}
-              alt={deal.name}
-              className="w-11 h-11 rounded-lg object-contain shrink-0 bg-white/5"
-              onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
-            />
-          ) : null}
-          <div
-            className="w-11 h-11 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"
-            style={{
-              backgroundColor: deal.logoColor + "22",
-              color: deal.logoColor,
-              border: `1px solid ${deal.logoColor}44`,
-              display: deal.logo ? "none" : "flex",
-            }}
-          >
-            {deal.logoFallback}
-          </div>
+          <DealLogo
+            src={deal.logo}
+            name={deal.name}
+            fallback={deal.logoFallback}
+            logoColor={deal.logoColor}
+          />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-white font-semibold text-sm leading-tight">{deal.name}</span>

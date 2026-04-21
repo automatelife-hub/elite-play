@@ -6,6 +6,23 @@ import { ArrowRight } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { getOperatorLogo } from "@/data/operatorLogos";
 
+const NetworkLogo = ({ src, name }) => {
+  const [error, setError] = React.useState(false);
+
+  if (error || !src) {
+    return <div className="text-2xl font-bold text-white">{name.charAt(0)}</div>;
+  }
+
+  return (
+    <img
+      src={src}
+      alt={name}
+      className="w-full h-full object-contain"
+      onError={() => setError(true)}
+    />
+  );
+};
+
 export default function PokerNetworks() {
   const networks = [
     {
@@ -207,15 +224,7 @@ export default function PokerNetworks() {
                   {/* Logo */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="w-20 h-20 bg-white/10 rounded-full p-3 flex items-center justify-center overflow-hidden">
-                      <img
-                        src={network.logo}
-                        alt={network.name}
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.parentElement.innerHTML = `<div class="text-2xl font-bold text-white">${network.name.charAt(0)}</div>`;
-                        }}
-                      />
+                      <NetworkLogo src={network.logo} name={network.name} />
                     </div>
                     <ArrowRight className="w-5 h-5 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>

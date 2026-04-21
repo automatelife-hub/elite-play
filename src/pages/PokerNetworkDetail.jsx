@@ -9,6 +9,23 @@ import { createPageUrl } from "@/utils";
 import { Link } from "react-router-dom";
 import { getOperatorLogo } from "@/data/operatorLogos";
 
+const NetworkLogo = ({ src, name }) => {
+  const [error, setError] = useState(false);
+
+  if (error || !src) {
+    return null;
+  }
+
+  return (
+    <img
+      src={src}
+      alt={name}
+      className="w-full h-full object-contain"
+      onError={() => setError(true)}
+    />
+  );
+};
+
 export default function PokerNetworkDetail() {
   const location = useLocation();
   const [network, setNetwork] = useState(null);
@@ -181,14 +198,7 @@ export default function PokerNetworkDetail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
             <div className="w-32 h-32 bg-white/10 rounded-2xl p-4 flex items-center justify-center">
-              <img
-                src={network.logo}
-                alt={network.name}
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
+              <NetworkLogo src={network.logo} name={network.name} />
             </div>
             <div className="text-center md:text-left">
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">
