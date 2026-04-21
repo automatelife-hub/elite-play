@@ -16,7 +16,9 @@
       "mcp__Claude_Preview__preview_start",
       "Bash(python3 -c \":*)",
       "Bash(grep -oP '\\\\.\\\\w+$')",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Skill(qodo-get-rules)",
+      "Skill(qodo-get-rules:*)"
     ]
   }
 }
