@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { generateSecureRandomString } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -73,9 +74,9 @@ export default function AgentApplicationForm({ onSuccess }) {
     try {
       console.log("Creating agent record...");
       
-      // Generate unique codes
-      const trackingCode = `${formData.full_name.substring(0, 3).toUpperCase()}${Date.now().toString().slice(-6)}`;
-      const agentReferralCode = `AGT${Date.now().toString().slice(-8)}`;
+      // Generate unique codes securely
+      const trackingCode = `${formData.full_name.substring(0, 3).toUpperCase()}${generateSecureRandomString(6, '0123456789')}`;
+      const agentReferralCode = `AGT${generateSecureRandomString(8)}`;
       
       // Find referrer if code exists
       let referrerAgentId = null;
