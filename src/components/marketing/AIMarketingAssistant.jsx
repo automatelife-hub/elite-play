@@ -71,7 +71,6 @@ Make it persuasive, clear, and focused on converting players.`;
       setResult(response);
       toast.success("Copy generated successfully!");
     } catch (error) {
-      console.error("Error generating copy:", error);
       toast.error("Failed to generate copy");
     } finally {
       setLoading(false);
@@ -126,7 +125,6 @@ Be specific, data-driven, and actionable.`;
       setResult(response);
       toast.success("Strategy generated!");
     } catch (error) {
-      console.error("Error generating strategy:", error);
       toast.error("Failed to generate strategy");
     } finally {
       setLoading(false);
@@ -176,7 +174,6 @@ Format this as a clear design specification that a graphic designer can implemen
       setResult(response);
       toast.success("Banner design concept created!");
     } catch (error) {
-      console.error("Error generating banner:", error);
       toast.error("Failed to generate banner design");
     } finally {
       setLoading(false);
