@@ -3,6 +3,15 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+if (!supabaseUrl || !supabaseAnonKey) {
+  // Surface a clear, actionable error instead of letting createClient throw
+  // and blank out the entire app.
+  console.error(
+    '[v0] Missing Supabase env vars. Expected VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY ' +
+      '(bridged from NEXT_PUBLIC_SUPABASE_* / SUPABASE_* in vite.config.js).'
+  );
+}
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // PascalCase entity name -> snake_case Supabase table name

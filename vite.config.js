@@ -1,11 +1,32 @@
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  // Load ALL env vars (not just VITE_ prefixed) so we can bridge the
+  // Supabase integration vars (NEXT_PUBLIC_SUPABASE_*, SUPABASE_*) into the
+  // VITE_ names the client code reads via import.meta.env.
+  const env = loadEnv(mode, process.cwd(), '')
+
+  const supabaseUrl =
+    env.VITE_SUPABASE_URL ||
+    env.NEXT_PUBLIC_SUPABASE_URL ||
+    env.SUPABASE_URL ||
+    ''
+  const supabaseAnonKey =
+    env.VITE_SUPABASE_ANON_KEY ||
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    env.SUPABASE_ANON_KEY ||
+    ''
+
+  return {
+    define: {
+      'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(supabaseUrl),
+      'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(supabaseAnonKey),
+    },
     plugins: [
         react(),
         visualizer({ open: false, filename: 'dist/stats.html', gzipSize: true }),
@@ -71,4 +92,5 @@ export default defineConfig({
             },
         },
     },
-});
+  }
+})
