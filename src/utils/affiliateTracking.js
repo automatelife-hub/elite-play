@@ -9,6 +9,7 @@
 
 import { supabase } from '@/api/supabaseClient';
 import { analytics } from '@/lib/analytics';
+import { generateSecureRandomString } from '@/lib/secure-random';
 
 // ---------------------------------------------------------------------------
 // Session storage keys
@@ -32,7 +33,7 @@ function getSessionId() {
     if (trimmed.startsWith(name)) return trimmed.substring(name.length);
   }
   // Create new session ID
-  const id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now();
+  const id = generateSecureRandomString();
   // Expires in 30 days
   const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
   document.cookie = `${COOKIE_SESSION_ID}=${id}; expires=${expires}; path=/; SameSite=Lax`;
