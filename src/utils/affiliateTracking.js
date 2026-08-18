@@ -66,7 +66,7 @@ async function getFingerprint() {
 }
 
 /** Parse UTM params from a URL search string. */
-function parseUtmParams(search) {
+export function parseUtmParams(search) {
   const params = new URLSearchParams(search);
   return {
     utm_source:   params.get('utm_source')   || null,
@@ -76,12 +76,20 @@ function parseUtmParams(search) {
   };
 }
 
-/** Infer traffic source from UTMs / referrer. */
-function inferTrafficSource(utms, referrer) {
+/**
+ * Infer traffic source from UTMs / referrer.
+ *
+ * @param {object} utms - Object with utm_source / utm_medium / utm_campaign / utm_content keys.
+ * @param {string} referrer - document.referrer (may be empty string).
+ * @param {string} [hostname] - current host; defaults to window.location.hostname.
+ *   Pass explicitly in tests to avoid coupling to the global.
+ */
+export function inferTrafficSource(utms, referrer, hostname) {
+  const host = hostname ?? (typeof window !== 'undefined' ? window.location.hostname : '');
   if (utms.utm_medium === 'email') return 'email';
   if (utms.utm_medium === 'social' || ['facebook', 'twitter', 'instagram', 'tiktok', 'youtube'].some(s => (utms.utm_source || '').includes(s))) return 'social';
   if (utms.utm_medium === 'cpc' || utms.utm_medium === 'paid') return 'paid';
-  if (utms.utm_source === 'referral' || (referrer && !referrer.includes(window.location.hostname))) return 'referral';
+  if (utms.utm_source === 'referral' || (referrer && host && !referrer.includes(host))) return 'referral';
   if (utms.utm_medium === 'organic' || (!utms.utm_source && referrer && ['google', 'bing', 'yahoo', 'duckduckgo'].some(s => referrer.includes(s)))) return 'seo';
   return 'direct';
 }

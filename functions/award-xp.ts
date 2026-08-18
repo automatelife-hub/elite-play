@@ -8,6 +8,7 @@
  */
 
 import { createServiceClient } from "./_shared/supabase.ts";
+import { calcStreakMultiplier, getTier, nextStreak, type TierName } from "./_shared/xp-math.ts";
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
@@ -18,31 +19,6 @@ const XP_VALUES: Record<string, number> = {
   complete_mission: 0, // resolved dynamically from mission record
   share_achievement: 15,
 };
-
-const TIERS = [
-  { name: "bronze",   min: 0,      max: 499 },
-  { name: "silver",   min: 500,    max: 1999 },
-  { name: "gold",     min: 2000,   max: 4999 },
-  { name: "platinum", min: 5000,   max: 9999 },
-  { name: "elite",    min: 10000,  max: Infinity },
-] as const;
-
-type TierName = "bronze" | "silver" | "gold" | "platinum" | "elite";
-
-function getTier(totalXp: number): TierName {
-  for (const tier of TIERS) {
-    if (totalXp >= tier.min && totalXp <= tier.max) return tier.name as TierName;
-  }
-  return "elite";
-}
-
-// ── Streak helpers ─────────────────────────────────────────────────────────
-
-function calcStreakMultiplier(streak: number): number {
-  if (streak >= 30) return 2.0;
-  if (streak >= 7)  return 1.5;
-  return 1.0;
-}
 
 async function updateStreak(
   db: ReturnType<typeof createServiceClient>,
@@ -69,21 +45,7 @@ async function updateStreak(
   }
 
   const lastLogin = existing.last_login_at ? new Date(existing.last_login_at) : null;
-  const hoursSince = lastLogin
-    ? (now.getTime() - lastLogin.getTime()) / 3_600_000
-    : Infinity;
-
-  let newStreak: number;
-  if (hoursSince < 24) {
-    // Same day — don't increment
-    newStreak = existing.current_streak;
-  } else if (hoursSince <= 48) {
-    // Consecutive day
-    newStreak = existing.current_streak + 1;
-  } else {
-    // Streak broken
-    newStreak = 1;
-  }
+  const newStreak = nextStreak(existing.current_streak, lastLogin, now);
 
   const multiplier = calcStreakMultiplier(newStreak);
   const longest = Math.max(newStreak, existing.longest_streak ?? 0);

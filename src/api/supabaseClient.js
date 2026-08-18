@@ -55,7 +55,7 @@ const TABLE_MAP = {
  * "-rating" -> { column: "rating", ascending: false }
  * "name"   -> { column: "name", ascending: true }
  */
-function parseSort(sort) {
+export function parseSort(sort) {
   if (!sort) return null;
   const desc = sort.startsWith('-');
   const column = desc ? sort.slice(1) : sort;
