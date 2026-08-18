@@ -10,7 +10,9 @@ export function createServiceClient() {
 export async function getAuthUser(req: Request, supabase: ReturnType<typeof createClient>) {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) return null;
-  const token = authHeader.replace("Bearer ", "");
+  const match = authHeader.match(/^Bearer\s+(.+)$/i);
+  if (!match) return null;
+  const token = match[1];
   const { data: { user }, error } = await supabase.auth.getUser(token);
   if (error || !user) return null;
 

@@ -45,7 +45,11 @@ Deno.serve(async (req) => {
     if (!authHeader) {
       return Response.json({ error: "Unauthorized" }, { status: 401, headers: CORS });
     }
-    const token = authHeader.replace("Bearer ", "");
+    const match = authHeader.match(/^Bearer\s+(.+)$/i);
+    if (!match) {
+      return Response.json({ error: "Unauthorized" }, { status: 401, headers: CORS });
+    }
+    const token = match[1];
     const { data: { user }, error: authErr } = await db.auth.getUser(token);
     if (authErr || !user) {
       return Response.json({ error: "Unauthorized" }, { status: 401, headers: CORS });
