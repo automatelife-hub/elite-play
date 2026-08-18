@@ -23,6 +23,7 @@ import {
 import { DollarSign, CheckCircle, XCircle, Clock, AlertCircle, Play, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import logger from "@/lib/logger";
 
 export default function AdminPayouts() {
   const [user, setUser] = useState(null);
@@ -58,7 +59,7 @@ export default function AdminPayouts() {
       setPayoutBatches(batches);
       setAgents(agentsList);
     } catch (error) {
-      console.error("Error loading data:", error);
+      logger.error("Error loading data in AdminPayouts:", error);
       toast.error("Failed to load payout data");
     } finally {
       setLoading(false);
@@ -77,7 +78,7 @@ export default function AdminPayouts() {
         toast.error(response.error || "Failed to process payouts");
       }
     } catch (error) {
-      console.error("Error processing payouts:", error);
+      logger.error("Error processing automated payouts:", error);
       toast.error("Failed to process automated payouts");
     } finally {
       setProcessing(false);
@@ -94,7 +95,7 @@ export default function AdminPayouts() {
       toast.success("Batch approved");
       await loadData();
     } catch (error) {
-      console.error("Error approving batch:", error);
+      logger.error("Error approving payout batch:", error);
       toast.error("Failed to approve batch");
     }
   };
@@ -113,7 +114,7 @@ export default function AdminPayouts() {
         toast.error(response.error || "Failed to execute payout");
       }
     } catch (error) {
-      console.error("Error executing payout:", error);
+      logger.error("Error executing payout batch:", error);
       toast.error("Failed to execute payout");
     } finally {
       setProcessing(false);
@@ -145,7 +146,7 @@ export default function AdminPayouts() {
       setRejectionReason("");
       await loadData();
     } catch (error) {
-      console.error("Error rejecting batch:", error);
+      logger.error("Error rejecting payout batch:", error);
       toast.error("Failed to reject batch");
     }
   };
