@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,6 +101,10 @@ export default function AdminServices() {
   const totalRevenue = orders.reduce((sum, o) => sum + o.total_price, 0);
   const activeOrders = orders.filter(o => o.status === 'in_progress').length;
   const completedOrders = orders.filter(o => o.status === 'completed').length;
+
+  const servicesMap = useMemo(() => {
+    return new Map(services.map(s => [s.id, s]));
+  }, [services]);
 
   if (loading) {
     return (
@@ -234,7 +238,7 @@ export default function AdminServices() {
         <TabsContent value="orders">
           <div className="space-y-4">
             {orders.map(order => {
-              const service = services.find(s => s.id === order.service_package_id);
+              const service = servicesMap.get(order.service_package_id);
               return (
                 <Card key={order.id} className="glass-card">
                   <CardContent className="p-6">
