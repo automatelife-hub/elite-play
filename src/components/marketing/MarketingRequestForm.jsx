@@ -68,7 +68,6 @@ export default function MarketingRequestForm({ open, onOpenChange, agentId, onRe
       
       if (onRequestCreated) onRequestCreated();
     } catch (error) {
-      console.error("Error creating request:", error);
       toast.error("Failed to submit request");
     }
   };

@@ -32,7 +32,6 @@ export default function MarketingAssetLibrary({ assets, agent, onDownload }) {
       
       if (onDownload) onDownload();
     } catch (error) {
-      console.error("Error downloading asset:", error);
       toast.error("Failed to download asset");
     }
   };
