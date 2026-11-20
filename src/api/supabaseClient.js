@@ -134,6 +134,16 @@ function createEntityProxy(tableName) {
       return data || [];
     },
 
+    async bulkUpdate(ids, updates) {
+      const { data, error } = await supabase
+        .from(tableName)
+        .update(updates)
+        .in('id', ids)
+        .select();
+      if (error) throw error;
+      return data || [];
+    },
+
     async schema() {
       // Return basic schema info - used minimally (Stats page)
       return { json_schema: { properties: {} } };

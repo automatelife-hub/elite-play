@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { db } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +19,13 @@ export default function AgentContests() {
   useEffect(() => {
     loadData();
   }, []);
+
+  const sitesMap = useMemo(() => {
+    const map = new Map();
+    sites.forEach(site => map.set(site.id, site));
+    return map;
+  }, [sites]);
+
 
   const loadData = async () => {
     setLoading(true);
@@ -149,7 +156,7 @@ export default function AgentContests() {
             <div className="grid gap-4">
               {activeContests.map(contest => {
                 const ContestIcon = getContestIcon(contest.contest_type);
-                const site = sites.find(s => s.id === contest.site_id);
+                const site = sitesMap.get(contest.site_id);
                 
                 return (
                   <Card key={contest.id} className="bg-gray-900 border-gray-800 hover:border-gray-700 cursor-pointer" onClick={() => setSelectedContest(contest)}>
@@ -192,7 +199,7 @@ export default function AgentContests() {
             <div className="grid gap-4">
               {upcomingContests.map(contest => {
                 const ContestIcon = getContestIcon(contest.contest_type);
-                const site = sites.find(s => s.id === contest.site_id);
+                const site = sitesMap.get(contest.site_id);
                 
                 return (
                   <Card key={contest.id} className="bg-gray-900 border-gray-800">
@@ -234,7 +241,7 @@ export default function AgentContests() {
             <div className="grid gap-4">
               {completedContests.map(contest => {
                 const ContestIcon = getContestIcon(contest.contest_type);
-                const site = sites.find(s => s.id === contest.site_id);
+                const site = sitesMap.get(contest.site_id);
                 
                 return (
                   <Card key={contest.id} className="bg-gray-900 border-gray-800 cursor-pointer" onClick={() => setSelectedContest(contest)}>
